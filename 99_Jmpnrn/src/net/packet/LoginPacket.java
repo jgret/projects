@@ -15,13 +15,10 @@ import static net.packet.ByteStreamUtil.*;
 
 public class LoginPacket extends Packet {
 	
-	public static final int ID = PacketType.LOGIN.getId();
-	public static final int LENGTH = PacketType.LOGIN.getLength();
-
 	private String name;
 	
 	public LoginPacket(String user) {
-		super(ID, LENGTH);
+		super(ID_LOGIN, LEN_LOGIN);
 		writeS(data, user, 25);
 	}
 	
@@ -32,6 +29,11 @@ public class LoginPacket extends Packet {
 	
 	public String getName() {
 		return name;
+	}
+	
+	@Override
+	public void handle() {
+		System.out.println(name);
 	}
 	
 }

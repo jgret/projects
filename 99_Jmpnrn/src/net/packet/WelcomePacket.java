@@ -8,19 +8,25 @@
  *******************************************************/
 package net.packet;
 
-public class LogoutPacket extends Packet {
+import static net.packet.ByteStreamUtil.*;
+
+public class WelcomePacket extends Packet {
+
+	private String msg;
 	
-	public LogoutPacket() {
-		super(ID_LOGOUT, LEN_LOGOUT);
+	public WelcomePacket(String msg) {
+		super(ID_WELCOME, LEN_WELCOME);
+		writeS(data, msg, 100);
 	}
-	
-	public LogoutPacket(byte[] b) {
+
+	public WelcomePacket(byte[] b) {
 		super(b);
+		msg = getString(in, 100);
 	}
 	
 	@Override
 	public void handle() {
-
+		System.out.println(msg);
 	}
 	
 }

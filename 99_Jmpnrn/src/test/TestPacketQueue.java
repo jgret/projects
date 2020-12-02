@@ -8,17 +8,9 @@
  *******************************************************/
 package test;
 
-import java.io.IOException;
-import java.io.ObjectOutputStream;
-import java.io.OutputStream;
-import java.util.Scanner;
-
-import main.Time;
 import net.packet.LoginPacket;
-import net.packet.LogoutPacket;
 import net.packet.Packet;
 import net.packet.PacketQueue;
-import net.packet.PacketType;
 import net.packet.PlayerMovePacket;
 
 public class TestPacketQueue {
@@ -38,20 +30,14 @@ public class TestPacketQueue {
 					byte[] data = p.getData();
 					byte id = data[0];
 					
-					if (id == PacketType.LOGIN.getId()) {
+					if (id == Packet.ID_LOGIN) {
 						LoginPacket l = new LoginPacket(data);
 						System.out.println(l.getName());
 					}
 					
-					if (id == PacketType.PLAYER_MOVE.getId()) {
+					if (id == Packet.ID_PLAYER_MOVE) {
 						PlayerMovePacket m = new PlayerMovePacket(data);
 						System.out.println("Values: " + m.getX() + ", " + m.getY());
-					}
-					
-					try {
-						Thread.sleep(0);
-					} catch (InterruptedException e) {
-						e.printStackTrace();
 					}
 				}
 			}

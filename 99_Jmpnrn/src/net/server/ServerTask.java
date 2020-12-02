@@ -6,21 +6,27 @@
  * Jmpnrn can not be copied and/or distributed without the express
  * permission of jgret
  *******************************************************/
-package net.packet;
+package net.server;
 
-public class LogoutPacket extends Packet {
+public abstract class ServerTask implements Runnable {
 	
-	public LogoutPacket() {
-		super(ID_LOGOUT, LEN_LOGOUT);
-	}
+	protected Server server;
+	protected volatile boolean running;
 	
-	public LogoutPacket(byte[] b) {
-		super(b);
+	public ServerTask(Server server) {
+		this.server = server;
 	}
 	
 	@Override
-	public void handle() {
-
+	public void run() {
+		running = true;
+		
+		while (running) {
+			task();
+		}
+		
 	}
 	
+	public abstract void task();
+
 }

@@ -17,17 +17,13 @@ public class ByteStreamUtil {
 
 	public static byte[] getBytes(char c) {
 		byte[] b = new byte[2];
-		b[1] = (byte) (c >> 8);
-		b[0] = (byte) (c     );
+		ByteBuffer.wrap(b).putChar(c);
 		return b;
 	}
 
 	public static byte[] getBytes(int i) {
 		byte[] b = new byte[4];
-		b[3] = (byte) (i >> 24);
-		b[2] = (byte) (i >> 16);
-		b[1] = (byte) (i >>  8);
-		b[0] = (byte) (i      );
+		ByteBuffer.wrap(b).putInt(i);
 		return b;
 	}
 

@@ -8,14 +8,22 @@
  *******************************************************/
 package test;
 
+import net.packet.Packet;
 import net.server.GameServer;
+import net.server.Server;
 
 public class GameServerTest {
 	
 	public static void main(String[] args) {
+
+		Server server = new Server(4444);
 		
-		GameServer server = new GameServer(4000, 6000);
-		server.start();
+		while (true) {
+			Packet p = server.getPackets().next();
+			p.handle();
+
+			server.getClients().send(p);
+		}
 		
 	}
 

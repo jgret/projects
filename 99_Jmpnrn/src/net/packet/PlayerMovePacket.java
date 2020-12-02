@@ -16,14 +16,11 @@ import static net.packet.ByteStreamUtil.*;
 
 public class PlayerMovePacket extends Packet {
 
-	public static final byte ID = PacketType.PLAYER_MOVE.getId();
-	public static final char LENGTH = PacketType.PLAYER_MOVE.getLength();
-	
 	private double x;
 	private double y;
 
 	public PlayerMovePacket(double x, double y) {
-		super(ID, LENGTH);
+		super(ID_PLAYER_MOVE, LEN_PLAYER_MOVE);
 		
 		this.x = x;
 		this.y = y;
@@ -50,6 +47,10 @@ public class PlayerMovePacket extends Packet {
 	public double getY() {
 		return this.y;
 	}
-	
+
+	@Override
+	public void handle() {
+
+	}
 
 }

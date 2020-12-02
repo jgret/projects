@@ -15,6 +15,18 @@ import static net.packet.ByteStreamUtil.*;
 
 public abstract class Packet {
 	
+	public static final int HEADER_SIZE = 3;
+	
+	public static final byte ID_LOGIN = 0;
+	public static final byte ID_LOGOUT = 1;
+	public static final byte ID_WELCOME = 2;
+	public static final byte ID_PLAYER_MOVE = 40;
+	
+	public static final char LEN_LOGIN = 25;
+	public static final char LEN_LOGOUT = 0;
+	public static final char LEN_WELCOME = 100;
+	public static final char LEN_PLAYER_MOVE = 16;
+	
 	private byte id;
 	private char length;
 	protected ByteArrayOutputStream data;
@@ -29,11 +41,11 @@ public abstract class Packet {
 	}
 	
 	public Packet(byte[] b) {
+		data = new ByteArrayOutputStream(b.length);
+		writeb(data, b);
 		in = new ByteArrayInputStream(b);
 		id = getByte(in);
 		length = getChar(in);
-		
-		System.out.println(b.length);
 	}
 	
 	public byte[] getData() {
@@ -48,4 +60,6 @@ public abstract class Packet {
 		return length;
 	}
 	
+	public abstract void handle();
+
 }

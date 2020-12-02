@@ -8,34 +8,38 @@
  *******************************************************/
 package test;
 
-import java.util.Random;
+import java.util.Scanner;
 
-import net.client.GameClient;
-import net.packet.PacketType;
+import net.client.Client;
+import net.packet.LoginPacket;
+import net.packet.Packet;
+import net.packet.WelcomePacket;
 
 public class GameClientTest {
-	
+
 	public static void main(String[] args) {
+
+		Client client = new Client("localhost", 4444);
+
+		client.send(new LoginPacket("Thomas Greimel"));
 		
-		PacketType.LOGIN.toString();
-		
-		GameClient client = new GameClient("127.0.0.1", 4000, 6000);
-		
-		Random random = new Random();
-		int n = random.nextInt();
+		Thread t = new Thread(() -> {
+			Scanner in = new Scanner(System.in);
+			while (true) {
+				client.send(new WelcomePacket(in.nextLine()));
+			}
+		});
+		t.start();
 		
 		while (true) {
-			
-			client.send(("Hello World" + n).getBytes());
-			
-			try {
-				Thread.sleep(1000);
-			} catch (InterruptedException e) {
-				e.printStackTrace();
-			}
+			Packet p = client.getPackets().next();
+			p.handle();
 			
 		}
 		
+		
+
+
 	}
 
 }
