@@ -4,7 +4,7 @@
  * This file is part of Jmpnrn.
  * 
  * Jmpnrn can not be copied and/or distributed without the express
- * permission of Greimel jgret
+ * permission of jgret
  *******************************************************/
 package net.packet;
 
