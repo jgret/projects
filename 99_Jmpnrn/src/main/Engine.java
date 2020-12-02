@@ -19,7 +19,7 @@ public abstract class Engine implements Runnable {
     private volatile boolean running;
 
     public Engine(int width, int height, int fps) {
-        System.out.println("FPS set to " + fps);
+        System.out.println("FPS set to " + (fps < 0 ? "Unlimited" : fps));
         this.frameTime = 1.0 / fps;
         this.input = new Input();
         this.gameScreen = new GameScreen(this, width, height);
