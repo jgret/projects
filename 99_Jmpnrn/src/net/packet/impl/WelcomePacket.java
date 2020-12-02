@@ -6,34 +6,29 @@
  * Jmpnrn can not be copied and/or distributed without the express
  * permission of jgret
  *******************************************************/
-package net.packet;
-
-import java.io.ByteArrayInputStream;
-import java.io.IOException;
+package net.packet.impl;
 
 import static net.packet.ByteStreamUtil.*;
 
-public class LoginPacket extends Packet {
+import net.packet.Packet;
+
+public class WelcomePacket extends Packet {
+
+	private String msg;
 	
-	private String name;
-	
-	public LoginPacket(String user) {
-		super(ID_LOGIN, LEN_LOGIN);
-		writeS(data, user, 25);
+	public WelcomePacket(String msg) {
+		super(ID_WELCOME, LEN_WELCOME);
+		writeS(data, msg, 100);
 	}
-	
-	public LoginPacket(byte[] b) {
+
+	public WelcomePacket(byte[] b) {
 		super(b);
-		this.name = getString(in, 25);
-	}
-	
-	public String getName() {
-		return name;
+		msg = getString(in, 100);
 	}
 	
 	@Override
 	public void handle() {
-		System.out.println(name);
+		System.out.println(msg);
 	}
 	
 }

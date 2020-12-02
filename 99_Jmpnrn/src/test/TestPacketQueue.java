@@ -8,10 +8,10 @@
  *******************************************************/
 package test;
 
-import net.packet.LoginPacket;
 import net.packet.Packet;
 import net.packet.PacketQueue;
-import net.packet.PlayerMovePacket;
+import net.packet.impl.LoginPacket;
+import net.packet.impl.PlayerMovePacket;
 
 public class TestPacketQueue {
 	

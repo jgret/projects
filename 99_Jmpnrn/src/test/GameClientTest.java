@@ -11,9 +11,9 @@ package test;
 import java.util.Scanner;
 
 import net.client.Client;
-import net.packet.LoginPacket;
 import net.packet.Packet;
-import net.packet.WelcomePacket;
+import net.packet.impl.LoginPacket;
+import net.packet.impl.WelcomePacket;
 
 public class GameClientTest {
 

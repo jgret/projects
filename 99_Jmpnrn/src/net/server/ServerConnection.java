@@ -11,7 +11,7 @@ package net.server;
 import java.io.IOException;
 import java.net.Socket;
 
-import net.packet.WelcomePacket;
+import net.packet.impl.WelcomePacket;
 
 public class ServerConnection extends ServerTask {
 

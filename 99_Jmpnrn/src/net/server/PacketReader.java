@@ -14,12 +14,12 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.net.Socket;
 
-import net.packet.LoginPacket;
-import net.packet.LogoutPacket;
 import net.packet.Packet;
 import net.packet.PacketQueue;
-import net.packet.PlayerMovePacket;
-import net.packet.WelcomePacket;
+import net.packet.impl.LoginPacket;
+import net.packet.impl.LogoutPacket;
+import net.packet.impl.PlayerMovePacket;
+import net.packet.impl.WelcomePacket;
 
 import static net.packet.ByteStreamUtil.*;
 

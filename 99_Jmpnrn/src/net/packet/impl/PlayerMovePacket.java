@@ -6,11 +6,13 @@
  * Jmpnrn can not be copied and/or distributed without the express
  * permission of jgret
  *******************************************************/
-package net.packet;
+package net.packet.impl;
 
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.nio.ByteBuffer;
+
+import net.packet.Packet;
 
 import static net.packet.ByteStreamUtil.*;
 

@@ -6,7 +6,9 @@
  * Jmpnrn can not be copied and/or distributed without the express
  * permission of jgret
  *******************************************************/
-package net.packet;
+package net.packet.impl;
+
+import net.packet.Packet;
 
 public class LogoutPacket extends Packet {
 	
