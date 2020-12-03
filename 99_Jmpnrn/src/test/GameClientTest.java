@@ -13,6 +13,7 @@ import java.util.Scanner;
 import net.client.Client;
 import net.packet.Packet;
 import net.packet.impl.LoginPacket;
+import net.packet.impl.PingPacket;
 import net.packet.impl.WelcomePacket;
 
 public class GameClientTest {
@@ -22,6 +23,7 @@ public class GameClientTest {
 		Client client = new Client("localhost", 4444);
 
 		client.send(new LoginPacket("Thomas Greimel"));
+		client.send(new PingPacket(System.nanoTime()));
 		
 		Thread t = new Thread(() -> {
 			Scanner in = new Scanner(System.in);

@@ -20,11 +20,13 @@ public abstract class Packet {
 	public static final byte ID_LOGIN = 0;
 	public static final byte ID_LOGOUT = 1;
 	public static final byte ID_WELCOME = 2;
+	public static final byte ID_PING = 3;
 	public static final byte ID_PLAYER_MOVE = 40;
 	
 	public static final char LEN_LOGIN = 25;
 	public static final char LEN_LOGOUT = 0;
 	public static final char LEN_WELCOME = 100;
+	public static final char LEN_PING = 8;
 	public static final char LEN_PLAYER_MOVE = 16;
 	
 	private byte id;
@@ -46,8 +48,9 @@ public abstract class Packet {
 		in = new ByteArrayInputStream(b);
 		id = getByte(in);
 		length = getChar(in);
+		
 	}
-	
+
 	public byte[] getData() {
 		return data.toByteArray();
 	}

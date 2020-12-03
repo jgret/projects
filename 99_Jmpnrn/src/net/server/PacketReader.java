@@ -18,6 +18,7 @@ import net.packet.Packet;
 import net.packet.PacketQueue;
 import net.packet.impl.LoginPacket;
 import net.packet.impl.LogoutPacket;
+import net.packet.impl.PingPacket;
 import net.packet.impl.PlayerMovePacket;
 import net.packet.impl.WelcomePacket;
 
@@ -78,6 +79,12 @@ public class PacketReader implements Runnable {
 			
 			case (Packet.ID_WELCOME): {
 				WelcomePacket p = new WelcomePacket(packet);
+				packets.add(p);
+				break;
+			}
+			
+			case (Packet.ID_PING): {
+				PingPacket p = new PingPacket(packet);
 				packets.add(p);
 				break;
 			}

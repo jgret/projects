@@ -60,10 +60,10 @@ public class ByteStreamUtil {
 	}
 
 	public static double getDouble(ByteArrayInputStream in) {
-		try { 
-			return getDouble(in.readNBytes(8)); 
-		} catch (IOException e) { 
-			e.printStackTrace(); 
+		try {
+			return getDouble(in.readNBytes(8));
+		} catch (IOException e) {
+			e.printStackTrace();
 			return 0;
 		}
 	}
@@ -73,10 +73,10 @@ public class ByteStreamUtil {
 	}
 
 	public static double getFloat(ByteArrayInputStream in) {
-		try { 
-			return getFloat(in.readNBytes(4)); 
-		} catch (IOException e) { 
-			e.printStackTrace(); 
+		try {
+			return getFloat(in.readNBytes(4));
+		} catch (IOException e) {
+			e.printStackTrace();
 			return 0;
 		}
 	}
@@ -86,42 +86,39 @@ public class ByteStreamUtil {
 	}
 
 	public static long getInt(ByteArrayInputStream in) {
-		try { 
-			return getInt(in.readNBytes(4)); 
-		} catch (IOException e) { 
-			e.printStackTrace(); 
+		try {
+			return getInt(in.readNBytes(4));
+		} catch (IOException e) {
+			e.printStackTrace();
 			return 0;
 		}
 	}
-
 
 	public static int getInt(byte[] bytes) {
 		return ByteBuffer.wrap(bytes).getInt();
 	}
 
 	public static char getChar(ByteArrayInputStream in) {
-		try { 
-			return getChar(in.readNBytes(2)); 
-		} catch (IOException e) { 
-			e.printStackTrace(); 
+		try {
+			return getChar(in.readNBytes(2));
+		} catch (IOException e) {
+			e.printStackTrace();
 			return 0;
 		}
 	}
-
 
 	public static char getChar(byte[] bytes) {
 		return ByteBuffer.wrap(bytes).getChar();
 	}
 
 	public static long getShort(ByteArrayInputStream in) {
-		try { 
-			return getShort(in.readNBytes(2)); 
-		} catch (IOException e) { 
-			e.printStackTrace(); 
+		try {
+			return getShort(in.readNBytes(2));
+		} catch (IOException e) {
+			e.printStackTrace();
 			return 0;
 		}
 	}
-
 
 	public static short getShort(byte[] bytes) {
 		return ByteBuffer.wrap(bytes).getShort();
@@ -129,9 +126,9 @@ public class ByteStreamUtil {
 
 	public static long getLong(ByteArrayInputStream in) {
 		try {
-			return getLong(in.readNBytes(8)); 
-		} catch (IOException e) { 
-			e.printStackTrace(); 
+			return getLong(in.readNBytes(8));
+		} catch (IOException e) {
+			e.printStackTrace();
 			return 0;
 		}
 	}
@@ -141,10 +138,10 @@ public class ByteStreamUtil {
 	}
 
 	public static String getString(ByteArrayInputStream in, int len) {
-		try { 
-			return getString(in.readNBytes(len)); 
-		} catch (IOException e) { 
-			e.printStackTrace(); 
+		try {
+			return getString(in.readNBytes(len));
+		} catch (IOException e) {
+			e.printStackTrace();
 			return "";
 		}
 	}
@@ -167,7 +164,7 @@ public class ByteStreamUtil {
 			return false;
 		}
 	}
-	
+
 	public static boolean writeb(ByteArrayOutputStream out, byte[] b, int len) {
 		out.write(b, 0, len);
 		return true;
@@ -261,7 +258,7 @@ public class ByteStreamUtil {
 
 		writeb(out, (byte) 0);
 		writec(out, (char) 108);
-		
+
 		writeS(out, msg1, 25);
 		writeS(out, msg2, 25);
 		writeS(out, msg3, 50);
@@ -271,10 +268,10 @@ public class ByteStreamUtil {
 		System.out.println("Buffersize: " + send.length);
 
 		ByteArrayInputStream in = new ByteArrayInputStream(send);
-		
+
 		System.out.println(getByte(in));
 		System.out.println(getChar(in));
-		
+
 		msg1 = getString(in, 25);
 		msg2 = getString(in, 25);
 		msg3 = getString(in, 50);
@@ -284,7 +281,7 @@ public class ByteStreamUtil {
 		System.out.println("Message 3: " + msg3.trim());
 		double pi = getDouble(in);
 		System.out.println("Message 4: " + pi);
-	
+
 	}
 
 }
