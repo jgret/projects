@@ -13,23 +13,24 @@ java -classpath ".;sqlite-jdbc-3.32.3.2.jar" DEMOsqlite
 
 package sqlite;
 
-import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.ResultSet;
 import java.sql.Statement;
+
+import org.sqlite.SQLiteConnection;
 
 public class DEMOsqlite {
 
   public static void main( String args[] ) {
 
-   Connection c = null;
+   SQLiteConnection c = null;
    Statement stmt = null;
    try {
-//      Class.forName("org.sqlite.JDBC");
-      c = DriverManager.getConnection("jdbc:sqlite:res/db/questions.db");
+      Class.forName("org.sqlite.JDBC");
+      c = (SQLiteConnection) DriverManager.getConnection("jdbc:sqlite:res/db/questions.db");
       c.setAutoCommit(false);
       System.out.println("fragen-spiel-bauer.db: opened  successfully");
-
+      
       stmt = c.createStatement();
       ResultSet rs = stmt.executeQuery( "SELECT * FROM FRAGEN;" );
       
@@ -47,6 +48,7 @@ public class DEMOsqlite {
          System.out.println();
          
       }
+      
       rs.close();
       stmt.close();
       c.close();

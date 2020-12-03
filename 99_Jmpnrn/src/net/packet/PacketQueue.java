@@ -40,4 +40,8 @@ public class PacketQueue extends ArrayBlockingQueue<Packet>{
 		return remainingCapacity() < 0;
 	}
 	
+	public int available() {
+		return this.size();
+	}
+	
 }

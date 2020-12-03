@@ -10,8 +10,10 @@ package test;
 
 import java.util.Scanner;
 
+import main.Game;
 import net.client.Client;
 import net.packet.Packet;
+import net.packet.impl.ChatMessagePacket;
 import net.packet.impl.LoginPacket;
 import net.packet.impl.PingPacket;
 import net.packet.impl.WelcomePacket;
@@ -20,28 +22,51 @@ public class GameClientTest {
 
 	public static void main(String[] args) {
 
-		Client client = new Client("localhost", 4444);
-
-		client.send(new LoginPacket("Thomas Greimel"));
-		client.send(new PingPacket(System.nanoTime()));
+		Scanner in = new Scanner(System.in);
+		System.out.println("Enter your Name");
+		String sender = in.nextLine();
 		
+		Client client = new Client("localhost", 4444);
+		
+		client.send(new LoginPacket());
+		
+		Packet h = client.request();
+		if (h instanceof LoginPacket) {
+			LoginPacket login = (LoginPacket) h;
+			client.setClientId(h.getClientID());
+		}
+		
+		System.out.println("Client ID: " + client.getClientId());
+		client.start();
+		
+		client.send(new PingPacket(System.nanoTime()));
+
 		Thread t = new Thread(() -> {
-			Scanner in = new Scanner(System.in);
 			while (true) {
-				client.send(new WelcomePacket(in.nextLine()));
+				client.send(new ChatMessagePacket(sender, in.nextLine()));
 			}
 		});
 		t.start();
+
+		double delta = 0;
+		double last = System.currentTimeMillis() / 1000;
 		
 		while (true) {
-			Packet p = client.getPackets().next();
-			p.handle();
+			if (client.getPackets().available() > 0) {
+				Packet p = client.getPackets().next();
+				p.handle((Game)null);
+			}
 			
 		}
-		
-		
 
-
+	}
+	
+	public static void sleep(int millis) {
+		try {
+			Thread.sleep(millis);
+		} catch (InterruptedException e) {
+			e.printStackTrace();
+		}
 	}
 
 }

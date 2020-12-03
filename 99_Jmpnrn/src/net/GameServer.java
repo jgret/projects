@@ -6,8 +6,23 @@
  * Jmpnrn can not be copied and/or distributed without the express
  * permission of jgret
  *******************************************************/
-package net.packet;
+package net;
 
-public class PacketConfig {
+import net.packet.Packet;
+import net.server.Server;
+
+public class GameServer {
+
+	public static void main(String[] args) {
+		
+		Server server = new Server(4444);
+		
+		while (true) {
+			Packet p = server.getPackets().next();
+			
+		}
+		
+		
+	}
 	
 }

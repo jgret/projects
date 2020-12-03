@@ -8,9 +8,10 @@
  *******************************************************/
 package test;
 
+import main.Game;
 import net.packet.Packet;
 import net.packet.PacketQueue;
-import net.packet.impl.LoginPacket;
+import net.packet.impl.PingPacket;
 import net.packet.impl.PlayerMovePacket;
 
 public class TestPacketQueue {
@@ -25,19 +26,22 @@ public class TestPacketQueue {
 			public void run() {
 				while (true) {
 					Packet p = queue.next();
+					System.out.println("Packet PID: " + p.getId());
+					System.out.println("Packet LEN: " + (int) p.getLength());
+					System.out.println("Packet RAW: " + p.getData().length);
 					
 					//simulate the data coming in
 					byte[] data = p.getData();
 					byte id = data[0];
 					
-					if (id == Packet.ID_LOGIN) {
-						LoginPacket l = new LoginPacket(data);
-						System.out.println(l.getName());
-					}
-					
 					if (id == Packet.ID_PLAYER_MOVE) {
 						PlayerMovePacket m = new PlayerMovePacket(data);
 						System.out.println("Values: " + m.getX() + ", " + m.getY());
+					}
+					
+					if (id == Packet.ID_PING) {
+						PingPacket ping = new PingPacket(data);
+						ping.handle((Game)null);
 					}
 				}
 			}
@@ -45,9 +49,7 @@ public class TestPacketQueue {
 		
 		Thread collectorThread = new Thread(collector);
 		collectorThread.start();
-		
-		queue.add(new LoginPacket("GreT"));
-		
+		queue.add(new PingPacket(System.nanoTime()));
 		
 	}
 

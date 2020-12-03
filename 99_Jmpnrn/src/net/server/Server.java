@@ -25,7 +25,6 @@ public class Server {
 		this.clients = new ProxyClients();
 		this.connections = new ServerConnection(this);
 		this.serverSocket = createTCPSocket(port);
-		
 		Thread connectionThread = new Thread(connections, "Server Connection Handler");
 		connectionThread.start();
 		

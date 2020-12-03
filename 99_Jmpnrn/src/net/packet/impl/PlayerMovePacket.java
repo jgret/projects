@@ -12,7 +12,9 @@ import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.nio.ByteBuffer;
 
+import main.Game;
 import net.packet.Packet;
+import net.server.Server;
 
 import static net.packet.ByteStreamUtil.*;
 
@@ -51,8 +53,15 @@ public class PlayerMovePacket extends Packet {
 	}
 
 	@Override
-	public void handle() {
+	public void handle(Game game) {
+		// TODO Auto-generated method stub
+		
+	}
 
+	@Override
+	public void handle(Server server) {
+		// TODO Auto-generated method stub
+		
 	}
 
 }

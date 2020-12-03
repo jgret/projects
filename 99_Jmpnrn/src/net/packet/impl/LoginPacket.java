@@ -11,31 +11,32 @@ package net.packet.impl;
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
 
+import main.Game;
 import net.packet.Packet;
+import net.server.Server;
 
 import static net.packet.ByteStreamUtil.*;
 
 public class LoginPacket extends Packet {
 	
-	private String name;
-	
-	public LoginPacket(String user) {
+	public LoginPacket() {
 		super(ID_LOGIN, LEN_LOGIN);
-		writeS(data, user, 25);
 	}
 	
 	public LoginPacket(byte[] b) {
 		super(b);
-		this.name = getString(in, 25);
 	}
-	
-	public String getName() {
-		return name;
-	}
-	
+
 	@Override
-	public void handle() {
-		System.out.println(name);
+	public void handle(Game game) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void handle(Server server) {
+		// TODO Auto-generated method stub
+		
 	}
 	
 }

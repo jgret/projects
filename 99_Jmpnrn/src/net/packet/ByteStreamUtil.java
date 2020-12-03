@@ -20,7 +20,7 @@ public class ByteStreamUtil {
 		ByteBuffer.wrap(b).putChar(c);
 		return b;
 	}
-
+	
 	public static byte[] getBytes(int i) {
 		byte[] b = new byte[4];
 		ByteBuffer.wrap(b).putInt(i);
@@ -67,9 +67,13 @@ public class ByteStreamUtil {
 			return 0;
 		}
 	}
+	
+	public static double getDouble(byte[] bytes, int off) {
+		return ByteBuffer.wrap(bytes, off, 8).getDouble();
+	}
 
 	public static double getDouble(byte[] bytes) {
-		return ByteBuffer.wrap(bytes).getDouble();
+		return getDouble(bytes, 0);
 	}
 
 	public static double getFloat(ByteArrayInputStream in) {
@@ -106,9 +110,13 @@ public class ByteStreamUtil {
 			return 0;
 		}
 	}
-
+	
+	public static char getChar(byte[] bytes, int off) {
+		return ByteBuffer.wrap(bytes, off, 2).getChar();
+	}
+	
 	public static char getChar(byte[] bytes) {
-		return ByteBuffer.wrap(bytes).getChar();
+		return getChar(bytes, 0);
 	}
 
 	public static long getShort(ByteArrayInputStream in) {
@@ -147,10 +155,10 @@ public class ByteStreamUtil {
 	}
 
 	public static String getString(byte[] bytes) {
-		return new String(bytes);
+		return new String(bytes).trim();
 	}
 
-	public static boolean writeb(ByteArrayOutputStream out, byte b) {
+	public static boolean writeb(ByteArrayOutputStream out, int b) {
 		out.write(b);
 		return true;
 	}

@@ -9,7 +9,11 @@
 package net.packet.impl;
 
 import net.packet.Packet;
+import net.server.Server;
+
 import static net.packet.ByteStreamUtil.*;
+
+import main.Game;
 
 public class PingPacket extends Packet {
 
@@ -27,8 +31,14 @@ public class PingPacket extends Packet {
 	}
 	
 	@Override
-	public void handle() {
-		System.out.println((System.nanoTime() - time) / 1e9);
+	public void handle(Game game) {
+		System.out.println(System.nanoTime() - time);
+	}
+
+	@Override
+	public void handle(Server server) {
+		// TODO Auto-generated method stub
+		
 	}
 
 }

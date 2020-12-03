@@ -6,7 +6,7 @@
  * Jmpnrn can not be copied and/or distributed without the express
  * permission of jgret
  *******************************************************/
-package net.server;
+package net.packet;
 
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
@@ -14,8 +14,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.net.Socket;
 
-import net.packet.Packet;
-import net.packet.PacketQueue;
+import net.packet.impl.ChatMessagePacket;
 import net.packet.impl.LoginPacket;
 import net.packet.impl.LogoutPacket;
 import net.packet.impl.PingPacket;
@@ -24,80 +23,68 @@ import net.packet.impl.WelcomePacket;
 
 import static net.packet.ByteStreamUtil.*;
 
-public class PacketReader implements Runnable {
+public class PacketReader {
 
-	private PacketQueue packets;
 	private Socket socket;
 	private InputStream in;
 	private volatile boolean running;
-	
+
 	public PacketReader(Socket socket) {
 		this.socket = socket;
-		this.packets = new PacketQueue(100);
-	}
-	
-	public PacketReader(Socket socket, PacketQueue queue) {
-		this.socket = socket;
-		this.packets = queue;
-	}
-
-	@Override
-	public void run() {
-		
-		running = true;
-		
 		try {
 			in = socket.getInputStream();
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
-		
-		while (running) {
-	
-			byte[] header = read(3);
-			ByteArrayInputStream headerIn = new ByteArrayInputStream(header);
-			byte id = getByte(headerIn);
-			char length = getChar(headerIn);
-			
-			
-			byte[] data = read(length);
-			byte[] packet = merge(header, data);
-			
-			switch (id) {
-			
-			case (Packet.ID_LOGIN): {
-				LoginPacket p = new LoginPacket(packet);
-				packets.add(p);
-				break;
-			}
-			
-			case (Packet.ID_LOGOUT): {
-				LogoutPacket p = new LogoutPacket(packet);
-				packets.add(p);
-				break;
-			}
-			
-			case (Packet.ID_WELCOME): {
-				WelcomePacket p = new WelcomePacket(packet);
-				packets.add(p);
-				break;
-			}
-			
-			case (Packet.ID_PING): {
-				PingPacket p = new PingPacket(packet);
-				packets.add(p);
-				break;
-			}
+	}
 
-			case (Packet.ID_PLAYER_MOVE): {
-				PlayerMovePacket p = new PlayerMovePacket(packet);
-				packets.add(p);
-				break;
-			}
-			
-			}
-			
+	public Packet nextPacket() {
+
+		byte[] header = read(Packet.HEADER_SIZE);
+		ByteArrayInputStream headerIn = new ByteArrayInputStream(header);
+
+		byte id = getByte(headerIn);
+		byte clientId = getByte(headerIn);
+		char length = getChar(headerIn);
+
+		byte[] data = read(length);
+		byte[] packet = merge(header, data);
+
+		switch (id) {
+
+		case (Packet.ID_LOGIN): {
+			LoginPacket p = new LoginPacket(packet);
+			return p;
 		}
+
+		case (Packet.ID_LOGOUT): {
+			LogoutPacket p = new LogoutPacket(packet);
+			break;
+		}
+
+		case (Packet.ID_WELCOME): {
+			WelcomePacket p = new WelcomePacket(packet);
+			return p;
+		}
+
+		case (Packet.ID_PING): {
+			PingPacket p = new PingPacket(packet);
+			return p;
+		}
+
+		case (Packet.ID_PLAYER_MOVE): {
+			PlayerMovePacket p = new PlayerMovePacket(packet);
+			return p;
+		}
+		
+		case (Packet.ID_CHAT_MESSAGE): {
+			ChatMessagePacket p = new ChatMessagePacket(packet);
+			return p;
+		}
+		
+		}
+		
+		return nextPacket();
 		
 	}
 	
@@ -107,14 +94,13 @@ public class PacketReader implements Runnable {
 		writeb(out, b);
 		return out.toByteArray();
 	}
-	
+
 	private byte[] read(int n) {
-		
+
 		if (n < 1) {
-			//TODO
-			return null;
+			return new byte[0];
 		}
-		
+
 		byte[] data = null;
 		try {
 			while (in.available() < n) {
@@ -122,19 +108,15 @@ public class PacketReader implements Runnable {
 		} catch (IOException e1) {
 			e1.printStackTrace();
 		}
-		
+
 		try {
 			data = in.readNBytes(n);
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
-		
-		return data;
-		
-	}
 
-	public PacketQueue getPackets() {
-		return packets;
+		return data;
+
 	}
 
 	public Socket getSocket() {

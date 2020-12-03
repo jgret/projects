@@ -9,20 +9,37 @@
 package test;
 
 import net.packet.Packet;
-import net.server.GameServer;
+import net.packet.impl.ChatMessagePacket;
+import net.packet.impl.PingPacket;
+import net.packet.impl.WelcomePacket;
 import net.server.Server;
 
 public class GameServerTest {
 	
 	public static void main(String[] args) {
-
+		
+		byte[] b = new byte[0];
+		
 		Server server = new Server(4444);
 		
 		while (true) {
 			Packet p = server.getPackets().next();
-			p.handle();
+			p.handle(server);
+			
+			if (p instanceof PingPacket) {
+				server.getClients().send(p);
+			}
+			
+			if (p instanceof WelcomePacket) {
+				WelcomePacket msg = (WelcomePacket) p;
+				server.getClients().sendWithout(p.getClientID(), p);
+			}
+			
+			if (p instanceof ChatMessagePacket) {
+				ChatMessagePacket msg = (ChatMessagePacket) p;
+				server.getClients().sendWithout(p.getClientID(), p);
+			}
 
-			server.getClients().send(p);
 		}
 		
 	}

@@ -10,7 +10,9 @@ package net.packet.impl;
 
 import static net.packet.ByteStreamUtil.*;
 
+import main.Game;
 import net.packet.Packet;
+import net.server.Server;
 
 public class WelcomePacket extends Packet {
 
@@ -25,10 +27,15 @@ public class WelcomePacket extends Packet {
 		super(b);
 		msg = getString(in, 100);
 	}
-	
+
 	@Override
-	public void handle() {
-		System.out.println(msg);
+	public void handle(Game game) {
+		
+	}
+
+	@Override
+	public void handle(Server server) {
+		
 	}
 	
 }

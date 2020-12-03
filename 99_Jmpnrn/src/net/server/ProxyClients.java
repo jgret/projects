@@ -9,37 +9,64 @@
 package net.server;
 
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Iterator;
 
+import net.client.Client;
 import net.packet.Packet;
 
 public class ProxyClients {
 
-	private ArrayList<ProxyClient> clients;
+	public static final int ID_REQUEST = -1;
+	public static final int ID_NOAVAILABLE = -2;
+	public static final int[] AVAILABLE_IDS = {99, 1, 2, 3, 4, 5, 6, 7};
+	
+	private HashMap<Integer, ProxyClient> clients;
 	
 	public ProxyClients() {
-		this.clients = new ArrayList<>();
+		this.clients = new HashMap<>();
 	}
-	
-	public void add(ProxyClient p) {
-		this.clients.add(p);
+
+	public void connect(int id, ProxyClient p) {
+		this.clients.put(id, p);
 	}
-	
-	public void remove(ProxyClient p) {
-		this.clients.remove(p);
+
+	public void disconnect(int id) {
+		this.clients.remove(id);
 	}
-	
+
 	public void send(Packet p) {
-		for (ProxyClient client : clients) {
-			client.send(p);
+
+		Iterator<Integer> iterator = clients.keySet().iterator();
+		while (iterator.hasNext()) {
+			clients.get(iterator.next()).send(p);
 		}
 	}
-	
-	public void sendWithout(ProxyClient c, Packet p) {
-		for (ProxyClient client : clients) {
-			if (!client.equals(c)) {
+
+	public void sendWithout(int bannedid, Packet p) {
+
+		Iterator<Integer> iterator = clients.keySet().iterator();
+		while (iterator.hasNext()) {
+			int clientid = iterator.next();
+			Client client = clients.get(clientid);
+			if (!(client.getClientId() == bannedid)) {
+				
+				System.out.println("Sending to " + client.getClientId());
 				client.send(p);
 			}
+
 		}
+
 	}
 	
+	public int getNewClientID() {
+		for (int i : AVAILABLE_IDS) {
+			if (clients.get(i) == null) {
+				return i;
+			}
+		}
+		
+		return ID_NOAVAILABLE;
+	}
+
 }

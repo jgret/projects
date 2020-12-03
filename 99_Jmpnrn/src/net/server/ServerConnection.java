@@ -11,6 +11,8 @@ package net.server;
 import java.io.IOException;
 import java.net.Socket;
 
+import net.packet.Packet;
+import net.packet.impl.LoginPacket;
 import net.packet.impl.WelcomePacket;
 
 public class ServerConnection extends ServerTask {
@@ -23,17 +25,33 @@ public class ServerConnection extends ServerTask {
 	public void task() {
 		try {
 			Socket socket = server.getServerSocket().accept();
-			ProxyClient client = new ProxyClient(server, socket);
-			System.out.println("New Client Logged in");
-			server.getClients().add(client);
 			
-			client.send(new WelcomePacket("Hello World"));
+			
+			System.out.println("New Client Attempts to Connect: " + socket.getInetAddress().toString());
+			ProxyClient client = new ProxyClient(server, socket);
+			Packet p = client.request();
+			if (p.getId() == Packet.ID_LOGIN) {
+				client.start();
+				int id = server.getClients().getNewClientID();
+				client.setClientId(id);
+				client.send(p);
+				server.getClients().connect(id, client);
+				System.out.println("Client Successful connected");
+			} else {
+				System.out.println("Client Failed to Connect");
+			}
 			
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
 	}
 
-	
+	public static void sleep(int millis) {
+		try {
+			Thread.sleep(millis);
+		} catch (InterruptedException e) {
+			e.printStackTrace();
+		}
+	}
 	
 }

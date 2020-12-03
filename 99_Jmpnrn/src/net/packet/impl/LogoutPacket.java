@@ -8,7 +8,9 @@
  *******************************************************/
 package net.packet.impl;
 
+import main.Game;
 import net.packet.Packet;
+import net.server.Server;
 
 public class LogoutPacket extends Packet {
 	
@@ -21,8 +23,15 @@ public class LogoutPacket extends Packet {
 	}
 	
 	@Override
-	public void handle() {
+	public void handle(Game game) {
+		// TODO Auto-generated method stub
+		
+	}
 
+	@Override
+	public void handle(Server server) {
+		// TODO Auto-generated method stub
+		
 	}
 	
 }
