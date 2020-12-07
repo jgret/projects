@@ -18,180 +18,158 @@ import java.awt.image.VolatileImage;
 
 public class GameScreen extends Canvas implements WindowListener, ComponentListener {
 
-    private Engine game;
-    private Camera cam;
-    private Frame frame;
+	private static final long serialVersionUID = 1L;
+	private Engine game;
+	private Camera cam;
+	private Frame frame;
 
-    private VolatileImage vBuffer;
-    private GraphicsConfiguration gc;
-    private BufferStrategy strategy;
+	private BufferStrategy strategy;
+	private Image2d backbuffer;
 
-    private int width, height;
-    private boolean useVBuffer;
-    
-    public GameScreen(Engine game, int width, int height) {
-        this.setPreferredSize(new Dimension(width, height));
-        this.width = width;
-        this.height = height;
-        this.game = game;
-        this.useVBuffer = true;
-        this.cam = new Camera(0, 0, width, height);
-        this.setFocusable(true);
-        this.addKeyListener(game.getInput());
-        frame = new Frame("GameScreen");
-        frame.addWindowListener(this);
-        frame.addComponentListener(this);
-        frame.setIgnoreRepaint(true);
-        frame.add(this);
-        frame.pack();
-
-        createBufferStrategy(2);
-        strategy = getBufferStrategy();
-
-        frame.setLocationRelativeTo(null);
-        frame.setVisible(true);
-    }
-
-    private void createVBuffer() {
-        if (vBuffer != null) {
-            vBuffer.flush();
-            vBuffer = null;
-
-        }
-
-        gc = this.getGraphicsConfiguration();
-        vBuffer = gc.createCompatibleVolatileImage(getWidth(), getHeight());
-    }
-
-    private void checkVBuffer() {
-        if (vBuffer == null) {
-            createVBuffer();
-        }
-
-        if (vBuffer.validate(gc) != VolatileImage.IMAGE_OK) {
-            createVBuffer();
-        }
-    }
-    
-    public boolean isUseVBuffer() {
-		return useVBuffer;
+	private int scale;
+	private double zoom;
+	
+	public GameScreen(Engine game, int width, int height, int scale) {
+		this.setPreferredSize(new Dimension(width, height));
+		this.scale = scale;
+		this.zoom = 1.0;
+		this.game = game;
+		this.cam = new Camera(0, 0, width, height);
+		this.setFocusable(true);
+		this.addKeyListener(game.getInput());
+		frame = new Frame("GameScreen");
+		frame.addWindowListener(this);
+		frame.addComponentListener(this);
+		frame.setIgnoreRepaint(true);
+		frame.add(this);
+		frame.pack();
+		createBufferStrategy(2);
+		strategy = getBufferStrategy();
+		createBackbuffer();
+		frame.setLocationRelativeTo(null);
+		frame.setVisible(true);
 	}
 
-	public void setUseVBuffer(boolean useVBuffer) {
-		this.useVBuffer = useVBuffer;
+	public void createBackbuffer() {
+		backbuffer = new Image2d((int) (getWidth()), (int) (getHeight()));
+	}
+
+	public void setScale(int scale) {
+		this.scale = scale;
+	}
+
+	public int getScale() {
+		return scale;
+	}
+
+	public double getZoom() {
+		return this.zoom;
+	}
+
+	public void setZoom(double zoom) {
+		this.zoom = zoom;
+		createBackbuffer();
 	}
 
 	public void render() {
-    	
-    	if (useVBuffer) {
-    		checkVBuffer();
 
-            Graphics2D g2 = (Graphics2D) vBuffer.getGraphics();
-            cam.dim.set(getWidth(), getHeight());
-            game.render(g2, cam);
-            g2.dispose();
+		cam.dim.set(getWidth(), getHeight());
 
-            g2 = (Graphics2D) strategy.getDrawGraphics();
-            g2.drawImage(vBuffer, 0, 0, this);
-            g2.clearRect(0, 0, (int) getWidth(), (int) getHeight());
-            game.render(g2, cam);
-            g2.dispose();
+		Graphics2D g3 = (Graphics2D) backbuffer.getGraphics();
+		g3.clearRect(0, 0, getWidth(), getHeight());
+		game.render(g3, cam, scale);
 
-            strategy.show();
-    		
-    	} else {
+		Graphics2D g2 = (Graphics2D) strategy.getDrawGraphics();
+		g2.clearRect(0, 0, getWidth(), getHeight());
 
-            Graphics2D g2 = (Graphics2D) strategy.getDrawGraphics();
-            g2.clearRect(0, 0, (int) getWidth(), (int) getHeight());
-            game.render(g2, cam);
-            g2.dispose();
+		double width = getWidth() * (1 / zoom);
+		double height = getHeight() * (1 / zoom);
 
-            strategy.show();
-    		
-    	}
-        
-    }
+		backbuffer.draw(g2, -(width - getWidth()) / 2, -(height - getHeight()) / 2, width, height, 0, 0, getWidth(), getHeight());
+		strategy.show();
 
-    public void enterFullscreen() {
+	}
 
-    	frame.setVisible(false);
-    	frame.dispose();
-    	frame.setUndecorated(true);
-    	frame.setExtendedState(Frame.MAXIMIZED_BOTH);
-    	frame.setVisible(true);
-    }
+	public void enterFullscreen() {
 
-    public void leaveFullscreen() {
-    	frame.setVisible(false);
-    	frame.dispose();
-    	frame.setUndecorated(false);
-    	this.setPreferredSize(new Dimension(1280, 720));
-    	frame.pack();
-    	frame.setLocationRelativeTo(null);
-    	frame.setVisible(true);
-    }
-    
-    public boolean isFullscreen() {
-    	return frame.isUndecorated();
-    }
-    
-    public void setTitle(String title) {
-    	frame.setTitle(title);
-    }
+		frame.setVisible(false);
+		frame.dispose();
+		frame.setUndecorated(true);
+		frame.setExtendedState(Frame.MAXIMIZED_BOTH);
+		frame.setVisible(true);
+	}
 
-    @Override
-    public void componentResized(ComponentEvent e) {
+	public void leaveFullscreen() {
+		frame.setVisible(false);
+		frame.dispose();
+		frame.setUndecorated(false);
+		this.setPreferredSize(new Dimension(1280, 720));
+		frame.pack();
+		frame.setLocationRelativeTo(null);
+		frame.setVisible(true);
+	}
 
-    }
+	public boolean isFullscreen() {
+		return frame.isUndecorated();
+	}
 
-    @Override
-    public void componentMoved(ComponentEvent e) {
-        gc = this.getGraphicsConfiguration();
-    }
+	public void setTitle(String title) {
+		frame.setTitle(title);
+	}
 
-    @Override
-    public void componentShown(ComponentEvent e) {
+	@Override
+	public void componentResized(ComponentEvent e) {
 
-    }
+	}
 
-    @Override
-    public void componentHidden(ComponentEvent e) {
+	@Override
+	public void componentMoved(ComponentEvent e) {
 
-    }
+	}
 
-    @Override
-    public void windowOpened(WindowEvent e) {
+	@Override
+	public void componentShown(ComponentEvent e) {
 
-    }
+	}
 
-    @Override
-    public void windowClosing(WindowEvent e) {
-        System.exit(0);
-    }
+	@Override
+	public void componentHidden(ComponentEvent e) {
 
-    @Override
-    public void windowClosed(WindowEvent e) {
+	}
 
-    }
+	@Override
+	public void windowOpened(WindowEvent e) {
 
-    @Override
-    public void windowIconified(WindowEvent e) {
+	}
 
-    }
+	@Override
+	public void windowClosing(WindowEvent e) {
+		System.exit(0);
+	}
 
-    @Override
-    public void windowDeiconified(WindowEvent e) {
+	@Override
+	public void windowClosed(WindowEvent e) {
 
-    }
+	}
 
-    @Override
-    public void windowActivated(WindowEvent e) {
+	@Override
+	public void windowIconified(WindowEvent e) {
 
-    }
+	}
 
-    @Override
-    public void windowDeactivated(WindowEvent e) {
+	@Override
+	public void windowDeiconified(WindowEvent e) {
 
-    }
+	}
+
+	@Override
+	public void windowActivated(WindowEvent e) {
+
+	}
+
+	@Override
+	public void windowDeactivated(WindowEvent e) {
+
+	}
 
 }

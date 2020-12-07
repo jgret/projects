@@ -27,9 +27,7 @@ public class GameClientTest {
 		String sender = in.nextLine();
 		
 		Client client = new Client("localhost", 4444);
-		
 		client.send(new LoginPacket());
-		
 		Packet h = client.request();
 		if (h instanceof LoginPacket) {
 			LoginPacket login = (LoginPacket) h;
