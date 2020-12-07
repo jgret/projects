@@ -30,6 +30,7 @@ public class Vector2 {
 	public Vector2(Vector2 v1) {
 		this.x = v1.x;
 		this.y = v1.y;
+		
 	}
 
 	/**
