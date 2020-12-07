@@ -23,14 +23,19 @@ public class Input implements KeyListener, MouseInputListener, MouseWheelListene
 	private boolean[][] keys;
 	private boolean[][] mouse;
 	
+	private int[] mwheel;
+	
+	
 	public Input() {
 		keys = new boolean[3][KeyEvent.KEY_LAST];
 		mouse = new boolean[3][5];
+		mwheel = new int[2];
 	}
 	
 	public void poll() {
 		//shift to lower index
-		
+		mwheel[0] = mwheel[1];
+		mwheel[1] = 0;
 		shift(keys);
 		shift(mouse);
  	}
@@ -69,6 +74,10 @@ public class Input implements KeyListener, MouseInputListener, MouseWheelListene
 	
 	public boolean keyHeld(int keyCode) {
 		return keys[idxNow][keyCode];
+	}
+	
+	public int wheelRotations() {
+		return mwheel[0];
 	}
 	
 	public void shift(boolean[][] array) {
@@ -129,7 +138,7 @@ public class Input implements KeyListener, MouseInputListener, MouseWheelListene
 
 	@Override
 	public void mouseWheelMoved(MouseWheelEvent e) {
-		
+		mwheel[1] += e.getWheelRotation();
 	}
 	
 	@Override
