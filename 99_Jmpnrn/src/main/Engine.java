@@ -13,24 +13,26 @@ import java.awt.*;
 public abstract class Engine implements Runnable {
 
     protected Input input;
-    protected GameScreen gameScreen;
+    protected GameScreen screen;
     protected double frameTime;
     private double precisionThreshold = 0.004;
     private volatile boolean running;
 
-    public Engine(int width, int height, int fps) {
+    public Engine(int width, int height, int scale, int fps) {
         System.out.println("FPS set to " + (fps < 0 ? "Unlimited" : fps));
         this.frameTime = 1.0 / fps;
         this.input = new Input();
-        this.gameScreen = new GameScreen(this, width, height);
-        this.gameScreen.addKeyListener(input);
-        this.gameScreen.addMouseListener(input);
-        this.gameScreen.addMouseMotionListener(input);
+        this.screen = new GameScreen(this, width, height, scale);
+        Image2d.makeContext(screen);
+        this.screen.addKeyListener(input);
+        this.screen.addMouseListener(input);
+        this.screen.addMouseMotionListener(input);
+        this.screen.addMouseWheelListener(input);
     }
 
     public void start() {
         Thread game = new Thread(this);
-        gameScreen.setVisible(true);
+        screen.setVisible(true);
         game.start();
     }
 
@@ -62,7 +64,7 @@ public abstract class Engine implements Runnable {
 
                     this.input.poll();
                     this.update(elapsedTime);
-                    this.gameScreen.render();
+                    this.screen.render();
 
                     delta -= frameTime;
                 }
@@ -78,7 +80,7 @@ public abstract class Engine implements Runnable {
 
                 this.input.poll();
                 this.update(elapsedTime);
-                this.gameScreen.render();
+                this.screen.render();
 
             }
 
@@ -90,7 +92,7 @@ public abstract class Engine implements Runnable {
 
     public abstract void update(double elapsedTime);
 
-    public abstract void render(Graphics2D g2, Camera cam);
+    public abstract void render(Graphics2D g2, Camera cam, int scale);
 
     public Input getInput () {
         return this.input;
