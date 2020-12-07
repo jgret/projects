@@ -189,11 +189,11 @@ public class Rectangle implements Drawable {
     }
 
     @Override
-    public void draw(Graphics2D g2, Camera cam) {
+    public void draw(Graphics2D g2, Camera cam, int scale) {
         if (cam == null) {
             this.draw(g2);
         } else {
-            g2.drawRect((int) (getX() - cam.getX()), (int) (getY() - cam.getY()), (int) getWidth(), (int) getHeight());
+            g2.drawRect((int) ((getX() - cam.getX()) * scale), (int) ((getY() - cam.getY()) * scale), (int) (getWidth() * scale), (int) (getHeight() * scale));
         }
     }
 
