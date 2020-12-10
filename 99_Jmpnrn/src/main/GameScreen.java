@@ -8,11 +8,15 @@
  *******************************************************/
 package main;
 
-import java.awt.*;
+import java.awt.Canvas;
+import java.awt.Dimension;
+import java.awt.Frame;
+import java.awt.Graphics2D;
 import java.awt.event.ComponentEvent;
 import java.awt.event.ComponentListener;
 import java.awt.event.WindowEvent;
 import java.awt.event.WindowListener;
+import java.awt.geom.AffineTransform;
 import java.awt.image.BufferStrategy;
 import java.awt.image.VolatileImage;
 
@@ -24,7 +28,7 @@ public class GameScreen extends Canvas implements WindowListener, ComponentListe
 	private Frame frame;
 
 	private BufferStrategy strategy;
-	private Image2d backbuffer;
+	private VolatileImage vBuffer;
 
 	private int scale;
 	private double zoom;
@@ -34,7 +38,7 @@ public class GameScreen extends Canvas implements WindowListener, ComponentListe
 		this.scale = scale;
 		this.zoom = 1.0;
 		this.game = game;
-		this.cam = new Camera(0, 0, width, height);
+		this.cam = new Camera(this, 0, 0, width, height);
 		this.setFocusable(true);
 		this.addKeyListener(game.getInput());
 		frame = new Frame("GameScreen");
@@ -51,7 +55,7 @@ public class GameScreen extends Canvas implements WindowListener, ComponentListe
 	}
 
 	public void createBackbuffer() {
-		backbuffer = new Image2d((int) (getWidth()), (int) (getHeight()));
+		this.vBuffer = this.createVolatileImage(getWidth(), getHeight());
 	}
 
 	public void setScale(int scale) {
@@ -61,34 +65,33 @@ public class GameScreen extends Canvas implements WindowListener, ComponentListe
 	public int getScale() {
 		return scale;
 	}
-
-	public double getZoom() {
-		return this.zoom;
-	}
-
-	public void setZoom(double zoom) {
-		this.zoom = zoom;
-		createBackbuffer();
+	
+	public void checkVBuffer() {
+		if (vBuffer.validate(getGraphicsConfiguration()) == VolatileImage.IMAGE_INCOMPATIBLE) {
+			createBackbuffer();
+		}
 	}
 
 	public void render() {
-
-		cam.dim.set(getWidth(), getHeight());
-
-		Graphics2D g3 = (Graphics2D) backbuffer.getGraphics();
+		checkVBuffer();
+		
+		Graphics2D g3 = (Graphics2D) vBuffer.getGraphics();
 		g3.clearRect(0, 0, getWidth(), getHeight());
 		game.render(g3, cam, scale);
-
+		g3.dispose();
+		
 		Graphics2D g2 = (Graphics2D) strategy.getDrawGraphics();
 		g2.clearRect(0, 0, getWidth(), getHeight());
-
-		double width = getWidth() * (1 / zoom);
-		double height = getHeight() * (1 / zoom);
-
-		backbuffer.draw(g2, -(width - getWidth()) / 2, -(height - getHeight()) / 2, width, height, 0, 0, getWidth(), getHeight());
+		g2.drawImage(vBuffer, 0, 0, getWidth(), getHeight(), null);
+		g2.dispose();
 		strategy.show();
-
 	}
+	
+	public Camera getCam() {
+		return cam;
+	}
+	
+	
 
 	public void enterFullscreen() {
 
