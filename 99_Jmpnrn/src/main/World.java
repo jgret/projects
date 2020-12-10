@@ -22,15 +22,19 @@ import org.w3c.dom.NodeList;
 
 public class World implements Drawable {
 
+	private Game game;
 	private ArrayList<Rectangle> staticRects;
+	private ArrayList<GameObject> actors;
 	private Image2d worldImageBuffer;
 	private Tileset tileset;
 	private int tilesize;
 	private int width;
 	private int height;
 
-	public World() {
+	public World(Game game) {
+		this.game = game;
 		this.staticRects = new ArrayList<>();
+		this.actors = new ArrayList<>();
 	}
 
 	public void load(String filename) {
@@ -110,7 +114,7 @@ public class World implements Drawable {
 			}
 
 			this.worldImageBuffer = new Image2d(width * tilesize,  height * tilesize);
-			Graphics2D g2 = this.worldImageBuffer.getGraphics();
+			Graphics2D g2 = this.worldImageBuffer.createGraphics();
 
 			for (int row = 0; row < height; row++) {
 				for (int coll = 0; coll < width; coll++) {
@@ -128,26 +132,170 @@ public class World implements Drawable {
 					}
 
 				}
-				
+			
 			}
+			
+			g2.dispose();
+			
+			worldImageBuffer.backup();
 			
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
 
 	}
+	
+	public Rectangle getBounds() {
+		return new Rectangle(0, 0, width, height);
+	}
 
+	public void spawn(GameObject g, Vector2 pos) {
+		g.setPos(pos);
+		this.actors.add(g);
+	}
+	
+	public void init() {
+		
+	}
+	
+	public void update(double elapsedTime) {
+
+		ArrayList<GameObject> trash = new ArrayList<GameObject>();
+		
+		for (GameObject g : actors) {
+			if (!g.isRemove()) {
+				g.update(elapsedTime);
+			} else {
+				trash.add(g);
+			}
+		}
+		
+		for (GameObject g : trash) {
+			actors.remove(g);
+		}
+		
+		for (GameObject gactor : actors) {
+			
+			for (GameObject gopponent : actors) {
+				
+				if (gactor == gopponent) {
+					continue;
+				}
+
+				if (gactor.intersects(gopponent)) {
+					
+					GameObject master, slave;
+					
+					//set the master based on priority
+					//the master first tries to push the opponent around
+					if (gactor.getPriority() > gopponent.getPriority()) {
+						master = gactor;
+						slave = gopponent;
+					} else {
+						master = gopponent;
+						slave = gactor;
+					}
+					
+					Vector2 prevSlavePos = slave.getPos();
+					
+					int result = slave.pushout(master);
+					
+					Rectangle rect;
+					if ((rect = collidesWithSomething(slave)) != null) {
+
+						GameObject temp = master;
+						master = slave;
+						slave = temp;
+						
+						int dir = slave.pushout(master);
+						
+						if (dir == GameObject.PUSHOUT_DOWN) {
+							slave.vel.y = 0;
+						} else 
+						
+						if (dir == GameObject.PUSHOUT_UP) {
+							slave.vel.y = 0;
+						} else
+						
+						if (dir == GameObject.PUSHOUT_RIGHT || dir == GameObject.PUSHOUT_LEFT) {
+							slave.vel.x = 0;
+						}
+						
+					}
+					
+				}
+			
+			}
+			
+			for (Rectangle rect : staticRects) {
+				
+				if (gactor.intersects(rect)) {
+					
+					int dir = gactor.pushout(rect);
+					
+					if (dir == GameObject.PUSHOUT_DOWN || dir == GameObject.PUSHOUT_UP) {
+						gactor.vel.y = 0;
+					}
+					
+					if (dir == GameObject.PUSHOUT_RIGHT || dir == GameObject.PUSHOUT_LEFT) {
+						gactor.vel.x = 0;
+					}
+					
+					if (dir != GameObject.PUSHOUT_DOWN) {
+						gactor.grounded = true;
+					}
+					
+				}
+				
+				
+			}
+    		
+    	}
+		
+	}
+	
+	public Rectangle collidesWithSomething(GameObject actor) {
+		
+		for (GameObject gopponent : actors) {
+
+			if (actor == gopponent) {
+				continue;
+			}
+			
+			if (actor.intersects(gopponent)) {
+				return gopponent;
+			}
+			
+		}
+		
+		for (Rectangle r : staticRects) {
+			
+			if (actor.intersects(r)) {
+				return r;
+			}
+			
+		}
+		
+		return null;
+	}
+	
 	@Override
 	public void draw(Graphics2D g2, Camera cam, int scale) {
 		
 		double wscale = (double) scale / (double) tilesize;
 		
-		worldImageBuffer.draw(g2, cam.getX(), cam.getY(), cam.getWidth(), cam.getHeight(), 0, 0, cam.getWidth() * wscale, cam.getHeight() * wscale);
+		System.out.println(wscale + " " + scale + "/" + tilesize);
+		
+		worldImageBuffer.draw(g2, cam.getX(scale / wscale), cam.getY(scale / wscale), cam.getWidth(), cam.getHeight(), 0, 0, cam.getWidth() * wscale, cam.getHeight() * wscale);
 
 		g2.setColor(Color.GREEN);
 		
 		for (Rectangle r : staticRects) {
 			r.draw(g2, cam, scale);
+		}
+		
+		for (GameObject g : actors) {
+			g.draw(g2, cam, scale);
 		}
 	
 	}
@@ -169,6 +317,10 @@ public class World implements Drawable {
 		}
 
 		return data;
+	}
+	
+	public Game getGame() {
+		return this.game;
 	}
 
 }
