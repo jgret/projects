@@ -24,24 +24,33 @@ public class Image2d {
 
 	private VolatileImage img;
 	private BufferedImage buffer;
-	private boolean changed;
 
 	public Image2d (int width, int height) {
-		this.img = createVolatileImage(width, height, Transparency.TRANSLUCENT);
-		this.buffer = new BufferedImage(width, height, Transparency.TRANSLUCENT);
-		changed = true;
+		this.img = createVolatileImage(width, height, Transparency.OPAQUE);
+		this.buffer = img.getSnapshot();
+		
 	}
 
 	public Image2d(BufferedImage img) {
 		this.img = toVolatileImage(img);
 		this.buffer = img;
 	}
-
-	public Graphics2D getGraphics() {
-		changed = true;
-		return (Graphics2D) buffer.createGraphics();
+	
+	public Graphics2D createGraphics() {
+		System.out.println(img.validate(gc()) == VolatileImage.IMAGE_OK);
+		Graphics2D g2 =  (Graphics2D) img.getGraphics();
+		return g2;
 	}
-
+	
+	public boolean backup() {
+		if (img.validate(gc()) != VolatileImage.IMAGE_OK) {
+			return false; 
+		}
+		
+		this.buffer = img.getSnapshot();
+		return true;
+	}
+	
 	public void draw(Graphics2D g2, double x, double y) {
 		draw(g2, x, y, img.getWidth(), img.getHeight());
 	}
@@ -49,8 +58,7 @@ public class Image2d {
 	public void draw(Graphics2D g2, double x, double y, double width, double height) {
 		do {
 
-			if (img.validate(gc()) != VolatileImage.IMAGE_OK || changed) {
-				changed = false;
+			if (img.validate(gc()) != VolatileImage.IMAGE_OK) {
 				restore();
 			}
 
@@ -61,8 +69,7 @@ public class Image2d {
 	public void draw(Graphics2D g2, double sx, double sy, double sw, double sh, double dx, double dy, double dw, double dh) {
 		do {
 
-			if (img.validate(gc()) != VolatileImage.IMAGE_OK || changed) {
-				changed = false;
+			if (img.validate(gc()) != VolatileImage.IMAGE_OK) {
 				restore();
 			}
 
@@ -73,9 +80,14 @@ public class Image2d {
 	public VolatileImage getImage() {
 		return this.img;
 	}
+	
+	public BufferedImage getBackup() {
+		return this.buffer;
+	}
 
 	public void restore() {
-		img = toVolatileImage(buffer);
+		System.out.println("restore");
+		img = toVolatileImage(toCompatibleImage(buffer));
 	}
 
 	//-------------------------------------------------------------------------------------------------------
@@ -97,7 +109,7 @@ public class Image2d {
 	}
 
 	public static VolatileImage toVolatileImage(BufferedImage img) {
-		VolatileImage vBuffer = createVolatileImage(img.getWidth(), img.getHeight(), img.getTransparency());
+		VolatileImage vBuffer = createVolatileImage(img.getWidth(), img.getHeight(), Transparency.TRANSLUCENT);
 		do {
 			vBuffer.validate(gc());
 			Graphics2D g2 = vBuffer.createGraphics();
