@@ -18,7 +18,11 @@ public class Rectangle implements Drawable {
     public Rectangle(double x, double y, double width, double height) {
         this.pos = new Vector2(x, y);
         this.dim = new Vector2(width, height);
-
+    }
+    
+    public Rectangle(Rectangle r) {
+    	this.pos = r.pos;
+    	this.dim = r.dim;
     }
 
     public double getX() {
