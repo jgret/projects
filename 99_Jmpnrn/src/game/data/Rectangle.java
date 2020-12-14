@@ -6,9 +6,12 @@
  * Jmpnrn can not be copied and/or distributed without the express
  * permission of jgret
  *******************************************************/
-package main;
+package game.data;
 
 import java.awt.*;
+
+import game.gui.Camera;
+import game.gui.Drawable;
 
 public class Rectangle implements Drawable {
 
@@ -197,7 +200,7 @@ public class Rectangle implements Drawable {
         if (cam == null) {
             this.draw(g2);
         } else {
-            g2.drawRect((int) ((getX() - cam.getX()) * scale), (int) ((getY() - cam.getY()) * scale), (int) (getWidth() * scale), (int) (getHeight() * scale));
+            g2.drawRect((int) (((getX() - cam.getX()) * scale)), (int) (((getY() - cam.getY()) * scale)), (int) (getWidth() * scale), (int) (getHeight() * scale));
         }
     }
 

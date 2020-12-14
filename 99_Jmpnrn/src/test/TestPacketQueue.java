@@ -8,7 +8,7 @@
  *******************************************************/
 package test;
 
-import main.Game;
+import game.Game;
 import net.packet.Packet;
 import net.packet.PacketQueue;
 import net.packet.impl.PingPacket;

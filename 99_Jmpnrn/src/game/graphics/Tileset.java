@@ -6,7 +6,7 @@
  * Jmpnrn can not be copied and/or distributed without the express
  * permission of jgret
  *******************************************************/
-package main;
+package game.graphics;
 
 import java.awt.image.BufferedImage;
 import java.io.File;

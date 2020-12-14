@@ -6,7 +6,7 @@
  * Jmpnrn can not be copied and/or distributed without the express
  * permission of jgret
  *******************************************************/
-package main;
+package game.graphics;
 
 import java.awt.AlphaComposite;
 import java.awt.Color;
@@ -20,6 +20,8 @@ import java.awt.image.ImageObserver;
 import java.awt.image.ImageProducer;
 import java.awt.image.VolatileImage;
 
+import game.gui.GameScreen;
+
 public class Image2d {
 
 	private VolatileImage img;
@@ -28,7 +30,6 @@ public class Image2d {
 	public Image2d (int width, int height) {
 		this.img = createVolatileImage(width, height, Transparency.OPAQUE);
 		this.buffer = img.getSnapshot();
-		
 	}
 
 	public Image2d(BufferedImage img) {
@@ -37,7 +38,6 @@ public class Image2d {
 	}
 	
 	public Graphics2D createGraphics() {
-		System.out.println(img.validate(gc()) == VolatileImage.IMAGE_OK);
 		Graphics2D g2 =  (Graphics2D) img.getGraphics();
 		return g2;
 	}
@@ -126,9 +126,9 @@ public class Image2d {
 
 	public static BufferedImage toCompatibleImage(BufferedImage image) {
 		BufferedImage newImage = gc().createCompatibleImage(image.getWidth(), image.getHeight(), image.getTransparency());
-		Graphics2D g2d = newImage.createGraphics();
-		g2d.drawImage(image, 0, 0, null);
-		g2d.dispose();
+		Graphics2D g2 = newImage.createGraphics();
+		g2.drawImage(image, 0, 0, null);
+		g2.dispose();
 		return newImage;
 	}
 

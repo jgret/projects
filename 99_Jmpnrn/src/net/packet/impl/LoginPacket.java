@@ -11,7 +11,7 @@ package net.packet.impl;
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
 
-import main.Game;
+import game.Game;
 import net.packet.Packet;
 import net.server.Server;
 

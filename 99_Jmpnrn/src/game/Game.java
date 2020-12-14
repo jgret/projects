@@ -6,7 +6,7 @@
  * Jmpnrn can not be copied and/or distributed without the express
  * permission of jgret
  *******************************************************/
-package main;
+package game;
 
 import java.awt.Color;
 import java.awt.Graphics2D;
@@ -16,10 +16,18 @@ import java.io.IOException;
 
 import javax.imageio.ImageIO;
 
+import game.data.Rectangle;
+import game.data.Vector2;
+import game.graphics.Image2d;
+import game.gui.Camera;
+import game.level.World;
+import main.Player;
+
 public class Game extends Engine {
 
-    public Game() {
-        super(1280, 720, 32, -1);
+    public Game() { 
+    	super(1280, 720, 64);
+    	
     }
     
     private World world;
@@ -35,12 +43,12 @@ public class Game extends Engine {
     	Image2d player_img = null;
 		try {
 			
-			player_img = new Image2d(ImageIO.read(new File("res/img/world_32x32.png")));
+			player_img = new Image2d(ImageIO.read(new File("res/img/bacardi.png")));
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
 		
-    	player = new Player(world, new Rectangle(3, 3, 1, 1), player_img);
+    	player = new Player(world, new Rectangle(3, 3, 1, 2.5), player_img);
     	world.spawn(player, new Vector2(3, 3));
     	
     	screen.getCam().setTarget(player);
@@ -63,17 +71,16 @@ public class Game extends Engine {
     		}
     	}
     	
+    	if (input.keyPressed(KeyEvent.VK_H)) {
+    		world.setShowHitboxes(!world.isShowHitboxes());
+    	}
+    	
     	if (input.keyHeld(KeyEvent.VK_SHIFT)) {
     		int scale = screen.getScale();
     		scale += input.wheelRotations() * -1;
     		screen.setScale(scale);
-    	} else {
-    		
-//    		double zoom = screen.getZoom();
-//    		zoom += input.wheelRotations() * -0.1;
-//    		screen.setZoom(zoom);
-    		
     	}
+    	
     }
     
 
@@ -85,9 +92,6 @@ public class Game extends Engine {
     	
     	world.draw(g2, cam, scale);
     	player.draw(g2, cam, scale);
-    	
-    	g2.setColor(Color.BLUE);
-    	g2.fillRect((int) (-cam.getX(scale)), (int) (-cam.getY(scale)), (int) scale * 2, (int) scale * 2);
     	
     	g2.setColor(Color.BLACK);
     	g2.drawString("Cam x " + cam.getX(), 10, 10);

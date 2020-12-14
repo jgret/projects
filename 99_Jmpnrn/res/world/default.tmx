@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<map version="1.4" tiledversion="1.4.3" orientation="orthogonal" renderorder="right-down" width="30" height="20" tilewidth="16" tileheight="16" infinite="0" nextlayerid="4" nextobjectid="19">
+<map version="1.4" tiledversion="1.4.3" orientation="orthogonal" renderorder="right-down" width="30" height="20" tilewidth="16" tileheight="16" infinite="0" nextlayerid="4" nextobjectid="26">
  <tileset firstgid="1" name="super_mario_16x16" tilewidth="16" tileheight="16" tilecount="924" columns="33">
   <image source="D:/assets/super_mario_16x16.png" width="528" height="448"/>
  </tileset>
- <layer id="1" name="background" width="30" height="20">
+ <layer id="1" name="background" width="30" height="20" locked="1">
   <data encoding="csv">
 1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,
 1,763,763,763,763,763,763,763,763,763,763,763,763,763,763,763,763,763,763,763,763,763,763,763,763,763,763,763,763,1,
@@ -27,7 +27,7 @@
 1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1
 </data>
  </layer>
- <layer id="2" name="forground" width="30" height="20">
+ <layer id="2" name="forground" width="30" height="20" offsetx="0.00390625" offsety="-0.0078125">
   <data encoding="csv">
 0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
 0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
@@ -46,25 +46,31 @@
 0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,3,3,46,3,3,0,0,0,0,
 0,0,4,4,4,0,0,0,0,0,25,14,25,0,0,0,0,0,315,316,317,3,3,47,3,3,315,316,317,0,
 0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
-0,0,0,0,0,35,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
-0,315,316,317,0,35,35,0,0,315,316,317,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
+0,0,0,0,0,35,0,0,0,0,0,0,265,266,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
+0,315,316,317,0,35,35,0,0,315,316,317,298,299,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
 0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0
 </data>
  </layer>
- <objectgroup id="3" name="collision" offsetx="0" offsety="0">
-  <object id="1" x="464" y="0" width="16.0111" height="320.022"/>
-  <object id="2" x="9.4304e-21" y="0" width="464" height="15.991"/>
-  <object id="4" x="0.015625" y="16.0313" width="15.9688" height="303.953"/>
-  <object id="5" x="15.0066" y="303.984" width="449" height="16"/>
-  <object id="6" x="239.978" y="288" width="16" height="15.9444"/>
-  <object id="7" x="256" y="271.978" width="16.0111" height="16.0222"/>
-  <object id="8" x="272.011" y="256" width="192" height="16"/>
+ <objectgroup id="3" name="collision">
+  <properties>
+   <property name="collision" type="bool" value="true"/>
+  </properties>
+  <object id="1" x="464" y="0" width="16" height="320"/>
+  <object id="2" x="9.4304e-21" y="0" width="464" height="16"/>
+  <object id="4" x="0" y="16" width="16" height="304"/>
+  <object id="5" x="16" y="304.004" width="447.999" height="16"/>
+  <object id="6" x="240" y="288" width="16" height="16"/>
+  <object id="7" x="256" y="272" width="16" height="16"/>
+  <object id="8" x="272" y="256" width="192" height="16"/>
   <object id="9" x="80" y="272" width="15.875" height="32"/>
   <object id="10" x="96.0625" y="288.125" width="15.9375" height="16"/>
-  <object id="11" x="31.8913" y="239.935" width="48" height="16"/>
-  <object id="12" x="80" y="192.063" width="47.875" height="15.8125"/>
+  <object id="11" x="31.9952" y="240.001" width="47.9977" height="15.9885"/>
+  <object id="12" x="80.1133" y="192.118" width="47.8789" height="15.875"/>
   <object id="13" x="32" y="144" width="47.9375" height="16"/>
-  <object id="17" x="160.091" y="240.091" width="47.8848" height="15.9313"/>
-  <object id="18" x="176.091" y="192" width="15.9091" height="15.9091"/>
+  <object id="18" name="question" type="q=3" x="176.091" y="192" width="15.9091" height="15.9091"/>
+  <object id="22" name="question" type="q=3" x="159.998" y="239.998" width="16" height="16"/>
+  <object id="23" name="question" type="q=3" x="192" y="240" width="16" height="16"/>
+  <object id="24" x="176" y="240" width="16" height="16"/>
+  <object id="25" x="191.813" y="272" width="32.125" height="32.0625"/>
  </objectgroup>
 </map>

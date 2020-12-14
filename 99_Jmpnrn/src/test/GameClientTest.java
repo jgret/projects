@@ -10,7 +10,7 @@ package test;
 
 import java.util.Scanner;
 
-import main.Game;
+import game.Game;
 import net.client.Client;
 import net.packet.Packet;
 import net.packet.impl.ChatMessagePacket;

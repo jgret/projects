@@ -6,7 +6,11 @@
  * Jmpnrn can not be copied and/or distributed without the express
  * permission of jgret
  *******************************************************/
-package main;
+package game.entity;
+
+import game.data.Rectangle;
+import game.graphics.Image2d;
+import game.level.World;
 
 public abstract class Entity extends GameObject {
 

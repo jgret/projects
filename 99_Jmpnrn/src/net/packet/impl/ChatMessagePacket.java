@@ -13,7 +13,7 @@ import net.server.Server;
 
 import static net.packet.ByteStreamUtil.*;
 
-import main.Game;
+import game.Game;
 
 public class ChatMessagePacket extends Packet {
 

@@ -6,9 +6,18 @@
  * Jmpnrn can not be copied and/or distributed without the express
  * permission of jgret
  *******************************************************/
-package main;
+package game.entity;
 
 import java.awt.Graphics2D;
+
+import game.Game;
+import game.data.Rectangle;
+import game.data.Vector2;
+import game.graphics.Image2d;
+import game.gui.Camera;
+import game.io.Input;
+import game.level.World;
+import game.util.MathUtil;
 
 public abstract class GameObject extends Rectangle {
 

@@ -1,4 +1,4 @@
-package main;
+package game.util;
 
 public class MathUtil {
 
@@ -12,7 +12,7 @@ public class MathUtil {
 	
 	public static boolean min(double val, double... d) {
 		
-		for (Double v : d) {
+		for (double v : d) {
 			if (val > v) {
 				return false;
 			}
@@ -23,7 +23,7 @@ public class MathUtil {
 	
 	public static boolean max(double val, double... d) {
 		
-		for (Double v : d) {
+		for (double v : d) {
 			if (val < v) {
 				return false;
 			}

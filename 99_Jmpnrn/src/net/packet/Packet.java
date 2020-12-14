@@ -16,7 +16,7 @@ import static net.packet.ByteStreamUtil.writec;
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 
-import main.Game;
+import game.Game;
 import net.server.Server;
 
 public abstract class Packet {

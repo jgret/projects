@@ -6,12 +6,13 @@
  * Jmpnrn can not be copied and/or distributed without the express
  * permission of jgret
  *******************************************************/
-package main;
+package game;
 
-import java.awt.*;
+public class Time {
 
-public interface Drawable {
+    public static double getTime() {
+        return System.nanoTime() / 1e9;
 
-    public void draw(Graphics2D g2, Camera cam, int scale);
+    }
 
 }

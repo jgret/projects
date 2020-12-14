@@ -8,7 +8,7 @@
  *******************************************************/
 package net.packet.impl;
 
-import main.Game;
+import game.Game;
 import net.packet.Packet;
 import net.server.Server;
 

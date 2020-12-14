@@ -6,21 +6,22 @@
  * Jmpnrn can not be copied and/or distributed without the express
  * permission of jgret
  *******************************************************/
-package main;
+package game;
 
 import java.awt.*;
+
+import game.graphics.Image2d;
+import game.gui.Camera;
+import game.gui.GameScreen;
+import game.io.Input;
 
 public abstract class Engine implements Runnable {
 
 	protected Input input;
 	protected GameScreen screen;
-	protected double frameTime;
-	private double precisionThreshold = 0.004;
 	private volatile boolean running;
 
-	public Engine(int width, int height, int scale, int fps) {
-		System.out.println("FPS set to " + (fps < 0 ? "Unlimited" : fps));
-		this.frameTime = 1.0 / fps;
+	public Engine(int width, int height, int scale) {
 		this.input = new Input();
 		this.screen = new GameScreen(this, width, height, scale);
 		Image2d.makeContext(screen);
@@ -65,4 +66,8 @@ public abstract class Engine implements Runnable {
 		return this.input;
 	}
 
+	public GameScreen getScreen() {
+		return screen;
+	}
+	
 }

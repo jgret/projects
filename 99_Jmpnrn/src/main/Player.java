@@ -11,6 +11,13 @@ package main;
 import java.awt.Graphics2D;
 import java.awt.event.KeyEvent;
 
+import game.data.Rectangle;
+import game.data.Vector2;
+import game.entity.Entity;
+import game.graphics.Image2d;
+import game.gui.Camera;
+import game.level.World;
+
 public class Player extends Entity {
 
 	public Player(World worldIn, Rectangle rect, Image2d image) {
@@ -41,6 +48,16 @@ public class Player extends Entity {
 			inAir = 0;
 		}
 		
+		if (input.keyPressed(KeyEvent.VK_SHIFT)) {
+			this.dim.y = 1;
+			this.pos.y += 1.5;
+		}
+		
+		if (input.keyReleased(KeyEvent.VK_SHIFT)) {
+			this.dim.y = 2.5;
+			this.pos.y -= 1.5;
+		}
+		
 		this.pos = pos.add(vel.mul(elapsedTime));
 		
 	}
@@ -49,7 +66,7 @@ public class Player extends Entity {
 	public void draw(Graphics2D g2, Camera cam, int scale) {
 		super.draw(g2, cam, scale);
 		
-		g2.drawString("" + grounded, (int) (getX() * scale), (int) (getY() * scale));
+		g2.drawString("" + grounded, (int) (getX() * scale -cam.getX(scale)), (int) (getY() * scale - cam.getY(scale)));
 		
 	}
 

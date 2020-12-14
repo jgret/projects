@@ -6,11 +6,18 @@
  * Jmpnrn can not be copied and/or distributed without the express
  * permission of jgret
  *******************************************************/
-package main;
+package game.io;
+
+import java.awt.Point;
+import java.awt.event.KeyEvent;
+import java.awt.event.KeyListener;
+import java.awt.event.MouseEvent;
+import java.awt.event.MouseWheelEvent;
+import java.awt.event.MouseWheelListener;
 
 import javax.swing.event.MouseInputListener;
-import java.awt.*;
-import java.awt.event.*;
+
+import game.data.Vector2;
 
 public class Input implements KeyListener, MouseInputListener, MouseWheelListener{
 	

@@ -10,7 +10,7 @@ package net.packet.impl;
 
 import static net.packet.ByteStreamUtil.*;
 
-import main.Game;
+import game.Game;
 import net.packet.Packet;
 import net.server.Server;
 
