@@ -24,10 +24,12 @@ import game.level.World;
 import main.Player;
 
 public class Game extends Engine {
+	
+	public static Game instance;
 
     public Game() { 
     	super(1280, 720, 64);
-    	
+    	Game.instance = this;
     }
     
     private World world;
@@ -42,7 +44,6 @@ public class Game extends Engine {
     	
     	Image2d player_img = null;
 		try {
-			
 			player_img = new Image2d(ImageIO.read(new File("res/img/bacardi.png")));
 		} catch (IOException e) {
 			e.printStackTrace();

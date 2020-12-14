@@ -9,6 +9,7 @@
 package game.entity;
 
 import game.data.Rectangle;
+import game.entity.item.Item;
 import game.graphics.Image2d;
 import game.level.World;
 
@@ -21,6 +22,19 @@ public abstract class Entity extends GameObject {
 	@Override
 	public void update(double elapsedTime) {
 		super.update(elapsedTime);
+	}
+	
+	@Override
+	public void onCollision(GameObject o) {
+		
+	}
+	
+	public void add(Item i) {
+		
+	}
+	
+	public void remvoe(Item i) {
+		
 	}
 	
 }

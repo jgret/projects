@@ -140,16 +140,18 @@ public class World implements Drawable {
 
 	}
 
-	public Rectangle getBounds() {
-		return new Rectangle(0, 0, width, height);
-	}
-
 	public void spawn(GameObject g, Vector2 pos) {
+		g.setWorldIn(this);
 		g.setPos(pos);
 		if (g instanceof Player) {
 			this.player = (Player) g;
 		}
 		this.actors.add(g);
+	}
+	
+	public GameObject remove(GameObject g) {
+		this.actors.remove(g);
+		return g;
 	}
 
 	public void init() {
@@ -287,6 +289,10 @@ public class World implements Drawable {
 	public Game getGame() {
 		return this.game;
 	}
+	
+	public Rectangle getBounds() {
+		return new Rectangle(0, 0, width, height);
+	}
 
 	public boolean isShowHitboxes() {
 		return showHitboxes;
@@ -295,5 +301,5 @@ public class World implements Drawable {
 	public void setShowHitboxes(boolean showHitboxes) {
 		this.showHitboxes = showHitboxes;
 	}
-
+	
 }

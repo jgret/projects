@@ -6,7 +6,7 @@
  * Jmpnrn can not be copied and/or distributed without the express
  * permission of jgret
  *******************************************************/
-package assets;
+package game.assets;
 
 import java.io.File;
 import java.util.Iterator;

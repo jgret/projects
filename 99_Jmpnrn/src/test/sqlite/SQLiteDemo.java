@@ -6,7 +6,7 @@
  * Jmpnrn can not be copied and/or distributed without the express
  * permission of jgret
  *******************************************************/
-package sqlite;
+package test.sqlite;
 
 import java.sql.Connection;
 import java.sql.DriverManager;

@@ -1,0 +1,32 @@
+{
+	"food": [
+		{
+			"id": "game_apple",
+			"name": "Apple",
+			"img": "img/game_apple.png",
+			"bounds": {
+				"width": 1,
+				"height": 1
+			},
+			"value": 100,
+			"health": 17,
+			"poison": 0,
+			"alcohol": 0,
+			"rotteness": 0
+		},
+		{
+			"id": "game_apple",
+			"name": "Apple",
+			"img": "img/game_apple.png",
+			"bounds": {
+				"width": 1,
+				"height": 1
+			},
+			"value": 100,
+			"health": 17,
+			"poison": 0,
+			"alcohol": 0,
+			"rotteness": 0
+		}
+	]
+}

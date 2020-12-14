@@ -11,7 +11,7 @@ javac DEMOsqlite.java
 java -classpath ".;sqlite-jdbc-3.32.3.2.jar" DEMOsqlite
 */
 
-package sqlite;
+package test.sqlite;
 
 import java.sql.DriverManager;
 import java.sql.ResultSet;

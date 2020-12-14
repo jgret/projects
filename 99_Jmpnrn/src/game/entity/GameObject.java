@@ -15,7 +15,6 @@ import game.data.Rectangle;
 import game.data.Vector2;
 import game.graphics.Image2d;
 import game.gui.Camera;
-import game.io.Input;
 import game.level.World;
 import game.util.MathUtil;
 
@@ -30,23 +29,20 @@ public abstract class GameObject extends Rectangle {
 	public static final int PUSHOUT_LEFT = 3;
 	public static final int PUSHOUT_RIGHT = 4;
 	
-	protected int priority;
-	protected Input input;
-	protected Game game;
+	protected Game game = Game.instance;
 	protected World worldIn;
 	protected Image2d image;
 	protected Vector2 vel;
+	protected int priority;
 	protected double friction;
 	protected double gravity;
 	protected boolean grounded;
-	
 	protected boolean remove;
 
 	public GameObject(World worldIn, Rectangle r, Image2d image) {
 		super(r);
+		this.game = Game.instance;
 		this.worldIn = worldIn;
-		this.game = worldIn.getGame();
-		this.input = game.getInput();
 		this.image = image;
 		this.vel = new Vector2(0, 0);
 		this.gravity = GRAVITY;
@@ -113,8 +109,9 @@ public abstract class GameObject extends Rectangle {
 		}
 		
 		return 0;
-		
 	}
+	
+	public abstract void onCollision(GameObject o);
 	
 	public World getWorldIn() {
 		return worldIn;
@@ -147,5 +144,5 @@ public abstract class GameObject extends Rectangle {
 	public boolean isRemove() {
 		return remove;
 	}
-
+	
 }

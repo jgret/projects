@@ -16,12 +16,16 @@ import game.data.Vector2;
 import game.entity.Entity;
 import game.graphics.Image2d;
 import game.gui.Camera;
+import game.io.Input;
 import game.level.World;
 
 public class Player extends Entity {
+	
+	private Input input;
 
 	public Player(World worldIn, Rectangle rect, Image2d image) {
 		super(worldIn, rect, image);
+		this.input = game.getInput();
 	}
 	
 	private int inAir = 0;

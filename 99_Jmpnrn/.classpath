@@ -10,6 +10,5 @@
 	<classpathentry kind="con" path="org.eclipse.jdt.junit.JUNIT_CONTAINER/5"/>
 	<classpathentry kind="lib" path="lib/sqlite-jdbc-3.32.3.2.jar" sourcepath="C:/Users/thomg/.sourceattacher/sqlite-jdbc-3.32.3.2-sources.jar"/>
 	<classpathentry kind="lib" path="lib/gson-2.8.6.jar" sourcepath="C:/Users/thomg/.sourceattacher/gson-2.8.6-sources.jar"/>
-	<classpathentry kind="lib" path="lib/jsonbeans-0.9.jar"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>
