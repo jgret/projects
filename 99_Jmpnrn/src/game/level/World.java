@@ -10,7 +10,7 @@ package game.level;
 
 import java.awt.Color;
 import java.awt.Graphics2D;
-import java.io.File;
+import java.io.InputStream;
 import java.util.ArrayList;
 
 import javax.xml.parsers.DocumentBuilder;
@@ -28,6 +28,7 @@ import game.graphics.Image2d;
 import game.graphics.Tileset;
 import game.gui.Camera;
 import game.gui.Drawable;
+import game.io.FileIO;
 import main.Player;
 
 public class World implements Drawable {
@@ -57,10 +58,10 @@ public class World implements Drawable {
 
 		try {
 			// load world File into DOM
-			File file = new File("res/world/" + filename + ".tmx");
+			InputStream in = FileIO.getInputStream("world/" + filename + ".tmx");
 			DocumentBuilderFactory dbf = DocumentBuilderFactory.newInstance();
 			DocumentBuilder db = dbf.newDocumentBuilder();
-			Document doc = db.parse(file);
+			Document doc = db.parse(in);
 			doc.getDocumentElement().normalize();
 			Element map = doc.getDocumentElement();
 
@@ -264,6 +265,8 @@ public class World implements Drawable {
 		for (GameObject g : actors) {
 			g.draw(g2, cam, scale);
 		}
+		
+		g2.drawString("actors: " + actors.size(), (int) (cam.getWidth() - 80), 20);
 
 	}
 
@@ -284,6 +287,10 @@ public class World implements Drawable {
 		}
 
 		return data;
+	}
+	
+	public ArrayList<GameObject> getActors() {
+		return actors;
 	}
 
 	public Game getGame() {

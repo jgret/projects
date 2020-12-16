@@ -18,8 +18,10 @@ import javax.imageio.ImageIO;
 
 import game.data.Rectangle;
 import game.data.Vector2;
+import game.entity.item.consumable.Food;
 import game.graphics.Image2d;
 import game.gui.Camera;
+import game.io.FileIO;
 import game.level.World;
 import main.Player;
 
@@ -43,12 +45,7 @@ public class Game extends Engine {
     	world.init();
     	
     	Image2d player_img = null;
-		try {
-			player_img = new Image2d(ImageIO.read(new File("res/img/bacardi.png")));
-		} catch (IOException e) {
-			e.printStackTrace();
-		}
-		
+		player_img = FileIO.loadImage("img/bacardi.png");
     	player = new Player(world, new Rectangle(3, 3, 1, 2.5), player_img);
     	world.spawn(player, new Vector2(3, 3));
     	
@@ -62,6 +59,8 @@ public class Game extends Engine {
     	world.update(elapsedTime);
     	screen.getCam().update(elapsedTime);
     }
+    
+    private Image2d bacardi = FileIO.loadImage("img/bacardi.png");
     
     public void globalHotKeys() {
     	if (input.keyPressed(KeyEvent.VK_F11)) {
@@ -82,6 +81,17 @@ public class Game extends Engine {
     		screen.setScale(scale);
     	}
     	
+    	if (input.keyHeld(KeyEvent.VK_ENTER)) {
+    		world.spawn(new Food("t", "t", bacardi), new Vector2(7, 5));
+    	}
+    	
+    	if (input.keyHeld(KeyEvent.VK_CONTROL)) {
+    		if (input.keyPressed(KeyEvent.VK_C)) {
+    			world.getActors().clear();
+    			world.spawn(player, player.getPos());
+    		}
+    	}
+    	
     }
     
 
@@ -99,8 +109,6 @@ public class Game extends Engine {
     	g2.drawString("Cam y " + cam.getY(), 10, 20);
     	g2.drawString("Player x " + player.getX(), 10, 30);
     	g2.drawString("Player y " + player.getY(), 10, 40);
-    	
-    	
     	
     }
 

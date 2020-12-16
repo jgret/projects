@@ -14,6 +14,8 @@ import java.io.IOException;
 
 import javax.imageio.ImageIO;
 
+import game.io.FileIO;
+
 public class Tileset {
 
 	private Image2d[][] tiles;
@@ -22,23 +24,17 @@ public class Tileset {
 	
 	public Tileset(String filename, int tilesize) {
 		
-		try {
-			BufferedImage img = ImageIO.read(new File("res/img/" + filename));
-			this.tileset_rows = img.getHeight() / tilesize;
-			this.tileset_colls = img.getWidth() / tilesize;
-			this.tiles = new Image2d[tileset_rows][tileset_colls];
-			
-			for (int row = 0; row < tileset_rows; row++) {
-				for (int coll = 0; coll < tileset_colls; coll++) {
-					BufferedImage subImage = img.getSubimage(coll * tilesize, row * tilesize, tilesize, tilesize);
-					tiles[row][coll] = new Image2d(subImage);
-				}
-			}
-			
-		} catch (IOException e) {
-			e.printStackTrace();
-		}
+		BufferedImage img = FileIO.loadBufferedImage("img/" + filename);
+		this.tileset_rows = img.getHeight() / tilesize;
+		this.tileset_colls = img.getWidth() / tilesize;
+		this.tiles = new Image2d[tileset_rows][tileset_colls];
 		
+		for (int row = 0; row < tileset_rows; row++) {
+			for (int coll = 0; coll < tileset_colls; coll++) {
+				BufferedImage subImage = img.getSubimage(coll * tilesize, row * tilesize, tilesize, tilesize);
+				tiles[row][coll] = new Image2d(subImage);
+			}
+		}
 	}
 	
 	public Image2d get(int n) {

@@ -17,10 +17,15 @@ import game.io.Input;
 
 public abstract class Engine implements Runnable {
 
+	protected int ups;
+	protected int fps;
+	protected int ups_last;
+	protected int fps_last;
+	
 	protected Input input;
 	protected GameScreen screen;
 	private volatile boolean running;
-
+	
 	public Engine(int width, int height, int scale) {
 		this.input = new Input();
 		this.screen = new GameScreen(this, width, height, scale);
@@ -45,6 +50,7 @@ public abstract class Engine implements Runnable {
 		this.init();
 
 		double last = Time.getTime();
+		double timer = Time.getTime();
 		while (running) {
 			double now = Time.getTime();
 			double elapsedTime = now - last;
@@ -52,6 +58,20 @@ public abstract class Engine implements Runnable {
 			this.input.poll();
 			this.update(elapsedTime);
 			this.screen.render();
+			fps++;
+			ups++;
+			
+			if ((Time.getTime() - timer) > 1.0) {
+				timer += 1;
+				ups_last = ups;
+				fps_last = fps;
+				fps = 0;
+				ups = 0;
+				
+				System.out.println(ups_last);
+				System.out.println(fps_last);
+			}
+			
 		}
 
 	}
