@@ -8,12 +8,10 @@
  *******************************************************/
 package game.io;
 
-import java.awt.image.BufferedImage;
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileReader;
 import java.io.IOException;
-import java.io.InputStream;
 import java.net.URL;
 
 import javax.imageio.ImageIO;
@@ -53,20 +51,8 @@ public class FileIO {
 		return img;
 	}
 	
-	public static BufferedImage loadBufferedImage(String name) {
-		try {
-			return ImageIO.read(getURL(name));
-		} catch (IOException e) {
-			e.printStackTrace();
-		}
-		return null;
-	}
-	
 	public static URL getURL(String fname) {
 		return FileIO.class.getClassLoader().getResource(fname);
 	}
 
-	public static InputStream getInputStream(String fname) {
-		return FileIO.class.getClassLoader().getResourceAsStream(fname);
-	}
 }

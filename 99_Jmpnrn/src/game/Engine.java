@@ -10,25 +10,29 @@ package game;
 
 import java.awt.*;
 
+import game.graphics.Camera;
+import game.graphics.Screen;
 import game.graphics.Image2d;
-import game.gui.Camera;
-import game.gui.GameScreen;
 import game.io.Input;
 
 public abstract class Engine implements Runnable {
 
-	protected int ups;
-	protected int fps;
-	protected int ups_last;
-	protected int fps_last;
+	public int fps;
+	public int ups;
+	public int lastFps;
+	public int lastUps;
 	
 	protected Input input;
-	protected GameScreen screen;
+	protected Screen screen;
 	private volatile boolean running;
-	
+
 	public Engine(int width, int height, int scale) {
+		this.fps = 0;
+		this.ups = 0;
+		this.lastFps = 0;
+		this.lastUps = 0;
 		this.input = new Input();
-		this.screen = new GameScreen(this, width, height, scale);
+		this.screen = new Screen(this, width, height, scale);
 		Image2d.makeContext(screen);
 		this.screen.addKeyListener(input);
 		this.screen.addMouseListener(input);
@@ -51,27 +55,36 @@ public abstract class Engine implements Runnable {
 
 		double last = Time.getTime();
 		double timer = Time.getTime();
+		double usum = 0;
+		double rsum = 0;
 		while (running) {
 			double now = Time.getTime();
 			double elapsedTime = now - last;
 			last = now;
+			double ustart = Time.getTime();
 			this.input.poll();
+			Time.setElapsedTime(elapsedTime);
 			this.update(elapsedTime);
+			usum += Time.getTime() - ustart;
+			double rstart = Time.getTime();
 			this.screen.render();
-			fps++;
+			rsum += Time.getTime() - rstart;
 			ups++;
-			
-			if ((Time.getTime() - timer) > 1.0) {
-				timer += 1;
-				ups_last = ups;
-				fps_last = fps;
-				fps = 0;
-				ups = 0;
+			fps++;
+			if ((Time.getTime() - timer) >= 1) {
+				lastFps = fps;
+				lastUps = ups;
 				
-				System.out.println(ups_last);
-				System.out.println(fps_last);
+				String info = String.format("UPS: %9d  FPS:  %9d\n", ups, fps);
+					   info+= String.format("avr: %.7f  avr:  %.7f\n", usum / ups, rsum / fps);
+					   info+= String.format("sum: %.7f  sum:  %.7f\n", usum, rsum);
+				System.out.println(info);
+				ups = 0;
+				fps = 0;
+				usum = 0;
+				rsum = 0;
+				timer += 1;
 			}
-			
 		}
 
 	}
@@ -80,13 +93,13 @@ public abstract class Engine implements Runnable {
 
 	public abstract void update(double elapsedTime);
 
-	public abstract void render(Graphics2D g2, Camera cam, int scale);
+	public abstract void render(Graphics2D g2, Camera cam);
 
 	public Input getInput () {
 		return this.input;
 	}
 
-	public GameScreen getScreen() {
+	public Screen getScreen() {
 		return screen;
 	}
 	

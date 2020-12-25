@@ -22,6 +22,7 @@ public abstract class Item extends GameObject {
 	
 	public Item(String id, String name, Image2d image) {
 		super(null, new Rectangle(0, 0, 1, 1), image);
+		this.priority = 0;
 		this.id = id;
 		this.name = name;
 		this.value = (float) 0.0; 
@@ -58,6 +59,8 @@ public abstract class Item extends GameObject {
 		if (o instanceof Entity) {
 			Entity entity = (Entity) o;
 			World world = entity.getWorldIn();
+			world.remove(this);
+
 			entity.add(this);
 		}
 	}

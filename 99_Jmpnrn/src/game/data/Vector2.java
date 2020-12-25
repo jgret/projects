@@ -8,6 +8,8 @@
  *******************************************************/
 package game.data;
 
+import game.io.Input;
+
 /**
  * The Vector Class: used for movement, force
  */

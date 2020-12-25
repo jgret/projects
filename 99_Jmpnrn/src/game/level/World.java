@@ -10,7 +10,7 @@ package game.level;
 
 import java.awt.Color;
 import java.awt.Graphics2D;
-import java.io.InputStream;
+import java.io.File;
 import java.util.ArrayList;
 
 import javax.xml.parsers.DocumentBuilder;
@@ -24,12 +24,12 @@ import game.Game;
 import game.data.Rectangle;
 import game.data.Vector2;
 import game.entity.GameObject;
+import game.entity.Player;
+import game.graphics.Camera;
+import game.graphics.Drawable;
 import game.graphics.Image2d;
+import game.graphics.Screen;
 import game.graphics.Tileset;
-import game.gui.Camera;
-import game.gui.Drawable;
-import game.io.FileIO;
-import main.Player;
 
 public class World implements Drawable {
 
@@ -39,6 +39,7 @@ public class World implements Drawable {
 	private Image2d worldImageBuffer;
 	private Tileset tileset;
 	private Player player;
+	private ArrayList<int[][]> layerList;
 	private int tilesize;
 	private int width;
 	private int height;
@@ -51,17 +52,14 @@ public class World implements Drawable {
 	}
 
 	public void load(String filename) {
-
-		ArrayList<int[][]> layerList = new ArrayList<int[][]>();
-
-		int[] list = { 1, 2, 4 };
+		layerList = new ArrayList<int[][]>();
 
 		try {
 			// load world File into DOM
-			InputStream in = FileIO.getInputStream("world/" + filename + ".tmx");
+			File file = new File("res/world/" + filename + ".tmx");
 			DocumentBuilderFactory dbf = DocumentBuilderFactory.newInstance();
 			DocumentBuilder db = dbf.newDocumentBuilder();
-			Document doc = db.parse(in);
+			Document doc = db.parse(file);
 			doc.getDocumentElement().normalize();
 			Element map = doc.getDocumentElement();
 
@@ -77,7 +75,8 @@ public class World implements Drawable {
 				String stringsrc = src.getAttribute("source");
 				String[] parts = stringsrc.split("/");
 				String fname = parts[parts.length - 1];
-				this.tileset = new Tileset(fname, 16);
+				int tilesettilesize = Integer.parseInt(tileset.getAttribute("tilewidth"));
+				this.tileset = new Tileset(fname, tilesettilesize);
 			}
 
 			// read layers
@@ -86,7 +85,6 @@ public class World implements Drawable {
 				Element layer = (Element) layers.item(i);
 				String name = layer.getAttribute("name");
 				Element data = (Element) layer.getElementsByTagName("data").item(0);
-
 				layerList.add(toIntArray(data.getTextContent().trim()));
 
 			}
@@ -112,32 +110,34 @@ public class World implements Drawable {
 					staticRects.add(rect);
 				}
 			}
+			createImageBuffer(tilesize);
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+	}
 
-			this.worldImageBuffer = new Image2d(width * tilesize, height * tilesize);
-			Graphics2D g2 = this.worldImageBuffer.createGraphics();
-
-			for (int row = 0; row < height; row++) {
-				for (int coll = 0; coll < width; coll++) {
-					for (int[][] layer : layerList) {
-						int n = layer[row][coll];
-						if (n > 0) {
-							n--;
-							g2.drawImage(tileset.get(n).getImage(), coll * tilesize, row * tilesize, tilesize, tilesize,
-									null);
-						}
+	public void createImageBuffer(int tilesize) {
+		this.tilesize = tilesize;
+		this.worldImageBuffer = new Image2d(width * tilesize, height * tilesize);
+		Graphics2D g2 = this.worldImageBuffer.createGraphics();
+		for (int row = 0; row < height; row++) {
+			for (int coll = 0; coll < width; coll++) {
+				for (int[][] layer : layerList) {
+					int n = layer[row][coll];
+					if (n > 0) {
+						n--;
+						g2.drawImage(tileset.get(n).getImage(), coll * tilesize, row * tilesize, tilesize, tilesize,
+								null);
 					}
-
 				}
 
 			}
 
-			g2.dispose();
-
-			worldImageBuffer.backup();
-
-		} catch (Exception e) {
-			e.printStackTrace();
 		}
+
+		g2.dispose();
+
+		worldImageBuffer.backup();
 
 	}
 
@@ -149,10 +149,9 @@ public class World implements Drawable {
 		}
 		this.actors.add(g);
 	}
-	
-	public GameObject remove(GameObject g) {
-		this.actors.remove(g);
-		return g;
+
+	public void remove(GameObject g) {
+		g.setRemove(true);
 	}
 
 	public void init() {
@@ -194,6 +193,9 @@ public class World implements Drawable {
 						GameObject temp = master;
 						master = slave;
 						slave = temp;
+
+						master.onCollision(slave);
+						slave.onCollision(master);
 
 						int dir = slave.pushout(master);
 						if (dir == GameObject.PUSHOUT_DOWN) {
@@ -250,23 +252,27 @@ public class World implements Drawable {
 	}
 
 	@Override
-	public void draw(Graphics2D g2, Camera cam, int scale) {
-		double wscale = (double) scale / (double) tilesize;
-		worldImageBuffer.draw(g2, cam.getX(scale / wscale), cam.getY(scale / wscale), cam.getWidth(), cam.getHeight(),
-				0, 0, cam.getWidth() * wscale, cam.getHeight() * wscale);
-		g2.setColor(Color.GREEN);
+	public void draw(Graphics2D g2, Camera cam) {
+		
+		int scale = Screen.TILESIZE;
+		
+		if (tilesize != scale) {
+			createImageBuffer(scale);
+		}
+		
+		worldImageBuffer.draw(g2, cam.getPixelOffsetX(), cam.getPixelOffsetY(), cam.getWidth(), cam.getHeight(),
+				0, 0, cam.getWidth(), cam.getHeight());
 
+		g2.setColor(Color.RED.darker());
 		if (showHitboxes) {
 			for (Rectangle r : staticRects) {
-				r.draw(g2, cam, scale);
+				r.draw(g2, cam);
 			}
 		}
 
 		for (GameObject g : actors) {
-			g.draw(g2, cam, scale);
+			g.draw(g2, cam);
 		}
-		
-		g2.drawString("actors: " + actors.size(), (int) (cam.getWidth() - 80), 20);
 
 	}
 
@@ -288,15 +294,11 @@ public class World implements Drawable {
 
 		return data;
 	}
-	
-	public ArrayList<GameObject> getActors() {
-		return actors;
-	}
 
 	public Game getGame() {
 		return this.game;
 	}
-	
+
 	public Rectangle getBounds() {
 		return new Rectangle(0, 0, width, height);
 	}
@@ -308,5 +310,5 @@ public class World implements Drawable {
 	public void setShowHitboxes(boolean showHitboxes) {
 		this.showHitboxes = showHitboxes;
 	}
-	
+
 }

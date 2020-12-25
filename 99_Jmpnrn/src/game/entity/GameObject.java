@@ -13,8 +13,9 @@ import java.awt.Graphics2D;
 import game.Game;
 import game.data.Rectangle;
 import game.data.Vector2;
+import game.graphics.Camera;
 import game.graphics.Image2d;
-import game.gui.Camera;
+import game.graphics.Screen;
 import game.level.World;
 import game.util.MathUtil;
 
@@ -23,7 +24,7 @@ public abstract class GameObject extends Rectangle {
 	public static final double GRAVITY = 3.7;
 	public static final double FRICTION = 0.56;
 	
-	public static final int PUSHOUT_NONE = 0; //this would be quite questionable, think about it
+	public static final int PUSHOUT_NONE = 0;
 	public static final int PUSHOUT_UP = 1;
 	public static final int PUSHOUT_DOWN = 2;
 	public static final int PUSHOUT_LEFT = 3;
@@ -50,8 +51,9 @@ public abstract class GameObject extends Rectangle {
 	}
 
 	@Override
-	public void draw(Graphics2D g2, Camera cam, int scale) {
-		image.draw(g2, getX() * scale - cam.getX(scale), getY() * scale - cam.getY(scale), getWidth() * scale, getHeight() * scale);
+	public void draw(Graphics2D g2, Camera cam) {
+		image.draw(g2, getX() * Screen.TILESIZE - cam.getPixelOffsetX(), getY() * Screen.TILESIZE - cam.getPixelOffsetY(), getWidth() * Screen.TILESIZE, getHeight() * Screen.TILESIZE);
+		g2.drawRect((int) (this.getX() - cam.getPixelOffsetX() * Screen.TILESIZE), (int) (this.getY() * Screen.TILESIZE), (int) (this.getWidth() * Screen.TILESIZE), (int) (this.getHeight() * Screen.TILESIZE));
 	}
 
 	public void accelerate(Vector2 acc) {
@@ -143,6 +145,10 @@ public abstract class GameObject extends Rectangle {
 
 	public boolean isRemove() {
 		return remove;
+	}
+	
+	public void setRemove(boolean remove) {
+		this.remove = remove;
 	}
 	
 }

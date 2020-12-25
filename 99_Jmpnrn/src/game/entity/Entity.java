@@ -14,9 +14,12 @@ import game.graphics.Image2d;
 import game.level.World;
 
 public abstract class Entity extends GameObject {
+	
+	protected Inventory inventory;
 
 	public Entity(World worldIn, Rectangle rect, Image2d image) {
 		super(worldIn, rect, image);
+		this.inventory = new Inventory();
 	}
 	
 	@Override
@@ -30,11 +33,11 @@ public abstract class Entity extends GameObject {
 	}
 	
 	public void add(Item i) {
-		
+		this.inventory.add(i);
 	}
 	
 	public void remvoe(Item i) {
-		
+		this.inventory.remove(i);
 	}
 	
 }

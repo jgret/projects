@@ -10,9 +10,18 @@ package game;
 
 public class Time {
 
+	private static double elapsedTime;
+	
+	public static double elapsedTime() {
+		return elapsedTime;
+	}
+	
+	public static void setElapsedTime(double et) {
+		elapsedTime = et;
+	}
+	
     public static double getTime() {
         return System.nanoTime() / 1e9;
-
     }
 
 }

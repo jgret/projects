@@ -20,8 +20,6 @@ import java.awt.image.ImageObserver;
 import java.awt.image.ImageProducer;
 import java.awt.image.VolatileImage;
 
-import game.gui.GameScreen;
-
 public class Image2d {
 
 	private VolatileImage img;
@@ -36,27 +34,35 @@ public class Image2d {
 		this.img = toVolatileImage(img);
 		this.buffer = img;
 	}
-	
+
 	public Graphics2D createGraphics() {
 		Graphics2D g2 =  (Graphics2D) img.getGraphics();
 		return g2;
 	}
-	
+
 	public boolean backup() {
 		if (img.validate(gc()) != VolatileImage.IMAGE_OK) {
 			return false; 
 		}
-		
+
 		this.buffer = img.getSnapshot();
 		return true;
 	}
-	
+
 	public void draw(Graphics2D g2, double x, double y) {
 		draw(g2, x, y, img.getWidth(), img.getHeight());
 	}
 
 	public void draw(Graphics2D g2, double x, double y, double width, double height) {
+
+		int i = 0;
+
 		do {
+
+			if (i > 1) {
+				System.out.println("contents lost");
+			}
+			i++;
 
 			if (img.validate(gc()) != VolatileImage.IMAGE_OK) {
 				restore();
@@ -67,12 +73,19 @@ public class Image2d {
 	}
 
 	public void draw(Graphics2D g2, double sx, double sy, double sw, double sh, double dx, double dy, double dw, double dh) {
+		int i = 0;
+
 		do {
+
+			if (i > 1) {
+				System.out.println("contents lost");
+			}
+			i++;
 
 			if (img.validate(gc()) != VolatileImage.IMAGE_OK) {
 				restore();
 			}
-
+			g2.drawLine((int) dx,(int) dy, (int)(dx + dw), (int)(dy + dh));
 			g2.drawImage(img, (int) dx, (int) dy, (int) (dx + dw), (int) (dx + dh), (int) sx, (int) sy, (int) (sx + sw), (int) (sy + sh), null);
 		} while (img.contentsLost());
 	}
@@ -80,13 +93,12 @@ public class Image2d {
 	public VolatileImage getImage() {
 		return this.img;
 	}
-	
+
 	public BufferedImage getBackup() {
 		return this.buffer;
 	}
 
 	public void restore() {
-		System.out.println("restore");
 		img = toVolatileImage(toCompatibleImage(buffer));
 	}
 
@@ -94,9 +106,9 @@ public class Image2d {
 	//                                         Static Functions
 	//-------------------------------------------------------------------------------------------------------
 
-	private static GameScreen screen;
+	private static Screen screen;
 
-	public static void makeContext(GameScreen screen) {
+	public static void makeContext(Screen screen) {
 		Image2d.screen = screen;
 	}
 

@@ -67,13 +67,13 @@ public class Food extends Item {
 	}
 
 	@Override
-	public void onInteract(Entity e) {
-
-	}
-	
-	@Override
 	public String toString() {
 		return getId() + ":" + getName() + " health: " + health + " poison: " + poison + " alcohol: " + alcohol + " rotteness: " + rotteness;
+	}
+
+	@Override
+	public void onInteract(Entity e) {
+		
 	}
 
 }

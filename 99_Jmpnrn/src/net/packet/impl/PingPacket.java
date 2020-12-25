@@ -37,7 +37,6 @@ public class PingPacket extends Packet {
 
 	@Override
 	public void handle(Server server) {
-		// TODO Auto-generated method stub
 		
 	}
 
