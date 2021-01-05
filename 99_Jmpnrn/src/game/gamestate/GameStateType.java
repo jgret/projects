@@ -6,5 +6,7 @@ public enum GameStateType {
 	MENU,
 	PAUSE, 
 	HOME_MENU,
+	TEST,
+	INTRO,
 
 }

@@ -27,10 +27,13 @@ public class Track {
 	private FloatControl pan;
 	private BooleanControl mute;
 	
+	private int framePosition;
+	
 	public Track(String filename) {
 		
 		this.filename = filename;
-
+		this.framePosition = 0;
+		
 		try {
 			clip = AudioSystem.getClip();
 			AudioInputStream in = AudioSystem.getAudioInputStream(Track.class.getClassLoader().getResource(filename));
@@ -49,6 +52,18 @@ public class Track {
 
 	public void play() {
 		clip.start();
+	}
+	
+	public void pause() {
+		this.framePosition = (int) clip.getFramePosition();
+		this.clip.stop();
+	}
+	
+	public void resume() {
+		if (!clip.isRunning()) {
+			clip.setFramePosition(framePosition);
+			clip.start();
+		}
 	}
 	
 	public void loop() {
@@ -79,12 +94,15 @@ public class Track {
 	
 	public void sleep(double millis) {
 		try {
+			System.out.println(millis);
 			Thread.sleep((long) millis);
 		} catch (InterruptedException e) {
 			e.printStackTrace();
 		}
 	}
 	
-	
+	public void waitForEnd() {
+		this.sleep(clip.getMicrosecondLength() / 1000);
+	}
 
 }

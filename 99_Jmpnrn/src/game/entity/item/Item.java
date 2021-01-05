@@ -8,24 +8,28 @@
  *******************************************************/
 package game.entity.item;
 
-import game.data.Rectangle;
 import game.entity.Entity;
 import game.entity.GameObject;
 import game.graphics.Image2d;
 import game.level.World;
+import game.shape.Rectangle;
 
 public abstract class Item extends GameObject {
-	
+		
+	private static long nextUid = 0;
+
 	private String id;
 	private String name;
 	private float value;
+	private long uid;
 	
 	public Item(String id, String name, Image2d image) {
 		super(null, new Rectangle(0, 0, 1, 1), image);
+		this.uid = nextUid++;
 		this.priority = 0;
 		this.id = id;
 		this.name = name;
-		this.value = (float) 0.0; 
+		this.value = (float) 0.0;
 	}
 	
 	public String getId() {
@@ -53,6 +57,8 @@ public abstract class Item extends GameObject {
 	}
 
 	public abstract void onInteract(Entity e);
+	public abstract void onCollect(Entity e);
+	public abstract void onRemove(Entity e);
 	
 	@Override
 	public void onCollision(GameObject o) {
@@ -60,9 +66,28 @@ public abstract class Item extends GameObject {
 			Entity entity = (Entity) o;
 			World world = entity.getWorldIn();
 			world.remove(this);
-
-			entity.add(this);
+			entity.addItem(this);
 		}
+	}
+	
+	@Override
+	public void onOutOfWorld(World world) {
+		this.remove = true;
+	}
+	
+	@Override
+	public Item clone() {
+		Item clone = (Item) super.clone();
+		clone.uid = nextUid++;
+		return clone;
+	}
+	
+	public boolean compare(Item i) {
+		return this.uid == i.uid;
+	}
+
+	public long getUID() {
+		return uid;
 	}
 
 }

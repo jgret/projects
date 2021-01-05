@@ -26,13 +26,20 @@ public class Image2d {
 	private BufferedImage buffer;
 
 	public Image2d (int width, int height) {
-		this.img = createVolatileImage(width, height, Transparency.OPAQUE);
-		this.buffer = img.getSnapshot();
+		this(new BufferedImage(width, height, BufferedImage.TYPE_INT_ARGB));
 	}
 
 	public Image2d(BufferedImage img) {
 		this.img = toVolatileImage(img);
 		this.buffer = img;
+	}
+	
+	public int getWidth() {
+		return this.img.getHeight();
+	}
+	
+	public int getHeight() {
+		return this.img.getWidth();
 	}
 
 	public Graphics2D createGraphics() {
@@ -85,7 +92,6 @@ public class Image2d {
 			if (img.validate(gc()) != VolatileImage.IMAGE_OK) {
 				restore();
 			}
-			g2.drawLine((int) dx,(int) dy, (int)(dx + dw), (int)(dy + dh));
 			g2.drawImage(img, (int) dx, (int) dy, (int) (dx + dw), (int) (dx + dh), (int) sx, (int) sy, (int) (sx + sw), (int) (sy + sh), null);
 		} while (img.contentsLost());
 	}

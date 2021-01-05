@@ -17,7 +17,7 @@ import java.awt.event.MouseWheelListener;
 
 import javax.swing.event.MouseInputListener;
 
-import game.data.Vector2;
+import game.shape.Vector2;
 
 public class Input implements KeyListener, MouseInputListener, MouseWheelListener{
 	

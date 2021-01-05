@@ -10,45 +10,52 @@ package game;
 
 import java.awt.Graphics2D;
 import java.awt.event.KeyEvent;
-import java.io.File;
-import java.io.IOException;
 
-import javax.imageio.ImageIO;
-
-import game.data.Rectangle;
-import game.data.Vector2;
-import game.entity.Player;
-import game.entity.item.consumable.Food;
+import game.entity.item.Items;
 import game.gamestate.GameStateManager;
+import game.gamestate.GameStateIntro;
 import game.gamestate.GameStatePlay;
+import game.gamestate.GameStateTest;
 import game.gamestate.GameStateType;
 import game.graphics.Camera;
-import game.graphics.Image2d;
-import game.io.FileIO;
-import game.level.World;
 
 public class Game extends Engine {
 	
 	public static Game instance;
-    
     private GameStateManager gsm;
-
+    private Items items;
+    private boolean timings = false;
+    
     public Game() { 
     	super(1280, 720, 64);
     	Game.instance = this;
+    	this.showTimings(timings);
     	this.gsm = new GameStateManager();
+    	this.items = new Items();
     }
     
     @Override
     public void init() {
     	gsm.register(GameStateType.PLAY, new GameStatePlay(this));
+    	gsm.register(GameStateType.TEST, new GameStateTest(this));
+    	gsm.register(GameStateType.INTRO, new GameStateIntro(this));
     	gsm.init();
-    	gsm.setGameState(GameStateType.PLAY);
+    	gsm.setGameState(GameStateType.INTRO);
+    	items.loadJSON("item/items.json");
     }
     
     @Override
     public void update(double elapsedTime) {
     	gsm.update(elapsedTime);
+    	
+		if (input.keyPressed(KeyEvent.VK_F11)) {
+			if (screen.isFullscreen()) {
+				screen.leaveFullscreen();
+			} else {
+				screen.enterFullscreen();
+
+			}
+		}
     }
     
     @Override
@@ -60,4 +67,8 @@ public class Game extends Engine {
 		return gsm;
 	}
 
+	public Items getItems() {
+		return items;
+	}
+	
 }

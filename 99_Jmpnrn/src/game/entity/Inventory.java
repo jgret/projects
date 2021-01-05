@@ -14,25 +14,54 @@ import game.entity.item.Item;
 
 public class Inventory {
 
-	private ArrayList<Item> inventory;
+	private Item[] inventory;
+	private Entity entity;
 
-	public Inventory() {
-		this.inventory = new ArrayList<Item>();
+	public Inventory(Entity e, int size) {
+		this.inventory = new Item[size];
+		this.entity = e;
 	}
 	
-	public void add(Item i) {
-		this.inventory.add(i);
+	public boolean add(Item item) {
+		for (int i = 0; i < inventory.length; i++) {
+			if (inventory[i] == null) {
+				inventory[i] = item;
+				entity.onItemAdd(item);
+				return true;
+			}
+		}
+		
+		return false;
 	}
 	
-	public void remove(Item i) {
-		this.inventory.remove(i);
+	public boolean remove(Item item) {
+		for (int i = 0; i < inventory.length; i++) {
+			if (inventory[i].equals(item)) {
+				inventory[i] = null;
+				entity.onItemRemove(inventory[i]);
+				return true;
+			}
+		}
+		return false;
 	}
-
-	public ArrayList<Item> getInventory() {
+	
+	public Item remove(String id) {
+		for (int i = 0; i < inventory.length; i++) {
+			if (inventory[i].getId().equals(id)) {
+				Item ret = inventory[i];
+				inventory[i] = null;
+				entity.onItemRemove(inventory[i]);
+				return ret;
+			}
+		}
+		return null;
+	}
+	
+	public Item[] getInventory() {
 		return inventory;
 	}
 
-	public void setInventory(ArrayList<Item> inventory) {
+	public void setInventory(Item[] inventory) {
 		this.inventory = inventory;
 	}
 	

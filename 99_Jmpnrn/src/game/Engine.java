@@ -25,12 +25,14 @@ public abstract class Engine implements Runnable {
 	protected Input input;
 	protected Screen screen;
 	private volatile boolean running;
+	private boolean showTimings;
 
 	public Engine(int width, int height, int scale) {
 		this.fps = 0;
 		this.ups = 0;
 		this.lastFps = 0;
 		this.lastUps = 0;
+		this.showTimings = true;
 		this.input = new Input();
 		this.screen = new Screen(this, width, height, scale);
 		Image2d.makeContext(screen);
@@ -44,6 +46,14 @@ public abstract class Engine implements Runnable {
 		Thread game = new Thread(this);
 		screen.setVisible(true);
 		game.start();
+	}
+	
+	public void showTimings(boolean b) {
+		this.showTimings = b;
+	}
+	
+	public boolean isShowTimings() {
+		return this.showTimings;
 	}
 
 	@Override
@@ -71,7 +81,7 @@ public abstract class Engine implements Runnable {
 			rsum += Time.getTime() - rstart;
 			ups++;
 			fps++;
-			if ((Time.getTime() - timer) >= 1) {
+			if (showTimings && (Time.getTime() - timer) >= 1) {
 				lastFps = fps;
 				lastUps = ups;
 				

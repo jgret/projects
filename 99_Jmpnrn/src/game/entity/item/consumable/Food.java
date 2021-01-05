@@ -26,6 +26,14 @@ public class Food extends Item {
 		this.rotteness = 0.0f;
 	}
 	
+	public Food(String name, String id, Image2d image, float health, float poison, float alcohol, float rotteness) {
+		super(name, id, image);
+		this.health = health;
+		this.poison = poison;
+		this.alcohol = alcohol;
+		this.rotteness = rotteness;
+	}
+	
 	public Food(Food food) {
 		super(food.getId(), food.getName(), food.getImage());
 		this.health = food.health;
@@ -68,7 +76,7 @@ public class Food extends Item {
 
 	@Override
 	public String toString() {
-		return getId() + ":" + getName() + " health: " + health + " poison: " + poison + " alcohol: " + alcohol + " rotteness: " + rotteness;
+		return getId() + ":" + getName() + " :: " + getPosition();
 	}
 
 	@Override
@@ -76,4 +84,14 @@ public class Food extends Item {
 		
 	}
 
+	@Override
+	public void onCollect(Entity e) {
+
+	}
+
+	@Override
+	public void onRemove(Entity e) {
+		
+	}
+	
 }

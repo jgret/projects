@@ -8,33 +8,31 @@
  *******************************************************/
 package game.gamestate;
 
+import java.awt.Color;
 import java.awt.Graphics2D;
 import java.awt.event.KeyEvent;
-import java.io.File;
-import java.io.IOException;
-
-import javax.imageio.ImageIO;
 
 import game.Game;
-import game.data.Rectangle;
-import game.data.Vector2;
+import game.entity.GameObject;
 import game.entity.Player;
-import game.entity.item.consumable.Food;
+import game.entity.enemy.Skeleton;
+import game.entity.item.Item;
 import game.graphics.Camera;
+import game.graphics.Images;
 import game.graphics.Screen;
-import game.graphics.Image2d;
 import game.io.FileIO;
 import game.io.Input;
 import game.level.World;
+import game.shape.Rectangle;
+import game.shape.Vector2;
 
 public class GameStatePlay extends GameState {
 
-    private World world;
-    private Game game;
-    private Player player;
-    private Screen screen;
-    private Input input;
-	
+	private World world;
+	private Player player;
+	private Screen screen;
+	private Input input;
+
 	public GameStatePlay(Game game) {
 		super(game);
 		this.screen = game.getScreen();
@@ -44,58 +42,145 @@ public class GameStatePlay extends GameState {
 	@Override
 	public void init() {
 		world = new World(game);
-    	world.load("default");
-    	world.init();
-    	
-    	Image2d player_img = null;
-		try {
-			player_img = new Image2d(ImageIO.read(new File("res/img/bacardi.png")));
-		} catch (IOException e) {
-			e.printStackTrace();
-		}
-		
-    	player = new Player(world, new Rectangle(3, 3, 1, 2.5), player_img);
-    	world.spawn(player, new Vector2(3, 3));
-    	screen.getCam().setTarget(player);
+		world.load("slopes");
+		world.init();
+
+		player = new Player(world, new Rectangle(3, 3, 1, 2.5), FileIO.loadImage("img/bacardi.png"));
+		world.spawn(player, world.getSpawnPoint());
+
+		Skeleton skelly = new Skeleton(world, new Rectangle(0, 0, 4, 2), FileIO.loadImage("img/skeleton.png"));
+		world.spawn(skelly, world.getSpawnPoint().sub(new Vector2(1, 0)));
+
+		//    	Platform platform = new Platform(world, new Rectangle(0, 0, 5, 1), Color.RED);
+		//    	world.spawn(platform, new Vector2(76, 42));
+
+		screen.getCam().setTarget(player);
 	}
 
 	@Override
 	public void update(double elapsedTime) {
 		globalHotKeys();
-    	world.update(elapsedTime);
-    	screen.getCam().update(elapsedTime);
-    }
-    
-    public void globalHotKeys() {
-    	if (input.keyPressed(KeyEvent.VK_F11)) {
-    		if (screen.isFullscreen()) {
-    			screen.leaveFullscreen();
-    		} else {
-    			screen.enterFullscreen();
-    		}
-    	}
-    	
-    	if (input.keyPressed(KeyEvent.VK_H)) {
-    		world.setShowHitboxes(!world.isShowHitboxes());
-    	}
-    	
-    	if (input.keyHeld(KeyEvent.VK_SHIFT)) {
-    		int scale = Screen.TILESIZE;
-    		scale += input.wheelRotations() * -1;
-    		Screen.TILESIZE = scale;
-    	}
-    	
-    	if (input.keyHeld(KeyEvent.VK_ENTER)) {
-    		Food food = new Food("Test", "game_test", FileIO.loadImage("img/game_apple.png"));
-    		food.set(0, 0, 0.5, 0.5);
-    		world.spawn(food, new Vector2(4, 4));
-    	}
-    	
-    }
+		world.update(elapsedTime);
+		screen.getCam().update(elapsedTime);
+	}
+
+	public void globalHotKeys() {
+		if (input.keyHeld(KeyEvent.VK_SHIFT)) {
+			int scale = Screen.TILESIZE;
+			scale += input.wheelRotations() * -1;
+			Screen.TILESIZE = scale;
+		}
+
+		if (input.keyPressed(KeyEvent.VK_ENTER)) {
+			Item item = game.getItems().get("game_jack_daniels");
+			world.spawn(item, world.getSpawnPoint());
+		}
+
+	}
 
 	@Override
 	public void draw(Graphics2D g2, Camera cam) {
 		world.draw(g2, cam);
+		//    	drawGrid(g2, Screen.TILESIZE, 50, 50, cam);
+		player.drawInfo(g2, cam);
+		drawPlayerInventory(g2, cam);
+		drawWorldInfo(g2, cam);
+		drawPlayerHealth(g2, cam);
+
 	}
-	
+
+	public void drawGrid(Graphics2D g2, int tilesize, int rows, int colls, Camera cam)  {
+
+		Graphics2D g3 = (Graphics2D) g2.create();
+		g3.setColor(Color.BLACK);
+		g3.translate(-cam.getPixelOffsetX(), -cam.getPixelOffsetY());
+		for (int i = 0; i < rows; i++) {
+			g3.drawRect(0, i * tilesize, colls * tilesize, tilesize);
+		}
+
+		for (int i = 0; i < colls; i++) {
+			g3.drawRect(i * tilesize, 0, tilesize, rows * tilesize);
+		}
+
+	}
+
+	public void drawPlayerInventory(Graphics2D g2, Camera cam) {
+
+		int size = 64;
+		int space = 5;
+
+		Item[] hotbar = player.getHotbar();
+
+		int hotbarlength = hotbar.length * size + (hotbar.length - 1) * space;
+		int offsetX = (int) (cam.getWidth() / 2 - hotbarlength / 2);
+		int offsetY = 25;
+
+		for (int i = 0; i < hotbar.length; i++) {
+
+			g2.setColor(Color.BLUE);
+
+			if (player.getMainhand() == i) {
+				g2.setColor(Color.YELLOW);
+			}
+
+			g2.fillRoundRect(offsetX + i * (size + space), offsetY, size, size, 10, 10);
+
+			Item item = hotbar[i];
+			if (item != null) {
+				item.getImage().draw(g2, offsetX + i * (size + space), offsetY, size, size);
+			}
+
+		}
+	}
+
+	public void drawPlayerHealth(Graphics2D g2, Camera cam) {
+
+		double health = player.getHealth();
+		double maxHealth = player.getMaxHealth();
+
+		int size = 48;
+		int space = 4;
+		int hearts = 10;
+
+		double percent = health / maxHealth;
+		double heartsToDraw = percent * hearts;
+
+		int totallength = hearts * size + (hearts - 1) * space;
+		int offsetX = (int) (cam.getWidth() / 2.0 - totallength / 2.0);
+		int offsetY = 100;
+
+		for (int i = 0; i < hearts; i++) {
+
+			if (i < (int) heartsToDraw) {
+				Images.HEART_FULL.draw(g2, offsetX + i * (size + space), offsetY, size, size);
+			} else if (i < heartsToDraw && i + 1 > heartsToDraw) {
+				if (heartsToDraw - (int)(heartsToDraw) >= 0.5) {
+					Images.HEART_HALF.draw(g2, offsetX + i * (size + space), offsetY, size, size);
+				} else {
+					Images.HEART_DEAD.draw(g2, offsetX + i * (size + space), offsetY, size, size);
+				}
+			} else {
+				Images.HEART_DEAD.draw(g2, offsetX + i * (size + space), offsetY, size, size);
+			}
+			
+		}
+	}
+
+	public void drawWorldInfo(Graphics2D  g2, Camera cam) {
+
+		int asize = world.getActors().size();
+		int dyLine = 15;
+		int width = 300;
+		g2.setColor(Color.BLUE);
+		g2.fillRoundRect((int) cam.getWidth() - width - 25, 25, width, dyLine * asize + 50, 10, 10);
+		g2.setColor(Color.WHITE);
+
+		g2.drawString("Actors size: " + asize, (float) cam.getWidth() - width, 50);
+		int i = 0; for (GameObject g : world.getActors()) {
+			g2.drawString("" + g, (float) cam.getWidth() - width, i * dyLine + 75);
+			i++;
+		}
+
+
+	}
 }

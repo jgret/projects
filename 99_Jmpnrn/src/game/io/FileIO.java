@@ -8,10 +8,12 @@
  *******************************************************/
 package game.io;
 
+import java.awt.image.BufferedImage;
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileReader;
 import java.io.IOException;
+import java.io.InputStream;
 import java.net.URL;
 
 import javax.imageio.ImageIO;
@@ -26,7 +28,7 @@ public class FileIO {
 	public static String read(String fname) {
 		String content = "";
 		try {
-			BufferedReader in = new BufferedReader(new FileReader(FileIO.class.getClassLoader().getResource(fname).getFile()));
+			BufferedReader in = new BufferedReader(new FileReader(getURL(fname).getFile().replaceAll("%20", " ")));
 			String line;
 			while ((line = in.readLine()) != null) {
 				content += line + "\n";
@@ -51,8 +53,22 @@ public class FileIO {
 		return img;
 	}
 	
+	public static BufferedImage loadBufferedImage(String name) {
+		try {
+			return ImageIO.read(getURL(name));
+		} catch (IOException e) {
+			System.err.println("ERROR Failed to load image " + name);
+			System.exit(0);
+		}
+		return null;
+	}
+	
 	public static URL getURL(String fname) {
 		return FileIO.class.getClassLoader().getResource(fname);
+	}
+	
+	public static InputStream getResourceAsStream(String fname) {
+		return FileIO.class.getClassLoader().getResourceAsStream(fname);
 	}
 
 }

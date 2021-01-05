@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <map version="1.4" tiledversion="1.4.3" orientation="orthogonal" renderorder="right-down" width="30" height="20" tilewidth="16" tileheight="16" infinite="0" nextlayerid="7" nextobjectid="33">
  <tileset firstgid="1" name="super_mario_16x16" tilewidth="16" tileheight="16" tilecount="924" columns="33">
-  <image source="D:/assets/super_mario_16x16.png" width="528" height="448"/>
+  <image source="../../../../../../../assets/super_mario_16x16.png" width="528" height="448"/>
  </tileset>
  <layer id="1" name="background" width="30" height="20" locked="1">
   <data encoding="csv">

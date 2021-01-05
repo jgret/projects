@@ -9,26 +9,22 @@
 package game.entity;
 
 import java.awt.Graphics2D;
+import java.awt.Shape;
+import java.security.SecureRandom;
 
 import game.Game;
-import game.data.Rectangle;
-import game.data.Vector2;
 import game.graphics.Camera;
 import game.graphics.Image2d;
 import game.graphics.Screen;
 import game.level.World;
+import game.shape.Rectangle;
+import game.shape.Vector2;
 import game.util.MathUtil;
 
 public abstract class GameObject extends Rectangle {
 
-	public static final double GRAVITY = 3.7;
-	public static final double FRICTION = 0.56;
-	
-	public static final int PUSHOUT_NONE = 0;
-	public static final int PUSHOUT_UP = 1;
-	public static final int PUSHOUT_DOWN = 2;
-	public static final int PUSHOUT_LEFT = 3;
-	public static final int PUSHOUT_RIGHT = 4;
+	public static final double GRAVITY = 9.81;
+	public static final double FRICTION = 3;
 	
 	protected Game game = Game.instance;
 	protected World worldIn;
@@ -37,8 +33,9 @@ public abstract class GameObject extends Rectangle {
 	protected int priority;
 	protected double friction;
 	protected double gravity;
-	protected boolean grounded;
 	protected boolean remove;
+	protected boolean slopeCollision;
+	protected boolean boxCollision;
 
 	public GameObject(World worldIn, Rectangle r, Image2d image) {
 		super(r);
@@ -48,12 +45,13 @@ public abstract class GameObject extends Rectangle {
 		this.vel = new Vector2(0, 0);
 		this.gravity = GRAVITY;
 		this.friction = FRICTION;
+		this.boxCollision = true;
+		this.slopeCollision = true;
 	}
 
 	@Override
 	public void draw(Graphics2D g2, Camera cam) {
 		image.draw(g2, getX() * Screen.TILESIZE - cam.getPixelOffsetX(), getY() * Screen.TILESIZE - cam.getPixelOffsetY(), getWidth() * Screen.TILESIZE, getHeight() * Screen.TILESIZE);
-		g2.drawRect((int) (this.getX() - cam.getPixelOffsetX() * Screen.TILESIZE), (int) (this.getY() * Screen.TILESIZE), (int) (this.getWidth() * Screen.TILESIZE), (int) (this.getHeight() * Screen.TILESIZE));
 	}
 
 	public void accelerate(Vector2 acc) {
@@ -61,59 +59,52 @@ public abstract class GameObject extends Rectangle {
 	}
 	
 	public void move(double elapsedTime) {
-		this.pos = pos.add(vel.mul(elapsedTime));
+		this.addPosition(vel.mul(elapsedTime));
 	}
 	
-	public void setGrounded(boolean grounded) {
-		this.grounded = grounded;
+	public void applyGravity(double elapsedTime) {
+		this.vel = this.vel.addY(gravity * elapsedTime);
 	}
 	
-	public boolean isGrounded() {
-		return this.grounded;
+	public void applyFriction(double elapsedTime) {
+
+		if (this.vel.getX() > 0) {
+			this.vel = this.vel.addX(-friction * elapsedTime);
+			if (this.vel.getX() < 0) {
+				this.vel.setX(0);
+			}
+		}
+		if (this.vel.getX() < 0) {
+			this.vel = this.vel.addX(friction * elapsedTime);
+			if (this.vel.getX() > 0) {
+				this.vel.setX(0);
+			}
+		}
+		
 	}
 	
 	public void update(double elapsedTime) {
-		this.move(elapsedTime);
-		vel = vel.mul(friction);
-		this.accelerate(new Vector2(0, gravity));
+
 	}
 	
-	public int pushout(Rectangle master) {
-		
-		double dxl, dxr, dyt, dyb;
-		dxl = Math.abs(this.getRight() - master.getLeft());
-		dxr = Math.abs(master.getRight() - this.getLeft());
-		dyt = Math.abs(this.getBot() - master.getTop());
-		dyb = Math.abs(master.getBot() - this.getTop());
-
-		if (MathUtil.min(dxl, dxr, dyt, dyb)) {
-			// collision left
-			this.getPos().x = master.getLeft() - this.getWidth();
-			return PUSHOUT_LEFT;
-		} else
-
-		if (MathUtil.min(dxr, dxl, dyt, dyb)) {
-			// collision right
-			this.getPos().x = master.getRight();
-			return PUSHOUT_RIGHT;
-		} else
-
-		if (MathUtil.min(dyt, dxr, dxl, dyb)) {
-			// collision top
-			this.getPos().y = master.getTop() - this.getHeight();
-			return PUSHOUT_UP;
-		} else
-
-		if (MathUtil.min(dyb, dxr, dyt, dxl)) {
-			// collision bot
-			this.getPos().y = master.getBot();
-			return PUSHOUT_DOWN;
-		}
-		
-		return 0;
+	public boolean isGrounded() {
+		return worldIn.checkCollision(getGroundeCheckBox());
 	}
 	
 	public abstract void onCollision(GameObject o);
+	public abstract void onOutOfWorld(World world);
+	
+	public Vector2 getSlopePoint() {
+		return new Vector2(this.getX() + this.getWidth() / 2, this.getBot() - 0.01);
+	}
+	
+	public Rectangle getGroundeCheckBox() {
+		return new Rectangle(this.getLeft(), this.getBot(), this.getWidth(), 0.1 / Screen.TILESIZE);
+	}
+	
+	public Vector2 getTopCollisionPoint() {
+		return new Vector2(this.getX() + this.getWidth() / 2, this.getY());
+	}
 	
 	public World getWorldIn() {
 		return worldIn;
@@ -134,7 +125,23 @@ public abstract class GameObject extends Rectangle {
 	public void setVel(Vector2 vel) {
 		this.vel = vel;
 	}
-
+	
+	public void setVelX(double x) {
+		this.vel.x = x;
+	}
+	
+	public void setVelY(double y) {
+		this.vel.y = y;
+	}
+	
+	public double getVelX() {
+		return this.vel.x;
+	}
+	
+	public double getVelY() {
+		return this.vel.y;
+	}
+	
 	public Game getGame() {
 		return game;
 	}
@@ -150,5 +157,37 @@ public abstract class GameObject extends Rectangle {
 	public void setRemove(boolean remove) {
 		this.remove = remove;
 	}
-	
+
+	public boolean isSlopeCollision() {
+		return slopeCollision;
+	}
+
+	public void setSlopeCollision(boolean slopeCollision) {
+		this.slopeCollision = slopeCollision;
+	}
+
+	public boolean isBoxCollision() {
+		return boxCollision;
+	}
+
+	public void setBoxCollision(boolean boxCollision) {
+		this.boxCollision = boxCollision;
+	}
+
+	public double getFriction() {
+		return friction;
+	}
+
+	public void setFriction(double friction) {
+		this.friction = friction;
+	}
+
+	public double getGravity() {
+		return gravity;
+	}
+
+	public void setGravity(double gravity) {
+		this.gravity = gravity;
+	}
+
 }

@@ -10,6 +10,7 @@ package game.graphics;
 
 import java.awt.Canvas;
 import java.awt.Dimension;
+import java.awt.Font;
 import java.awt.Frame;
 import java.awt.Graphics2D;
 import java.awt.event.ComponentEvent;
@@ -24,6 +25,10 @@ import game.Engine;
 
 public class Screen extends Canvas implements WindowListener, ComponentListener {
 
+	public static final Font FONT_SMALL = new Font("Monospaced Bold", Font.PLAIN, 10);
+	public static final Font FONT_MEDIUM = new Font("Monospaced Bold", Font.PLAIN, 20);
+	public static final Font FONT_LARGE = new Font("Monospaced Bold", Font.PLAIN, 30);
+	
 	public static int TILESIZE = 64;
 	private static final long serialVersionUID = 1L;
 	private Engine game;
@@ -71,6 +76,7 @@ public class Screen extends Canvas implements WindowListener, ComponentListener 
 
 	public void render() {
 		checkVBuffer();
+		cam.setDimensions(getWidth(), getHeight());
 		
 		Graphics2D g3 = (Graphics2D) vBuffer.getGraphics();
 		g3.clearRect(0, 0, getWidth(), getHeight());

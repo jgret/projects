@@ -1,7 +1,7 @@
 {
 	"food": [
 		{
-			"id": "game_apple",
+			"id": "game_apple_1",
 			"name": "Apple",
 			"img": "img/game_apple.png",
 			"bounds": {
@@ -15,12 +15,26 @@
 			"rotteness": 0
 		},
 		{
-			"id": "game_apple",
+			"id": "game_apple_2",
 			"name": "Apple",
 			"img": "img/game_apple.png",
 			"bounds": {
 				"width": 1,
 				"height": 1
+			},
+			"value": 100,
+			"health": 17,
+			"poison": 0,
+			"alcohol": 0,
+			"rotteness": 0
+		},
+		{
+			"id": "game_jack_daniels",
+			"name": "Jack Daniels",
+			"img": "img/game_jack_daniels.png",
+			"bounds": {
+				"width": 1,
+				"height": 2
 			},
 			"value": 100,
 			"health": 17,
