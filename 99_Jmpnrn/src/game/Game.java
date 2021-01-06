@@ -16,6 +16,7 @@ import game.gamestate.GameStateManager;
 import game.gamestate.GameStateHomeMenu;
 import game.gamestate.GameStateIntro;
 import game.gamestate.GameStatePlay;
+import game.gamestate.GameStateQuestion;
 import game.gamestate.GameStateTest;
 import game.gamestate.GameStateType;
 import game.graphics.Camera;
@@ -45,6 +46,7 @@ public class Game extends Engine {
     	gsm.register(GameStateType.PLAY, new GameStatePlay(this));
     	gsm.register(GameStateType.TEST, new GameStateTest(this));
     	gsm.register(GameStateType.INTRO, new GameStateIntro(this));
+    	gsm.register(GameStateType.QUESTION, new GameStateQuestion(this));
     	gsm.register(GameStateType.HOME_MENU, new GameStateHomeMenu(this));
     	gsm.init();
     	items.loadJSON("item/items.json");
@@ -75,6 +77,22 @@ public class Game extends Engine {
 
 	public Items getItems() {
 		return items;
+	}
+
+	public Questions getQuestions() {
+		return questions;
+	}
+
+	public void setQuestions(Questions questions) {
+		this.questions = questions;
+	}
+
+	public void setGsm(GameStateManager gsm) {
+		this.gsm = gsm;
+	}
+
+	public void setItems(Items items) {
+		this.items = items;
 	}
 	
 }

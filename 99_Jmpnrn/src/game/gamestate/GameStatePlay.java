@@ -74,6 +74,10 @@ public class GameStatePlay extends GameState {
 		if (input.keyPressed(KeyEvent.VK_ESCAPE)) {
 			gsm.changeGameState(GameStateType.HOME_MENU);
 		}
+		
+		if (input.keyPressed(KeyEvent.VK_I)) {
+			gsm.changeGameState(GameStateType.QUESTION);
+		}
 
 	}
 

@@ -21,4 +21,7 @@ public class Images {
 	public static final Image2d BACARDI = FileIO.loadImage("img/bacardi.png");
 	public static final Image2d MENU_BUTTON = FileIO.loadImage("img/ui/button.png");
 	
+	//Questions
+	public static final Image2d QUESTIONS_BG = FileIO.loadImage("img/ui/bg_black_hole.png");
+	
 }

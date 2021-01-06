@@ -17,11 +17,14 @@ import game.shape.Rectangle;
 public abstract class Item extends GameObject {
 		
 	private static long nextUid = 0;
-
+	
 	private String id;
 	private String name;
 	private float value;
 	private long uid;
+	
+	private boolean consumable;
+	private boolean dropable;
 	
 	public Item(String id, String name, Image2d image) {
 		super(null, new Rectangle(0, 0, 1, 1), image);
@@ -90,4 +93,20 @@ public abstract class Item extends GameObject {
 		return uid;
 	}
 
+	public boolean isConsumable() {
+		return consumable;
+	}
+
+	public void setConsumable(boolean consumable) {
+		this.consumable = consumable;
+	}
+
+	public boolean isDropable() {
+		return dropable;
+	}
+
+	public void setDropable(boolean dropable) {
+		this.dropable = dropable;
+	}
+	
 }
