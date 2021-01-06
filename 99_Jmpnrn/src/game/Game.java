@@ -13,6 +13,7 @@ import java.awt.event.KeyEvent;
 
 import game.entity.item.Items;
 import game.gamestate.GameStateManager;
+import game.gamestate.GameStateHomeMenu;
 import game.gamestate.GameStateIntro;
 import game.gamestate.GameStatePlay;
 import game.gamestate.GameStateTest;
@@ -39,6 +40,7 @@ public class Game extends Engine {
     	gsm.register(GameStateType.PLAY, new GameStatePlay(this));
     	gsm.register(GameStateType.TEST, new GameStateTest(this));
     	gsm.register(GameStateType.INTRO, new GameStateIntro(this));
+    	gsm.register(GameStateType.HOME_MENU, new GameStateHomeMenu(this));
     	gsm.init();
     	gsm.setGameState(GameStateType.INTRO);
     	items.loadJSON("item/items.json");

@@ -35,11 +35,11 @@ public class Image2d {
 	}
 	
 	public int getWidth() {
-		return this.img.getHeight();
+		return this.img.getWidth();
 	}
 	
 	public int getHeight() {
-		return this.img.getWidth();
+		return this.img.getHeight();
 	}
 
 	public Graphics2D createGraphics() {
@@ -94,6 +94,14 @@ public class Image2d {
 			}
 			g2.drawImage(img, (int) dx, (int) dy, (int) (dx + dw), (int) (dx + dh), (int) sx, (int) sy, (int) (sx + sw), (int) (sy + sh), null);
 		} while (img.contentsLost());
+	}
+	
+	public void drawCenter(Graphics2D g2, double x, double y, double width, double height) {
+		this.draw(g2, x - width / 2, y - height / 2, width, height);
+	}
+	
+	public void drawCenter(Graphics2D g2, double x, double y) {
+		this.draw(g2, x - getWidth() / 2, y - getHeight() / 2, getWidth(), getHeight());
 	}
 
 	public VolatileImage getImage() {
