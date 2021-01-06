@@ -8,5 +8,6 @@ public enum GameStateType {
 	HOME_MENU,
 	TEST,
 	INTRO,
+	QUESTION,
 
 }

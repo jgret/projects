@@ -14,6 +14,7 @@ import game.graphics.Camera;
 import game.graphics.Screen;
 import game.graphics.Image2d;
 import game.io.Input;
+import sound.SoundEngine;
 
 public abstract class Engine implements Runnable {
 
@@ -28,6 +29,7 @@ public abstract class Engine implements Runnable {
 	private boolean showTimings;
 
 	public Engine(int width, int height, int scale) {
+		SoundEngine.getInstance();
 		this.fps = 0;
 		this.ups = 0;
 		this.lastFps = 0;

@@ -18,9 +18,7 @@ public class GameServerTest {
 	
 	public static void main(String[] args) {
 		
-		byte[] b = new byte[0];
-		
-		Server server = new Server(4444);
+		Server server = new Server(5555);
 		
 		while (true) {
 			Packet p = server.getPackets().next();

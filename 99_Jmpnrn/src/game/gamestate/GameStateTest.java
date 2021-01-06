@@ -68,4 +68,16 @@ public class GameStateTest extends GameState {
 		g2.drawRect((int) rect2.getX(), (int) rect2.getY(), (int) rect2.getWidth(), (int) rect2.getHeight());
 	}
 
+	@Override
+	public void onStart() {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void onEnd() {
+		// TODO Auto-generated method stub
+		
+	}
+
 }

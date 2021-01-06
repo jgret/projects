@@ -19,11 +19,14 @@ import game.gamestate.GameStatePlay;
 import game.gamestate.GameStateTest;
 import game.gamestate.GameStateType;
 import game.graphics.Camera;
+import game.questions.Questions;
+import sound.SoundEngine;
 
 public class Game extends Engine {
 	
 	public static Game instance;
     private GameStateManager gsm;
+    private Questions questions;
     private Items items;
     private boolean timings = false;
     
@@ -31,18 +34,19 @@ public class Game extends Engine {
     	super(1280, 720, 64);
     	Game.instance = this;
     	this.showTimings(timings);
-    	this.gsm = new GameStateManager();
+    	this.gsm = new GameStateManager(GameStateType.INTRO);
     	this.items = new Items();
+    	this.questions = new Questions("db/questions.db");
     }
     
     @Override
     public void init() {
+    	SoundEngine.getInstance().load("sound/tracklist.trl");
     	gsm.register(GameStateType.PLAY, new GameStatePlay(this));
     	gsm.register(GameStateType.TEST, new GameStateTest(this));
     	gsm.register(GameStateType.INTRO, new GameStateIntro(this));
     	gsm.register(GameStateType.HOME_MENU, new GameStateHomeMenu(this));
     	gsm.init();
-    	gsm.setGameState(GameStateType.INTRO);
     	items.loadJSON("item/items.json");
     }
     

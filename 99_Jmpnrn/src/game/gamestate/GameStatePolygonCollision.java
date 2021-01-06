@@ -110,4 +110,16 @@ public class GameStatePolygonCollision extends GameState {
 		line.draw(g2, cam);
 	}
 
+	@Override
+	public void onStart() {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void onEnd() {
+		// TODO Auto-generated method stub
+		
+	}
+
 }

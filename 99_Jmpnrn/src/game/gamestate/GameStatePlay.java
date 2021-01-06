@@ -65,15 +65,14 @@ public class GameStatePlay extends GameState {
 	}
 
 	public void globalHotKeys() {
-		if (input.keyHeld(KeyEvent.VK_SHIFT)) {
-			int scale = Screen.TILESIZE;
-			scale += input.wheelRotations() * -1;
-			Screen.TILESIZE = scale;
-		}
 
 		if (input.keyPressed(KeyEvent.VK_ENTER)) {
 			Item item = game.getItems().get("game_jack_daniels");
 			world.spawn(item, world.getSpawnPoint());
+		}
+		
+		if (input.keyPressed(KeyEvent.VK_ESCAPE)) {
+			gsm.changeGameState(GameStateType.HOME_MENU);
 		}
 
 	}
@@ -182,5 +181,17 @@ public class GameStatePlay extends GameState {
 		}
 
 
+	}
+
+	@Override
+	public void onStart() {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void onEnd() {
+		// TODO Auto-generated method stub
+		
 	}
 }

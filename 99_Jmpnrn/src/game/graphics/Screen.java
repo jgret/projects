@@ -11,23 +11,30 @@ package game.graphics;
 import java.awt.Canvas;
 import java.awt.Dimension;
 import java.awt.Font;
+import java.awt.FontFormatException;
 import java.awt.Frame;
 import java.awt.Graphics2D;
+import java.awt.GraphicsEnvironment;
 import java.awt.event.ComponentEvent;
 import java.awt.event.ComponentListener;
 import java.awt.event.WindowEvent;
 import java.awt.event.WindowListener;
-import java.awt.geom.AffineTransform;
 import java.awt.image.BufferStrategy;
 import java.awt.image.VolatileImage;
+import java.io.IOException;
 
 import game.Engine;
+import game.io.FileIO;
 
 public class Screen extends Canvas implements WindowListener, ComponentListener {
 
 	public static final Font FONT_SMALL = new Font("Monospaced Bold", Font.PLAIN, 10);
 	public static final Font FONT_MEDIUM = new Font("Monospaced Bold", Font.PLAIN, 20);
 	public static final Font FONT_LARGE = new Font("Monospaced Bold", Font.PLAIN, 30);
+	
+	public static final Font PIXEL_FONT_SMALL = createFont("font/pixel_font_2.ttf").deriveFont(15f);
+	public static final Font PIXEL_FONT_MEDIUM = createFont("font/pixel_font_2.ttf").deriveFont(20f);
+	public static final Font PIXEL_FONT_LARGE = createFont("font/pixel_font_2.ttf").deriveFont(40f);
 	
 	public static int TILESIZE = 64;
 	private static final long serialVersionUID = 1L;
@@ -173,6 +180,17 @@ public class Screen extends Canvas implements WindowListener, ComponentListener 
 	@Override
 	public void windowDeactivated(WindowEvent e) {
 
+	}
+	
+	public static Font createFont(String file) {
+		try {
+			Font font = Font.createFont(Font.TRUETYPE_FONT, FileIO.getResourceAsStream(file));
+			GraphicsEnvironment.getLocalGraphicsEnvironment().registerFont(font);
+			return font;
+		} catch (FontFormatException | IOException e) {
+			e.printStackTrace();
+		}
+		return null;
 	}
 
 }

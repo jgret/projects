@@ -18,6 +18,7 @@ import game.graphics.Camera;
 import game.graphics.Image2d;
 import game.graphics.Images;
 import game.util.StringUtil;
+import sound.SoundEngine;
 
 public class GameStateIntro extends GameState {
 	private Image2d background = Images.HOLY_GRAIL;
@@ -36,10 +37,15 @@ public class GameStateIntro extends GameState {
 	boolean up = true;
 	
 	@Override
+	public void onStart() {
+		
+	}
+
+	@Override
 	public void update(double elapsedTime) {
 		
-		if (introTimer >= 5) {
-			game.getGsm().setGameState(GameStateType.HOME_MENU);
+		if (introTimer >= 0) {
+			game.getGsm().changeGameState(GameStateType.HOME_MENU);
 		} 
 		introTimer += elapsedTime;
 		
@@ -47,6 +53,11 @@ public class GameStateIntro extends GameState {
 
 	
 	
+	@Override
+	public void onEnd() {
+		
+	}
+
 	@Override
 	public void draw(Graphics2D g2, Camera cam) {
 //	    g2.setComposite(AlphaComposite.getInstance(AlphaComposite.SRC_OVER, alpha));

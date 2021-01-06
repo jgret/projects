@@ -20,16 +20,26 @@ public abstract class GameState implements Drawable {
 	}
 
 	/**
-	 * called once at start
+	 * called once at start of game
 	 */
 	public abstract void init();
 
+	/**
+	 * called once at start
+	 */
+	public abstract void onStart();
+	
 	/**
 	 * called every frame for update and logic 
 	 * @param elapsedTime length of the frame
 	 */
 	public abstract void update(double elapsedTime);
 
+	/**
+	 * called once at end 
+	 */
+	public abstract void onEnd();
+	
 	/**
 	 * called every frame to render to screen 
 	 * @param g2 the graphics component to draw
