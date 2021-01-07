@@ -33,7 +33,7 @@
 			"name": "Jack Daniels",
 			"img": "img/game_jack_daniels.png",
 			"bounds": {
-				"width": 1,
+				"width": 5,
 				"height": 2
 			},
 			"value": 100,

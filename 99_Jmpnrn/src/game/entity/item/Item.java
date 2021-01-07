@@ -75,7 +75,7 @@ public abstract class Item extends GameObject {
 	
 	@Override
 	public void onOutOfWorld(World world) {
-		this.remove = true;
+		this.setPosition(world.getSpawnPoint());
 	}
 	
 	@Override

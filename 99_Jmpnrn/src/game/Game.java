@@ -29,7 +29,7 @@ public class Game extends Engine {
     private GameStateManager gsm;
     private Questions questions;
     private Items items;
-    private boolean timings = false;
+    private boolean timings = true;
     
     public Game() { 
     	super(1280, 720, 64);

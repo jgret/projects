@@ -45,11 +45,9 @@ public class GameStateManager implements Drawable {
 	
 	public void changeGameState(GameStateType state) {
 		if (this.state != null) {
-			System.out.println(this.state + " onEnd()");
 			gameStates.get(this.state).onEnd();
 		}
 		this.state = state;
-		System.out.println(this.state + " onStart()");
 		this.gameStates.get(this.state).onStart();
 	}
 	

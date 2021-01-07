@@ -66,7 +66,7 @@ public class GameStatePlay extends GameState {
 
 	public void globalHotKeys() {
 
-		if (input.keyPressed(KeyEvent.VK_ENTER)) {
+		if (input.keyHeld(KeyEvent.VK_ENTER)) {
 			Item item = game.getItems().get("game_jack_daniels");
 			world.spawn(item, world.getSpawnPoint());
 		}
@@ -189,13 +189,11 @@ public class GameStatePlay extends GameState {
 
 	@Override
 	public void onStart() {
-		// TODO Auto-generated method stub
 		
 	}
 
 	@Override
 	public void onEnd() {
-		// TODO Auto-generated method stub
 		
 	}
 }

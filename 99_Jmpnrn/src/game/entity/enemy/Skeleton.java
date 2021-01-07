@@ -33,17 +33,17 @@ public class Skeleton extends Entity {
 	public void update(double elapsedTime) {
 		super.update(elapsedTime);
 		
-//		if (Time.getTime() - lastCrouchTime > 0.5) {
-//			
-//			if (sneaking) {
-//				standUp();
-//			} else {
-//				sneak();
-//			}
-//			
-//			lastCrouchTime = Time.getTime();
-//			
-//		}
+		if (Time.getTime() - lastCrouchTime > 1) {
+			
+			if (sneaking) {
+				standUp();
+			} else {
+				sneak();
+			}
+			
+			lastCrouchTime = Time.getTime();
+			
+		}
 		
 		if (Time.getTime() - walkTime > 2) {
 			
