@@ -29,6 +29,7 @@ public abstract class Engine implements Runnable {
 	private boolean showTimings;
 
 	public Engine(int width, int height, int scale) {
+		System.out.println("Hello World!");
 		SoundEngine.getInstance();
 		this.fps = 0;
 		this.ups = 0;
