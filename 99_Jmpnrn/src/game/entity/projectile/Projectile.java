@@ -6,57 +6,40 @@
  * Jmpnrn can not be copied and/or distributed without the express
  * permission of jgret
  *******************************************************/
-package game.entity.item;
+package game.entity.projectile;
 
-import java.awt.Graphics2D;
 import java.awt.Shape;
 
 import game.entity.Entity;
 import game.entity.GameObject;
-import game.graphics.Camera;
 import game.graphics.Image2d;
 import game.level.World;
+import game.shape.Rectangle;
 import game.shape.Vector2;
 
-public class NoItem extends Item {
-
-	public NoItem() {
-		super("game_noitem", "Nothing", new Image2d(1, 1));
-	}
-
-	@Override
-	public boolean onInteract(Entity e, Vector2 dir) {
-		return true;
-	}
-
-	@Override
-	public void onCollect(Entity e) {
-		
-	}
-
-	@Override
-	public void onRemove(Entity e) {
-		
+public abstract class Projectile extends GameObject{
+	
+	protected GameObject owner;
+	
+	public Projectile(Entity owner, Rectangle r, Image2d image, double vel, Vector2 dir) {
+		super(owner.getWorldIn(), r, image);
+		this.owner = owner;
+		this.setVel(dir.unitvectl(vel));
 	}
 	
 	@Override
-	public void update(double elapsedTime) {
-
-	}
-	
-	@Override
-	public void draw(Graphics2D g2, Camera cam) {
-
+	public void onCollision(GameObject o) {
+		if (o instanceof Entity) {
+			this.hitEntity((Entity) o);
+		}
 	}
 
 	@Override
 	public void onOutOfWorld(World world) {
 		this.remove = true;
 	}
-
-	@Override
-	public void onStaticCollision(Shape s) {
-		
-	}
+	
+	public abstract void hitEntity(Entity e);
+	
 
 }

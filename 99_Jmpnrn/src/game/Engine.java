@@ -47,7 +47,6 @@ public abstract class Engine implements Runnable {
 
 	public void start() {
 		Thread game = new Thread(this);
-		screen.setVisible(true);
 		game.start();
 	}
 	
@@ -65,7 +64,8 @@ public abstract class Engine implements Runnable {
 		running = true;
 
 		this.init();
-
+		this.screen.setVisible(true);
+		
 		double last = Time.getTime();
 		double timer = Time.getTime();
 		double usum = 0;

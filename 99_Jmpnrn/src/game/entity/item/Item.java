@@ -13,16 +13,18 @@ import game.entity.GameObject;
 import game.graphics.Image2d;
 import game.level.World;
 import game.shape.Rectangle;
+import game.shape.Vector2;
 
 public abstract class Item extends GameObject {
 		
 	private static long nextUid = 0;
-	
+
 	private String id;
 	private String name;
 	private float value;
 	private long uid;
 	
+	private boolean removeOnUse;
 	private boolean consumable;
 	private boolean dropable;
 	
@@ -59,7 +61,7 @@ public abstract class Item extends GameObject {
 		this.value = value;
 	}
 
-	public abstract void onInteract(Entity e);
+	public abstract boolean onInteract(Entity e, Vector2 dir);
 	public abstract void onCollect(Entity e);
 	public abstract void onRemove(Entity e);
 	
@@ -76,6 +78,11 @@ public abstract class Item extends GameObject {
 	@Override
 	public void onOutOfWorld(World world) {
 		this.setPosition(world.getSpawnPoint());
+	}
+	
+	@Override
+	public boolean shouldCollide(GameObject g) {
+		return false;
 	}
 	
 	@Override
@@ -107,6 +114,14 @@ public abstract class Item extends GameObject {
 
 	public void setDropable(boolean dropable) {
 		this.dropable = dropable;
+	}
+
+	public boolean isRemoveOnUse() {
+		return removeOnUse;
+	}
+
+	public void setRemoveOnUse(boolean removeOnUse) {
+		this.removeOnUse = removeOnUse;
 	}
 	
 }

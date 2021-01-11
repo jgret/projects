@@ -64,7 +64,6 @@ public class Screen extends Canvas implements WindowListener, ComponentListener 
 		strategy = getBufferStrategy();
 		createBackbuffer();
 		frame.setLocationRelativeTo(null);
-		frame.setVisible(true);
 	}
 	
 	public Engine getGame() {
@@ -180,6 +179,11 @@ public class Screen extends Canvas implements WindowListener, ComponentListener 
 	@Override
 	public void windowDeactivated(WindowEvent e) {
 
+	}
+	
+	@Override
+	public void setVisible(boolean b) {
+		frame.setVisible(b);
 	}
 	
 	public static Font createFont(String file) {

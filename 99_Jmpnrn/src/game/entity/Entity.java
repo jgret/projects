@@ -8,6 +8,8 @@
  *******************************************************/
 package game.entity;
 
+import java.awt.Shape;
+
 import game.entity.item.Item;
 import game.graphics.Image2d;
 import game.level.World;
@@ -22,6 +24,7 @@ public abstract class Entity extends GameObject {
 	
 	protected double health;
 	protected double maxHealth;
+	protected double alcohol;
 	
 	public Entity(World worldIn, Rectangle rect, Image2d image) {
 		super(worldIn, rect, image);
@@ -47,6 +50,16 @@ public abstract class Entity extends GameObject {
 	@Override
 	public void onOutOfWorld(World world) {
 		this.setPosition(world.getSpawnPoint());
+	}
+	
+	@Override
+	public boolean shouldCollide(GameObject g) {
+		return true;
+	}
+	
+	@Override
+	public void onStaticCollision(Shape s) {
+		
 	}
 	
 	public abstract void onItemAdd(Item item);
@@ -112,7 +125,11 @@ public abstract class Entity extends GameObject {
 	}
 	
 	public void looseHealth(double health) {
-		this.health = health;
+		this.health -= health;
+	}
+	
+	public void regenerateHealth(double health) {
+		this.health += health;
 	}
 
 	public double getMaxHealth() {
@@ -124,7 +141,19 @@ public abstract class Entity extends GameObject {
 	}
 	
 	public boolean isDead() {
-		return this.health < 0;
+		return this.health <= 0;
+	}
+
+	public double getAlcohol() {
+		return alcohol;
+	}
+
+	public void setAlcohol(double alcohol) {
+		this.alcohol = alcohol;
+	}
+	
+	public void drinkAlcohol(double alcohol) {
+		this.alcohol += alcohol;
 	}
 	
 }

@@ -9,5 +9,8 @@ public enum GameStateType {
 	TEST,
 	INTRO,
 	QUESTION,
+	SHOP,
+	GAMEOVER,
+	SETTINGS
 
 }

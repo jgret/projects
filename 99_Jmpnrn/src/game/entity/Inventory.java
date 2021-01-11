@@ -21,7 +21,7 @@ public class Inventory {
 		this.inventory = new Item[size];
 		this.entity = e;
 	}
-	
+
 	public boolean add(Item item) {
 		for (int i = 0; i < inventory.length; i++) {
 			if (inventory[i] == null) {
@@ -30,21 +30,23 @@ public class Inventory {
 				return true;
 			}
 		}
-		
+
 		return false;
 	}
-	
+
 	public boolean remove(Item item) {
 		for (int i = 0; i < inventory.length; i++) {
-			if (inventory[i].equals(item)) {
-				inventory[i] = null;
-				entity.onItemRemove(inventory[i]);
-				return true;
+			if (inventory[i] != null) {
+				if (inventory[i].equals(item)) {
+					inventory[i] = null;
+					entity.onItemRemove(inventory[i]);
+					return true;
+				}
 			}
 		}
 		return false;
 	}
-	
+
 	public Item remove(String id) {
 		for (int i = 0; i < inventory.length; i++) {
 			if (inventory[i].getId().equals(id)) {
@@ -56,7 +58,7 @@ public class Inventory {
 		}
 		return null;
 	}
-	
+
 	public Item[] getInventory() {
 		return inventory;
 	}
@@ -64,5 +66,5 @@ public class Inventory {
 	public void setInventory(Item[] inventory) {
 		this.inventory = inventory;
 	}
-	
+
 }

@@ -8,9 +8,12 @@
  *******************************************************/
 package game.entity.item.consumable;
 
+import java.awt.Shape;
+
 import game.entity.Entity;
 import game.entity.item.Item;
 import game.graphics.Image2d;
+import game.shape.Vector2;
 
 public class Food extends Item {
 	private float health;
@@ -80,8 +83,11 @@ public class Food extends Item {
 	}
 
 	@Override
-	public void onInteract(Entity e) {
-		
+	public boolean onInteract(Entity e, Vector2 dir) {
+		e.regenerateHealth(health * rotteness);
+		e.looseHealth(poison);
+		e.drinkAlcohol(alcohol);
+		return true;
 	}
 
 	@Override
@@ -91,6 +97,16 @@ public class Food extends Item {
 
 	@Override
 	public void onRemove(Entity e) {
+		
+	}
+
+	@Override
+	public void update(double elapsedTime) {
+		super.update(elapsedTime);
+	}
+
+	@Override
+	public void onStaticCollision(Shape s) {
 		
 	}
 	

@@ -10,12 +10,12 @@ package game.questions;
 
 import game.graphics.Image2d;
 
-public class Questionair {
+public class Questionaire {
 	
 	private String name;
 	private Image2d img;
 	
-	public Questionair(String name, Image2d img) {
+	public Questionaire(String name, Image2d img) {
 		this.name = name;
 		this.img = img;
 	}

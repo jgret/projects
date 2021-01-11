@@ -36,6 +36,7 @@ public abstract class GameObject extends Rectangle {
 	protected boolean remove;
 	protected boolean slopeCollision;
 	protected boolean boxCollision;
+	protected boolean solid;
 
 	public GameObject(World worldIn, Rectangle r, Image2d image) {
 		super(r);
@@ -91,6 +92,8 @@ public abstract class GameObject extends Rectangle {
 		return worldIn.checkCollision(getGroundeCheckBox());
 	}
 	
+	public abstract boolean shouldCollide(GameObject g);
+	public abstract void onStaticCollision(Shape s);
 	public abstract void onCollision(GameObject o);
 	public abstract void onOutOfWorld(World world);
 	
@@ -124,6 +127,11 @@ public abstract class GameObject extends Rectangle {
 
 	public void setVel(Vector2 vel) {
 		this.vel = vel;
+	}
+	
+	public void setVel(double x, double y) {
+		this.vel.x = x;
+		this.vel.y = y;
 	}
 	
 	public void setVelX(double x) {
@@ -190,4 +198,12 @@ public abstract class GameObject extends Rectangle {
 		this.gravity = gravity;
 	}
 
+	public boolean isSolid() {
+		return solid;
+	}
+
+	public void setSolid(boolean solid) {
+		this.solid = solid;
+	}
+	
 }

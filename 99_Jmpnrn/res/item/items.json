@@ -33,13 +33,13 @@
 			"name": "Jack Daniels",
 			"img": "img/game_jack_daniels.png",
 			"bounds": {
-				"width": 5,
-				"height": 2
+				"width": 1,
+				"height": 1
 			},
 			"value": 100,
-			"health": 17,
-			"poison": 0,
-			"alcohol": 0,
+			"health": 0,
+			"poison": 5,
+			"alcohol": 4,
 			"rotteness": 0
 		}
 	]

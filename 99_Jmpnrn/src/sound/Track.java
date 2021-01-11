@@ -89,7 +89,6 @@ public class Track {
 	
 	public void setVolume(float v) {
 		volume.setValue(v);
-		long stopTime = System.currentTimeMillis();
 	}
 	
 	public void sleep(double millis) {

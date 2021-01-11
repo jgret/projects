@@ -6,16 +6,15 @@
  * Jmpnrn can not be copied and/or distributed without the express
  * permission of jgret
  *******************************************************/
-package main;
+package game.entity.item.weapon;
 
-import game.Game;
+import game.entity.item.Item;
+import game.graphics.Image2d;
 
-public class Main {
+public abstract class Weapon extends Item {
 
-    public static void main(String[] args) {
-        Game game = new Game();
-        
-        game.start();
-    }
+	public Weapon(String id, String name, Image2d image) {
+		super(id, name, image);
+	}
 
 }

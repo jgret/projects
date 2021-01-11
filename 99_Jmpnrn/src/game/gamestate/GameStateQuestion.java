@@ -18,19 +18,18 @@ import javax.swing.JOptionPane;
 import game.Game;
 import game.graphics.Camera;
 import game.graphics.Image2d;
-import game.graphics.Images;
 import game.graphics.Screen;
 import game.io.FileIO;
 import game.questions.Question;
-import game.questions.Questionair;
+import game.questions.Questionaire;
 import game.questions.Questions;
 import sound.SoundEngine;
 
 public class GameStateQuestion extends GameState implements Runnable {
 	
 	private Image2d background;
-	private ArrayList<Questionair> questionairs;
-	private Questionair questionair;
+	private ArrayList<Questionaire> questionairs;
+	private Questionaire questionair;
 	private Questions questions;
 	private Question question;
 	private volatile boolean done; 
@@ -45,9 +44,9 @@ public class GameStateQuestion extends GameState implements Runnable {
 	@Override
 	public void init() {
 		this.background = FileIO.loadImage("img/ui/bg_hell.png");
-		questionairs.add(new Questionair("The Big Yellow Brain", FileIO.loadImage("img/questionairs/brain_yellow.png")));
-		questionairs.add(new Questionair("The Big Green Brain", FileIO.loadImage("img/questionairs/brain_green.png")));
-		questionairs.add(new Questionair("The Big Red Brain", FileIO.loadImage("img/questionairs/brain_red.png")));
+		questionairs.add(new Questionaire("The Big Yellow Brain", FileIO.loadImage("img/questionairs/brain_yellow.png")));
+		questionairs.add(new Questionaire("The Big Green Brain", FileIO.loadImage("img/questionairs/brain_green.png")));
+		questionairs.add(new Questionaire("The Big Red Brain", FileIO.loadImage("img/questionairs/brain_red.png")));
 	}
 
 	@Override

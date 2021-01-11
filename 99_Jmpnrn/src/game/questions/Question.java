@@ -21,10 +21,7 @@ public class Question {
 	}
 	
 	public boolean isCorrect(String answer) {
-		if (solution.equals(answer)) {
-			return true;
-		}
-		return false;
+		return solution.equals(answer);
 	}
 	
 	public String getQuestion() {

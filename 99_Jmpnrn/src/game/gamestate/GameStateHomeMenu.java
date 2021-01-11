@@ -109,7 +109,6 @@ public class GameStateHomeMenu extends GameState {
 	@Override
 	public void draw(Graphics2D g2, Camera cam) {
 
-//				g2.setXORMode(new Color(red, green, blue));
 		background.draw(g2, 0, 0, cam.getWidth(), cam.getHeight());
 		bacardi.drawCenter(g2, cam.getWidth() / 2, cam.getHeight() / 2);
 

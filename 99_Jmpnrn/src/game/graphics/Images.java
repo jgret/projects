@@ -23,5 +23,6 @@ public class Images {
 	
 	//Questions
 	public static final Image2d QUESTIONS_BG = FileIO.loadImage("img/ui/bg_black_hole.png");
+	public static final Image2d ARROW = FileIO.loadImage("img/game_arrow.png");
 	
 }

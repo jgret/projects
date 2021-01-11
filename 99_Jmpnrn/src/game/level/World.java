@@ -13,7 +13,6 @@ import java.awt.Graphics2D;
 import java.awt.event.KeyEvent;
 import java.io.InputStream;
 import java.util.ArrayList;
-import java.util.Collections;
 
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
@@ -23,10 +22,8 @@ import org.w3c.dom.Element;
 import org.w3c.dom.NodeList;
 
 import game.Game;
-import game.entity.Entity;
 import game.entity.GameObject;
 import game.entity.Player;
-import game.entity.item.Item;
 import game.graphics.Camera;
 import game.graphics.Drawable;
 import game.graphics.Image2d;
@@ -47,6 +44,7 @@ public class World implements Drawable {
 	private ArrayList<Rectangle> collisionRectangles;
 	private ArrayList<Polygon2D> collisionPolygons; 
 	private ArrayList<GameObject> actors;
+	private ArrayList<GameObject> newActorQueue;
 	private Image2d worldImageBuffer;
 	private TiledTileSet tilesets;
 	private Player player;
@@ -67,6 +65,7 @@ public class World implements Drawable {
 		this.collisionPolygons = new ArrayList<>();
 		this.collisionRectangles = new ArrayList<>();
 		this.actors = new ArrayList<>();
+		this.newActorQueue = new ArrayList<>();
 		this.input = game.getInput();
 		this.showHitboxes = false;
 		this.drawWorld = true;
@@ -197,6 +196,13 @@ public class World implements Drawable {
 	public void update(double elapsedTime) {
 		this.input();
 		
+		if (newActorQueue.size() > 0) {
+			for (GameObject actor : newActorQueue) {
+				this.actors.add(actor);
+			}
+			newActorQueue.clear();
+		}
+		
 		//Update GameObjects
 		for (GameObject actor : actors) {
 			actor.update(elapsedTime);
@@ -212,20 +218,23 @@ public class World implements Drawable {
 			for (GameObject actor2 : actors) {
 				if (actor != actor2) {
 					if (actor.intersects(actor2)) {
-						int predictedPosition = actor.predictPositionOf(actor2);
 						
-						if (predictedPosition == GameObject.POS_UP) {
-							actor2.setY(actor.getTop() - actor2.getHeight());
-						} else if (predictedPosition == GameObject.POS_LEFT) {
-							actor2.setX(actor.getLeft() - actor2.getWidth());
-							actor2.setVelX(actor.getVelX());
-						} else if (predictedPosition == GameObject.POS_RIGHT) {
-							actor2.setX(actor.getRight());
-							actor2.setVelX(actor.getVelX());
-						} else if (predictedPosition == GameObject.POS_DOWN) {
-							actor.setY(actor2.getTop() - actor.getHeight());
-							actor.setVelY(actor2.getVelY());
-							actor.addPosition(actor2.getVel().mul(elapsedTime));
+						if (actor.shouldCollide(actor2) && actor2.shouldCollide(actor)) {
+							int predictedPosition = actor.predictPositionOf(actor2);
+
+							if (predictedPosition == GameObject.POS_UP) {
+								actor2.setY(actor.getTop() - actor2.getHeight());
+							} else if (predictedPosition == GameObject.POS_LEFT) {
+								actor2.setX(actor.getLeft() - actor2.getWidth());
+								actor2.setVelX(actor.getVelX());
+							} else if (predictedPosition == GameObject.POS_RIGHT) {
+								actor2.setX(actor.getRight());
+								actor2.setVelX(actor.getVelX());
+							} else if (predictedPosition == GameObject.POS_DOWN) {
+								actor.setY(actor2.getTop() - actor.getHeight());
+								actor.setVelY(actor2.getVelY());
+								actor.addPosition(actor2.getVel().mul(elapsedTime));
+							}
 						}
 						
 						actor.onCollision(actor2);
@@ -242,7 +251,8 @@ public class World implements Drawable {
 					Vector2 topPoint = actor.getTopCollisionPoint();
 
 					if (poly.contains(topPoint)) {
-
+						
+						actor.onStaticCollision(poly);
 						while (poly.contains(topPoint)) {
 							actor.setY(actor.getY() + (1.0 / (double) Screen.TILESIZE));
 							topPoint = actor.getTopCollisionPoint();
@@ -252,17 +262,18 @@ public class World implements Drawable {
 
 						if (poly.getBounds().contains(slopePoint)) {
 							slopeCollision = true;
-						}
 
-						if (poly.contains(slopePoint)) {
-							actor.setBoxCollision(false);
+							if (poly.contains(slopePoint)) {
+								actor.onStaticCollision(poly);								
+								actor.setBoxCollision(false);
 
-							Line line = poly.getNearestSideToPoint(actor.getSlopePoint());
-							Vector2 contact = line.getNormalContactPoint(actor.getSlopePoint());
+								Line line = poly.getNearestSideToPoint(actor.getSlopePoint());
+								Vector2 contact = line.getNormalContactPoint(actor.getSlopePoint());
 
-							if (contact.isFinite()) {
-								actor.setY(contact.getY() - actor.getHeight());
-								actor.getVel().setY(0);
+								if (contact.isFinite()) {
+									actor.setY(contact.getY() - actor.getHeight());
+									actor.getVel().setY(0);
+								}
 							}
 						}
 
@@ -276,6 +287,7 @@ public class World implements Drawable {
 			
 			for (Rectangle rect : collisionRectangles) {
 				if (rect.intersects(actor)) {
+					actor.onStaticCollision(rect);
 					if (actor.isBoxCollision()) {
 						int dir = actor.predictPositionOf(rect);
 						if (dir == GameObject.POS_DOWN) {
@@ -431,6 +443,15 @@ public class World implements Drawable {
 			this.player = (Player) g;
 		}
 		this.actors.add(g);
+	}
+	
+	public void spawnQueue(GameObject g, Vector2 pos) {
+		g.setWorldIn(this);
+		g.setPosition(pos);
+		if (g instanceof Player) {
+			this.player = (Player) g;
+		}
+		this.newActorQueue.add(g);
 	}
 
 	public boolean outOfWorld(GameObject g) {

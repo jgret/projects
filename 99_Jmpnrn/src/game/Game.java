@@ -13,14 +13,19 @@ import java.awt.event.KeyEvent;
 
 import game.entity.item.Items;
 import game.gamestate.GameStateManager;
+import game.gamestate.GameStateGameOver;
 import game.gamestate.GameStateHomeMenu;
 import game.gamestate.GameStateIntro;
 import game.gamestate.GameStatePlay;
 import game.gamestate.GameStateQuestion;
+import game.gamestate.GameStateSettings;
+import game.gamestate.GameStateShop;
 import game.gamestate.GameStateTest;
 import game.gamestate.GameStateType;
 import game.graphics.Camera;
+import game.graphics.Screen;
 import game.questions.Questions;
+import game.shape.Vector2;
 import sound.SoundEngine;
 
 public class Game extends Engine {
@@ -29,7 +34,7 @@ public class Game extends Engine {
     private GameStateManager gsm;
     private Questions questions;
     private Items items;
-    private boolean timings = true;
+    private boolean timings = false;
     
     public Game() { 
     	super(1280, 720, 64);
@@ -43,11 +48,15 @@ public class Game extends Engine {
     @Override
     public void init() {
     	SoundEngine.getInstance().load("sound/tracklist.trl");
+    	SoundEngine.getInstance().setGlobalVolume(-40.0f);
     	gsm.register(GameStateType.PLAY, new GameStatePlay(this));
-    	gsm.register(GameStateType.TEST, new GameStateTest(this));
+    	gsm.register(GameStateType.TEST, new GameStateTest(this)); 
     	gsm.register(GameStateType.INTRO, new GameStateIntro(this));
     	gsm.register(GameStateType.QUESTION, new GameStateQuestion(this));
     	gsm.register(GameStateType.HOME_MENU, new GameStateHomeMenu(this));
+    	gsm.register(GameStateType.SHOP, new GameStateShop(this));
+    	gsm.register(GameStateType.GAMEOVER, new GameStateGameOver(this));
+    	gsm.register(GameStateType.SETTINGS, new GameStateSettings(this));
     	gsm.init();
     	items.loadJSON("item/items.json");
     }
@@ -93,6 +102,10 @@ public class Game extends Engine {
 
 	public void setItems(Items items) {
 		this.items = items;
+	}
+	
+	public Vector2 getMouseLocationOnScreen() {
+		return input.getPoint().mul(1 / (double) (Screen.TILESIZE)).add(screen.getCam().getPosition());
 	}
 	
 }

@@ -17,6 +17,7 @@ import game.entity.GameObject;
 import game.entity.Player;
 import game.entity.enemy.Skeleton;
 import game.entity.item.Item;
+import game.entity.item.weapon.Bow;
 import game.graphics.Camera;
 import game.graphics.Images;
 import game.graphics.Screen;
@@ -32,11 +33,14 @@ public class GameStatePlay extends GameState {
 	private Player player;
 	private Screen screen;
 	private Input input;
+	
+	private boolean showActors;
 
 	public GameStatePlay(Game game) {
 		super(game);
 		this.screen = game.getScreen();
 		this.input = game.getInput();
+		this.showActors = false;
 	}
 
 	@Override
@@ -45,23 +49,28 @@ public class GameStatePlay extends GameState {
 		world.load("slopes");
 		world.init();
 
+		Bow bow = new Bow("game_bow", "Bow", FileIO.loadImage("img/game_bow.png"));
 		player = new Player(world, new Rectangle(3, 3, 1, 2.5), FileIO.loadImage("img/bacardi.png"));
+		player.addItem(bow);
 		world.spawn(player, world.getSpawnPoint());
 
 		Skeleton skelly = new Skeleton(world, new Rectangle(0, 0, 4, 2), FileIO.loadImage("img/skeleton.png"));
 		world.spawn(skelly, world.getSpawnPoint().sub(new Vector2(1, 0)));
-
+		
 		//    	Platform platform = new Platform(world, new Rectangle(0, 0, 5, 1), Color.RED);
 		//    	world.spawn(platform, new Vector2(76, 42));
 
 		screen.getCam().setTarget(player);
 	}
-
+	
 	@Override
 	public void update(double elapsedTime) {
 		globalHotKeys();
 		world.update(elapsedTime);
 		screen.getCam().update(elapsedTime);
+		float speed = 1f;
+
+		
 	}
 
 	public void globalHotKeys() {
@@ -78,16 +87,24 @@ public class GameStatePlay extends GameState {
 		if (input.keyPressed(KeyEvent.VK_I)) {
 			gsm.changeGameState(GameStateType.QUESTION);
 		}
+		
+		if (input.keyPressed(KeyEvent.VK_F1)) {
+			this.showActors = !showActors;
+		}
 
 	}
 
 	@Override
 	public void draw(Graphics2D g2, Camera cam) {
+		
+//		g2.setXORMode(new Color(red, green, blue));
 		world.draw(g2, cam);
 		//    	drawGrid(g2, Screen.TILESIZE, 50, 50, cam);
 		player.drawInfo(g2, cam);
 		drawPlayerInventory(g2, cam);
-		drawWorldInfo(g2, cam);
+		if (showActors) {
+			drawWorldInfo(g2, cam);
+		}
 		drawPlayerHealth(g2, cam);
 
 	}

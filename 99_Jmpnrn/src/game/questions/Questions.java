@@ -8,11 +8,15 @@
  *******************************************************/
 package game.questions;
 
+import java.io.File;
+import java.net.URL;
 import java.sql.DriverManager;
 import java.sql.ResultSet;
 import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.Random;
+
+import javax.swing.JOptionPane;
 
 import org.sqlite.SQLiteConnection;
 
@@ -24,19 +28,20 @@ public class Questions {
 	private Random random;
 	
 	public Questions(String fname) {
-		this.questions = readFromDB(fname);
+		this.questions = readFromDataBase(fname);
 		this.random = new Random();
 	}
 	
-	private Question[] readFromDB(String fname) {
+	private Question[] readFromDataBase(String fname) {
 		ArrayList<Question> questions = new ArrayList<Question>();
 		SQLiteConnection c = null;
 		Statement stmt = null;
 		try {
 			Class.forName("org.sqlite.JDBC");
+			System.out.println("jdbc:sqlite:" + fname + " : " + new File(fname));
 			c = (SQLiteConnection) DriverManager.getConnection("jdbc:sqlite:" + FileIO.getURL(fname).getFile());
 			c.setAutoCommit(false);
-			System.out.println(fname + ".db: opened  successfully");
+			System.out.println(fname + ": opened  successfully");
 
 			stmt = c.createStatement();
 			ResultSet rs = stmt.executeQuery( "SELECT * FROM FRAGEN;" );
@@ -62,6 +67,19 @@ public class Questions {
 	
 	public Question next() {
 		return questions[random.nextInt(questions.length)];
+	}
+	
+	public static void main(String[] args) {
+		Questions questions = new Questions("db/questions.db");
+		Question question = questions.next();
+		String answer = JOptionPane.showInputDialog(null, question.getQuestion(), "Question", 3);
+		
+		if (question.isCorrect(answer)) {
+			System.out.println("Richtig");
+		} else {
+			System.out.println("Falsch");
+		}
+		
 	}
 	
 }

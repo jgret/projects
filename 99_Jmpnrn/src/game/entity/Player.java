@@ -14,8 +14,7 @@ import java.awt.event.KeyEvent;
 
 import game.Time;
 import game.entity.item.Item;
-import game.entity.item.NoItem;
-import game.entity.platform.Platform;
+import game.gamestate.GameStateType;
 import game.graphics.Camera;
 import game.graphics.Image2d;
 import game.io.Input;
@@ -30,7 +29,6 @@ public class Player extends Entity {
 	private int mainhand;
 	private double jumpStartTime = -0xABC;
 	private double maxJumpTime = 0.1;
-	private boolean startJumping;
 
 	public Player(World worldIn, Rectangle rect, Image2d image) {
 		super(worldIn, rect, image);
@@ -42,59 +40,76 @@ public class Player extends Entity {
 	public void update(double elapsedTime) {
 		super.update(elapsedTime);
 
-		if (input.keyHeld(KeyEvent.VK_A)) {
-			this.accelerate(new Vector2(-5 * elapsedTime, 0));
-		}
+		if (!isDead()) {
 
-		if (input.keyHeld(KeyEvent.VK_D)) {
-			this.accelerate(new Vector2(5 * elapsedTime, 0));
-		}
+			if (input.keyHeld(KeyEvent.VK_A)) {
+				this.accelerate(new Vector2(-5 * elapsedTime, 0));
+			}
 
-		if (input.keyPressed(KeyEvent.VK_SPACE) && isGrounded()) {
-			jumpStartTime = Time.getTime();
-		}
+			if (input.keyHeld(KeyEvent.VK_D)) {
+				this.accelerate(new Vector2(5 * elapsedTime, 0));
+			}
 
-		if (jumpStartTime > 0) {
-			if ((Time.getTime() - jumpStartTime) > maxJumpTime && isGrounded()) {
-				jump(1);
+			if (input.keyPressed(KeyEvent.VK_SPACE) && isGrounded()) {
+				jumpStartTime = Time.getTime();
+			}
+
+			if (jumpStartTime > 0) {
+				if ((Time.getTime() - jumpStartTime) > maxJumpTime && isGrounded()) {
+					jump(1);
+					jumpStartTime = -0xABC;
+				}
+			}
+
+			if (input.keyReleased(KeyEvent.VK_SPACE) && isGrounded()) {
+				double intensity = (Time.getTime() - jumpStartTime) / maxJumpTime;
+
+				if (intensity <= 1 && intensity >= 0) {
+					jump(intensity);
+				}
 				jumpStartTime = -0xABC;
 			}
-		}
 
-		if (input.keyReleased(KeyEvent.VK_SPACE) && isGrounded()) {
-			double intensity = (Time.getTime() - jumpStartTime) / maxJumpTime;
-
-			if (intensity <= 1 && intensity >= 0) {
-				jump(intensity);
-			}
-			jumpStartTime = -0xABC;
-		}
-
-		if (input.keyPressed(KeyEvent.VK_SHIFT)) {
-			this.setHeight(1);
-			this.addPosition(0, 1.5);
-		}
-
-		if (input.keyReleased(KeyEvent.VK_SHIFT)) {
-			this.setHeight(2.5);
-			this.addPosition(0, -1.5);
-		}
-
-		int mouseCycle = input.wheelRotations();
-		if (mouseCycle != 0) {
-
-			while (mouseCycle < 0) {
-				mouseCycle++;
-				hotbarCycleRight();
+			if (input.keyPressed(KeyEvent.VK_SHIFT)) {
+				this.setHeight(1);
+				this.addPosition(0, 1.5);
 			}
 
-			while (mouseCycle > 0) {
-				mouseCycle--;
-				hotbarCycleLeft();
+			if (input.keyReleased(KeyEvent.VK_SHIFT)) {
+				this.setHeight(2.5);
+				this.addPosition(0, -1.5);
 			}
 
+			int mouseCycle = input.wheelRotations();
+			if (mouseCycle != 0) {
+
+				while (mouseCycle < 0) {
+					mouseCycle++;
+					hotbarCycleLeft();
+				}
+
+				while (mouseCycle > 0) {
+					mouseCycle--;
+					hotbarCycleRight();
+				}
+
+			}
+			
+			if (input.mousePressed(0)) {
+				Item item = hotbar[mainhand];
+				if (item != null) {
+					if(item.onInteract(this, game.getMouseLocationOnScreen().sub(this.getCenter()))) {
+						if (item.isRemoveOnUse()) {
+							this.inventory.remove(item);
+							this.hotbar[mainhand] = null;
+							this.hotbarCycleRight();
+						}
+					}
+				}
+			}
+		} else {
+			game.getGsm().changeGameState(GameStateType.GAMEOVER);
 		}
-		
 	}
 
 	@Override
@@ -122,10 +137,12 @@ public class Player extends Entity {
 
 	@Override
 	public void onItemRemove(Item item) {
-		for (int i = 0; i < hotbar.length; i++) {
-			if (hotbar[i].compare(item)) {
-				hotbar[i] = null;
-				break;
+		if (item != null) {
+			for (int i = 0; i < hotbar.length; i++) {
+				if (hotbar[i].compare(item)) {
+					hotbar[i] = null;
+					break;
+				}
 			}
 		}
 	}
@@ -166,14 +183,14 @@ public class Player extends Entity {
 		return false;
 	}
 
-	public void hotbarCycleLeft() {
+	public void hotbarCycleRight() {
 		this.mainhand++;
 		if (this.mainhand >= hotbar.length) {
 			mainhand = 0;
 		}
 	}
 
-	public void hotbarCycleRight() {
+	public void hotbarCycleLeft() {
 		this.mainhand--;
 		if (this.mainhand < 0) {
 			mainhand = hotbar.length - 1;

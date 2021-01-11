@@ -6,27 +6,33 @@
  * Jmpnrn can not be copied and/or distributed without the express
  * permission of jgret
  *******************************************************/
-package game.entity.item;
+package game.entity.item.weapon;
 
-import java.awt.Graphics2D;
 import java.awt.Shape;
 
 import game.entity.Entity;
-import game.entity.GameObject;
-import game.graphics.Camera;
+import game.entity.projectile.Arrow;
 import game.graphics.Image2d;
 import game.level.World;
 import game.shape.Vector2;
 
-public class NoItem extends Item {
+public class Bow extends Weapon {
 
-	public NoItem() {
-		super("game_noitem", "Nothing", new Image2d(1, 1));
+	public Bow(String id, String name, Image2d image) {
+		super(id, name, image);
 	}
 
 	@Override
 	public boolean onInteract(Entity e, Vector2 dir) {
-		return true;
+		World world = e.getWorldIn();
+		Arrow arrow = new Arrow(e, 10, dir);
+		world.spawnQueue(arrow, e.getCenter());
+		return false;
+	}
+	
+	@Override
+	public void update(double elapsedTime) {
+		super.update(elapsedTime);
 	}
 
 	@Override
@@ -37,21 +43,6 @@ public class NoItem extends Item {
 	@Override
 	public void onRemove(Entity e) {
 		
-	}
-	
-	@Override
-	public void update(double elapsedTime) {
-
-	}
-	
-	@Override
-	public void draw(Graphics2D g2, Camera cam) {
-
-	}
-
-	@Override
-	public void onOutOfWorld(World world) {
-		this.remove = true;
 	}
 
 	@Override

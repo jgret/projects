@@ -10,6 +10,7 @@ package game.entity.platform;
 
 import java.awt.Color;
 import java.awt.Graphics2D;
+import java.awt.Shape;
 
 import game.Time;
 import game.entity.GameObject;
@@ -70,6 +71,17 @@ public class Platform extends GameObject {
 	@Override
 	public String toString() {
 		return "Platform " + getPosition() + " " + getVel();
+	}
+
+	@Override
+	public boolean shouldCollide(GameObject g) {
+		return true;
+	}
+
+	@Override
+	public void onStaticCollision(Shape s) {
+		// TODO Auto-generated method stub
+		
 	}
 
 }

@@ -8,6 +8,8 @@
  *******************************************************/
 package game.entity.enemy;
 
+import java.awt.Shape;
+
 import game.Time;
 import game.entity.Entity;
 import game.entity.GameObject;
@@ -90,6 +92,11 @@ public class Skeleton extends Entity {
 
 	@Override
 	public void onDead() {
+		
+	}
+
+	@Override
+	public void onStaticCollision(Shape s) {
 		
 	}
 	

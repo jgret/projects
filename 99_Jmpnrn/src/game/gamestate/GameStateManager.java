@@ -34,7 +34,7 @@ public class GameStateManager implements Drawable {
 	}
 	
 	public void init() {
-		
+		System.out.println("Initializing Game States");
 		Iterator<GameStateType> states = gameStates.keySet().iterator();
 		while (states.hasNext()) {
 			GameState state = gameStates.get(states.next());
