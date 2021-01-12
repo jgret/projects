@@ -20,11 +20,13 @@ import game.shape.Vector2;
 public abstract class Projectile extends GameObject{
 	
 	protected GameObject owner;
+	private double damage;
 	
-	public Projectile(Entity owner, Rectangle r, Image2d image, double vel, Vector2 dir) {
+	public Projectile(Entity owner, Rectangle r, Image2d image, double vel, Vector2 dir, double damage) {
 		super(owner.getWorldIn(), r, image);
 		this.owner = owner;
 		this.setVel(dir.unitvectl(vel));
+		this.damage = damage;
 	}
 	
 	@Override
@@ -40,6 +42,21 @@ public abstract class Projectile extends GameObject{
 	}
 	
 	public abstract void hitEntity(Entity e);
-	
 
+	public GameObject getOwner() {
+		return owner;
+	}
+
+	public void setOwner(GameObject owner) {
+		this.owner = owner;
+	}
+
+	public double getDamage() {
+		return damage;
+	}
+
+	public void setDamage(double damage) {
+		this.damage = damage;
+	}
+	
 }

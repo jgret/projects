@@ -92,7 +92,7 @@ public class Skeleton extends Entity {
 
 	@Override
 	public void onDead() {
-		
+		this.remove = true;
 	}
 
 	@Override

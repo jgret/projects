@@ -11,32 +11,18 @@ package game.entity.item.weapon;
 import java.awt.Shape;
 
 import game.entity.Entity;
-import game.entity.projectile.Arrow;
 import game.graphics.Image2d;
-import game.level.World;
 import game.shape.Vector2;
 
-public class Bow extends Weapon {
+public class Sword extends Weapon {
 
-	public Bow(String id, String name, Image2d image) {
-		super(id, name, image, 10, 0.1);
+	public Sword(String id, String name, Image2d image, double damage, double cooldown) {
+		super(id, name, image, damage, cooldown);
 	}
 
 	@Override
 	public boolean onInteract(Entity e, Vector2 dir) {
-		if (isReady()) {
-			this.startCooldown();
-			World world = e.getWorldIn();
-			Arrow arrow = new Arrow(e, 20, dir, 10);
-			world.spawnQueue(arrow, e.getCenter());
-			return true;
-		}
 		return false;
-	}
-	
-	@Override
-	public void update(double elapsedTime) {
-		super.update(elapsedTime);
 	}
 
 	@Override

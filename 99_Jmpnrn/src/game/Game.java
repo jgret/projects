@@ -10,12 +10,19 @@ package game;
 
 import java.awt.Graphics2D;
 import java.awt.event.KeyEvent;
+import java.io.DataInputStream;
+import java.io.DataOutputStream;
+import java.io.File;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.net.URL;
 
 import game.entity.item.Items;
-import game.gamestate.GameStateManager;
 import game.gamestate.GameStateGameOver;
 import game.gamestate.GameStateHomeMenu;
 import game.gamestate.GameStateIntro;
+import game.gamestate.GameStateManager;
 import game.gamestate.GameStatePlay;
 import game.gamestate.GameStateQuestion;
 import game.gamestate.GameStateSettings;
@@ -24,6 +31,7 @@ import game.gamestate.GameStateTest;
 import game.gamestate.GameStateType;
 import game.graphics.Camera;
 import game.graphics.Screen;
+import game.io.FileIO;
 import game.questions.Questions;
 import game.shape.Vector2;
 import sound.SoundEngine;
@@ -42,7 +50,44 @@ public class Game extends Engine {
     	this.showTimings(timings);
     	this.gsm = new GameStateManager(GameStateType.INTRO);
     	this.items = new Items();
-    	this.questions = new Questions("db/questions.db");
+    	
+    	URL url = FileIO.getURL("db/questions.db");
+    	File db = new File(url.getFile());
+    	if (db.exists()) {
+    		System.out.println("SQLite Database exists, no need to install");
+    		this.questions = new Questions("db/questions.db");
+    	} else {
+    		try {
+    			System.out.println("SQLite Database doesn't exist, installing now");
+    			InputStream input = FileIO.getResourceAsStream("db/questions.db");
+
+    			File copy = new File("questions.db");
+    			if(copy.exists())
+    			{
+    				copy.delete();
+    			}
+
+    			copy.createNewFile();
+    			DataInputStream din = new DataInputStream(input);
+    			DataOutputStream dout = new DataOutputStream(new FileOutputStream(copy));
+    			int c;
+    			c = 1;
+    			while(c!=-1)
+    			{
+    				c = din.read();
+    				dout.write(c);
+    			}
+    			
+    			din.close();
+    			dout.flush();
+    			dout.close();
+    		} catch (IOException e) {
+    			e.printStackTrace();
+    		}
+
+			this.questions = new Questions("questions.db");
+    	}
+    	
     }
     
     @Override

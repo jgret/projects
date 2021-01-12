@@ -124,7 +124,7 @@ public abstract class Entity extends GameObject {
 		this.health = health;
 	}
 	
-	public void looseHealth(double health) {
+	public void loseHealth(double health) {
 		this.health -= health;
 	}
 	

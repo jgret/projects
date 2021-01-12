@@ -45,11 +45,8 @@ public class Screen extends Canvas implements WindowListener, ComponentListener 
 	private BufferStrategy strategy;
 	private VolatileImage vBuffer;
 
-	private int scale;
-	
 	public Screen(Engine game, int width, int height, int scale) {
 		this.setPreferredSize(new Dimension(width, height));
-		this.scale = scale;
 		this.game = game;
 		this.cam = new Camera(this, 0, 0, width, height);
 		this.setFocusable(true);

@@ -216,7 +216,7 @@ public class World implements Drawable {
 			
 			boolean slopeCollision = false;
 			for (GameObject actor2 : actors) {
-				if (actor != actor2) {
+				if (actor != actor2 && !actor.isRemove() && !actor2.isRemove()) {
 					if (actor.intersects(actor2)) {
 						
 						if (actor.shouldCollide(actor2) && actor2.shouldCollide(actor)) {

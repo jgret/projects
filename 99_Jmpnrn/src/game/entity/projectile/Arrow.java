@@ -20,8 +20,8 @@ import game.shape.Vector2;
 
 public class Arrow extends Projectile {
 	
-	public Arrow(Entity owner, double vel, Vector2 dir) {
-		super(owner, new Rectangle(vel, vel, 0.5, 0.5), Images.ARROW, vel, dir);
+	public Arrow(Entity owner, double vel, Vector2 dir, double damage) {
+		super(owner, new Rectangle(vel, vel, 0.5, 0.5), Images.ARROW, vel, dir, damage);
 		this.setGravity(9.81);
 		this.setFriction(0.10);
 	}
@@ -37,6 +37,7 @@ public class Arrow extends Projectile {
 	@Override
 	public void hitEntity(Entity e) {
 		if (!e.equals(owner)) {
+			e.loseHealth(this.getDamage());
 			this.remove = true;
 		}
 		

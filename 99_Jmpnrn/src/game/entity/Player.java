@@ -29,7 +29,7 @@ public class Player extends Entity {
 	private int mainhand;
 	private double jumpStartTime = -0xABC;
 	private double maxJumpTime = 0.1;
-
+	
 	public Player(World worldIn, Rectangle rect, Image2d image) {
 		super(worldIn, rect, image);
 		this.input = game.getInput();
@@ -39,7 +39,7 @@ public class Player extends Entity {
 	@Override
 	public void update(double elapsedTime) {
 		super.update(elapsedTime);
-
+		
 		if (!isDead()) {
 
 			if (input.keyHeld(KeyEvent.VK_A)) {

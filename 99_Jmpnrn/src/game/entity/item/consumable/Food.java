@@ -27,6 +27,7 @@ public class Food extends Item {
 		this.poison = 0.0f;
 		this.alcohol = 0.0f;
 		this.rotteness = 0.0f;
+		this.setRemoveOnUse(true);
 	}
 	
 	public Food(String name, String id, Image2d image, float health, float poison, float alcohol, float rotteness) {
@@ -35,6 +36,7 @@ public class Food extends Item {
 		this.poison = poison;
 		this.alcohol = alcohol;
 		this.rotteness = rotteness;
+		this.setRemoveOnUse(true);
 	}
 	
 	public Food(Food food) {
@@ -43,6 +45,7 @@ public class Food extends Item {
 		this.poison = food.poison;
 		this.alcohol = food.alcohol;
 		this.rotteness = food.rotteness;
+		this.setRemoveOnUse(true);
 	}
 	
 	public float getHealth() {
@@ -85,7 +88,7 @@ public class Food extends Item {
 	@Override
 	public boolean onInteract(Entity e, Vector2 dir) {
 		e.regenerateHealth(health * rotteness);
-		e.looseHealth(poison);
+		e.loseHealth(poison);
 		e.drinkAlcohol(alcohol);
 		return true;
 	}

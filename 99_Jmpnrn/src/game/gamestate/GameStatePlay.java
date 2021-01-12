@@ -54,7 +54,7 @@ public class GameStatePlay extends GameState {
 		player.addItem(bow);
 		world.spawn(player, world.getSpawnPoint());
 
-		Skeleton skelly = new Skeleton(world, new Rectangle(0, 0, 4, 2), FileIO.loadImage("img/skeleton.png"));
+		Skeleton skelly = new Skeleton(world, new Rectangle(0, 0, 1, 2), FileIO.loadImage("img/skeleton.png"));
 		world.spawn(skelly, world.getSpawnPoint().sub(new Vector2(1, 0)));
 		
 		//    	Platform platform = new Platform(world, new Rectangle(0, 0, 5, 1), Color.RED);
@@ -69,15 +69,13 @@ public class GameStatePlay extends GameState {
 		world.update(elapsedTime);
 		screen.getCam().update(elapsedTime);
 		float speed = 1f;
-
 		
 	}
 
 	public void globalHotKeys() {
 
-		if (input.keyHeld(KeyEvent.VK_ENTER)) {
-			Item item = game.getItems().get("game_jack_daniels");
-			world.spawn(item, world.getSpawnPoint());
+		if (input.keyPressed(KeyEvent.VK_ENTER)) {
+			world.spawn(new Skeleton(world, new Rectangle(0, 0, 4, 2), FileIO.loadImage("img/skeleton.png")), world.getSpawnPoint());
 		}
 		
 		if (input.keyPressed(KeyEvent.VK_ESCAPE)) {

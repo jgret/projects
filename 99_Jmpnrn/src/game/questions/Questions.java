@@ -38,7 +38,6 @@ public class Questions {
 		Statement stmt = null;
 		try {
 			Class.forName("org.sqlite.JDBC");
-			System.out.println("jdbc:sqlite:" + fname + " : " + new File(fname));
 			c = (SQLiteConnection) DriverManager.getConnection("jdbc:sqlite:" + FileIO.getURL(fname).getFile());
 			c.setAutoCommit(false);
 			System.out.println(fname + ": opened  successfully");
@@ -68,18 +67,5 @@ public class Questions {
 	public Question next() {
 		return questions[random.nextInt(questions.length)];
 	}
-	
-	public static void main(String[] args) {
-		Questions questions = new Questions("db/questions.db");
-		Question question = questions.next();
-		String answer = JOptionPane.showInputDialog(null, question.getQuestion(), "Question", 3);
-		
-		if (question.isCorrect(answer)) {
-			System.out.println("Richtig");
-		} else {
-			System.out.println("Falsch");
-		}
-		
-	}
-	
+
 }
