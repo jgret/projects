@@ -16,13 +16,13 @@ import javax.imageio.ImageIO;
 
 import game.io.FileIO;
 
-public class Tileset {
+public class TileSet {
 
 	private Image2d[][] tiles;
 	private int tileset_rows;
 	private int tileset_colls;
 
-	public Tileset(String filename, int tilesize) {
+	public TileSet(String filename, int tilesize) {
 
 		BufferedImage img = FileIO.loadBufferedImage(filename);
 		this.tileset_rows = img.getHeight() / tilesize;
@@ -37,7 +37,7 @@ public class Tileset {
 		}
 	}
 	
-	public Tileset(String filename, int tilesizex, int tilesizey) {
+	public TileSet(String filename, int tilesizex, int tilesizey) {
 
 		BufferedImage img = FileIO.loadBufferedImage(filename);
 		this.tileset_rows = img.getHeight() / tilesizey;

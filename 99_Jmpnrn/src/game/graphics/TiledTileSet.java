@@ -10,15 +10,15 @@ package game.graphics;
 
 public class TiledTileSet {
 
-	private Tileset[] sets;
+	private TileSet[] sets;
 	
 	public TiledTileSet() {
-		this.sets = new Tileset[0];
+		this.sets = new TileSet[0];
 	}
 	
-	public void addTileset(Tileset t) {
+	public void addTileset(TileSet t) {
 		int length = sets.length + 1;
-		Tileset[] newSets = new Tileset[length];
+		TileSet[] newSets = new TileSet[length];
 		
 		for (int i = 0; i < sets.length; i++) {
 			newSets[i] = sets[i];

@@ -31,7 +31,7 @@ import game.graphics.Drawable;
 import game.graphics.Image2d;
 import game.graphics.Screen;
 import game.graphics.TiledTileSet;
-import game.graphics.Tileset;
+import game.graphics.TileSet;
 import game.io.FileIO;
 import game.io.Input;
 import game.shape.Line;
@@ -110,7 +110,7 @@ public class World implements Drawable {
 				String fname = parts[parts.length - 1];
 				System.out.println("Loading tileset: " + fname);
 				int tilesettilesize = Integer.parseInt(tileset.getAttribute("tilewidth"));
-				this.tilesets.addTileset(new Tileset("img/" + fname, tilesettilesize));
+				this.tilesets.addTileset(new TileSet("img/" + fname, tilesettilesize));
 			}
 
 			// read layers
@@ -185,7 +185,7 @@ public class World implements Drawable {
 								rheight = (rheight / (double) tilesize);
 
 								Rectangle rect = new Rectangle(rx, ry, rwidth, rheight);
-								Tileset doors = new Tileset("img/world_doors_32x32.png", 64, 96);
+								TileSet doors = new TileSet("img/world_doors_32x32.png", 64, 96);
 								Door door = new Door(this, rect, doors.get(0), data.split(":")[1]);
 								this.spawn(door, rect.getPosition());
 								
