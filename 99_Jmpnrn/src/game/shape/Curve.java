@@ -23,7 +23,7 @@
  *
  */
 
-package jdkbug;
+package game.shape;
 
 import java.awt.geom.IllegalPathStateException;
 import java.awt.geom.PathIterator;

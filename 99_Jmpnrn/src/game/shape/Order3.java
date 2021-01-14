@@ -23,7 +23,7 @@
  *
  */
 
-package jdkbug;
+package game.shape;
 
 import java.awt.geom.PathIterator;
 import java.awt.geom.QuadCurve2D;
