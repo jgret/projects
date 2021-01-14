@@ -38,4 +38,20 @@ public abstract class Weapon extends Item {
 		return false;
 	}
 
+	public double getDamage() {
+		return damage;
+	}
+
+	public void setDamage(double damage) {
+		this.damage = damage;
+	}
+
+	public double getCooldown() {
+		return cooldown;
+	}
+
+	public void setCooldown(double cooldown) {
+		this.cooldown = cooldown;
+	}
+	
 }

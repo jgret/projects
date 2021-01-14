@@ -8,9 +8,14 @@
  *******************************************************/
 package game.entity.item;
 
+import java.awt.Color;
+import java.awt.Font;
+import java.awt.Graphics2D;
+
 import game.entity.Entity;
 import game.entity.GameObject;
 import game.graphics.Image2d;
+import game.graphics.Screen;
 import game.level.World;
 import game.shape.Rectangle;
 import game.shape.Vector2;
@@ -70,8 +75,9 @@ public abstract class Item extends GameObject {
 		if (o instanceof Entity) {
 			Entity entity = (Entity) o;
 			World world = entity.getWorldIn();
-			world.remove(this);
-			entity.addItem(this);
+			if (entity.addItem(this)) {
+				world.remove(this);
+			}
 		}
 	}
 	
@@ -122,6 +128,14 @@ public abstract class Item extends GameObject {
 
 	public void setRemoveOnUse(boolean removeOnUse) {
 		this.removeOnUse = removeOnUse;
+	}
+
+	public void drawInfo(Graphics2D g2, int x, int y) {
+		g2.setColor(Color.WHITE);
+		g2.setFont(Screen.FONT_SMALL.deriveFont(13f).deriveFont(Font.BOLD));
+		g2.drawString(name, x + 10, y);
+		g2.drawString("Value: " + value, x + 10, y + 13);
+		g2.drawString("UID: " + uid, x + 10, y + 26);
 	}
 	
 }

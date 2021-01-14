@@ -14,12 +14,20 @@ import game.entity.Entity;
 import game.entity.projectile.Arrow;
 import game.graphics.Image2d;
 import game.level.World;
+import game.shape.Rectangle;
 import game.shape.Vector2;
 
 public class Bow extends Weapon {
+	
+	private Image2d arrowImage;
+	private Rectangle arrowBounds;
+	private double vel;
 
-	public Bow(String id, String name, Image2d image) {
-		super(id, name, image, 10, 0.1);
+	public Bow(String id, String name, Image2d image, Image2d arrow, Rectangle bounds, double vel, double damage, double duaration) {
+		super(id, name, image, damage, duaration);
+		this.arrowImage = arrow;
+		this.arrowBounds = bounds;
+		this.vel = vel;
 	}
 
 	@Override
@@ -27,8 +35,13 @@ public class Bow extends Weapon {
 		if (isReady()) {
 			this.startCooldown();
 			World world = e.getWorldIn();
-			Arrow arrow = new Arrow(e, 20, dir, 10);
-			world.spawnQueue(arrow, e.getCenter());
+			Arrow arrow = new Arrow(e, vel, dir, getDamage());
+			arrow.setRect(arrowBounds);
+			arrow.setImage(arrowImage);
+			Vector2 pos = e.getCenter();
+			pos.setX(pos.getX() -arrow.getWidth() / 2);
+			pos.setY(pos.getY() -arrow.getHeight() / 2);
+			world.spawnQueue(arrow, pos);
 			return true;
 		}
 		return false;

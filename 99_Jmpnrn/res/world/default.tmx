@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<map version="1.4" tiledversion="1.4.3" orientation="orthogonal" renderorder="right-down" width="30" height="20" tilewidth="16" tileheight="16" infinite="0" nextlayerid="7" nextobjectid="33">
+<map version="1.4" tiledversion="1.4.3" orientation="orthogonal" renderorder="right-down" width="30" height="20" tilewidth="16" tileheight="16" infinite="0" nextlayerid="10" nextobjectid="35">
  <tileset firstgid="1" name="super_mario_16x16" tilewidth="16" tileheight="16" tilecount="924" columns="33">
-  <image source="../../../../../../../assets/super_mario_16x16.png" width="528" height="448"/>
+  <image source="../img/super_mario_16x16.png" width="528" height="448"/>
  </tileset>
  <layer id="1" name="background" width="30" height="20" locked="1">
   <data encoding="csv">
@@ -51,6 +51,18 @@
 0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0
 </data>
  </layer>
+ <objectgroup id="9" name="doors">
+  <object id="34" x="32" y="80" width="48" height="64">
+   <properties>
+    <property name="data" value="door:slopes"/>
+   </properties>
+  </object>
+ </objectgroup>
+ <objectgroup id="7" name="spawnpoints">
+  <object id="33" type="spawnpoint" x="288" y="208">
+   <point/>
+  </object>
+ </objectgroup>
  <objectgroup id="3" name="collision">
   <properties>
    <property name="collision" type="bool" value="true"/>

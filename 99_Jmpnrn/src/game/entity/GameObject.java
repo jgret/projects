@@ -10,7 +10,6 @@ package game.entity;
 
 import java.awt.Graphics2D;
 import java.awt.Shape;
-import java.security.SecureRandom;
 
 import game.Game;
 import game.graphics.Camera;
@@ -19,12 +18,11 @@ import game.graphics.Screen;
 import game.level.World;
 import game.shape.Rectangle;
 import game.shape.Vector2;
-import game.util.MathUtil;
 
 public abstract class GameObject extends Rectangle {
 
-	public static final double GRAVITY = 9.81;
-	public static final double FRICTION = 3;
+	public static final double GRAVITY = 12;
+	public static final double FRICTION = 10;
 	
 	protected Game game = Game.instance;
 	protected World worldIn;
@@ -36,6 +34,7 @@ public abstract class GameObject extends Rectangle {
 	protected boolean remove;
 	protected boolean slopeCollision;
 	protected boolean boxCollision;
+	protected boolean staticCollision;
 	protected boolean solid;
 
 	public GameObject(World worldIn, Rectangle r, Image2d image) {
@@ -48,6 +47,7 @@ public abstract class GameObject extends Rectangle {
 		this.friction = FRICTION;
 		this.boxCollision = true;
 		this.slopeCollision = true;
+		this.staticCollision = true;
 	}
 
 	@Override
@@ -68,7 +68,6 @@ public abstract class GameObject extends Rectangle {
 	}
 	
 	public void applyFriction(double elapsedTime) {
-
 		if (this.vel.getX() > 0) {
 			this.vel = this.vel.addX(-friction * elapsedTime);
 			if (this.vel.getX() < 0) {
@@ -204,6 +203,22 @@ public abstract class GameObject extends Rectangle {
 
 	public void setSolid(boolean solid) {
 		this.solid = solid;
+	}
+
+	public boolean isStaticCollision() {
+		return staticCollision;
+	}
+
+	public void setStaticCollision(boolean staticCollision) {
+		this.staticCollision = staticCollision;
+	}
+
+	public void setGame(Game game) {
+		this.game = game;
+	}
+
+	public void setImage(Image2d image) {
+		this.image = image;
 	}
 	
 }

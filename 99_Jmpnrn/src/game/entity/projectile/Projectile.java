@@ -19,7 +19,7 @@ import game.shape.Vector2;
 
 public abstract class Projectile extends GameObject{
 	
-	protected GameObject owner;
+	protected Entity owner;
 	private double damage;
 	
 	public Projectile(Entity owner, Rectangle r, Image2d image, double vel, Vector2 dir, double damage) {
@@ -32,7 +32,11 @@ public abstract class Projectile extends GameObject{
 	@Override
 	public void onCollision(GameObject o) {
 		if (o instanceof Entity) {
-			this.hitEntity((Entity) o);
+			Entity e = (Entity) o;
+			if (!this.getOwner().equals(e)) {
+				this.hitEntity(e);
+				e.onHit(this);
+			}
 		}
 	}
 
@@ -43,11 +47,11 @@ public abstract class Projectile extends GameObject{
 	
 	public abstract void hitEntity(Entity e);
 
-	public GameObject getOwner() {
+	public Entity getOwner() {
 		return owner;
 	}
 
-	public void setOwner(GameObject owner) {
+	public void setOwner(Entity owner) {
 		this.owner = owner;
 	}
 

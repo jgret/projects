@@ -24,7 +24,7 @@ public class Tileset {
 
 	public Tileset(String filename, int tilesize) {
 
-		BufferedImage img = FileIO.loadBufferedImage("img/" + filename);
+		BufferedImage img = FileIO.loadBufferedImage(filename);
 		this.tileset_rows = img.getHeight() / tilesize;
 		this.tileset_colls = img.getWidth() / tilesize;
 		this.tiles = new Image2d[tileset_rows][tileset_colls];
@@ -35,7 +35,21 @@ public class Tileset {
 				tiles[row][coll] = new Image2d(subImage);
 			}
 		}
+	}
+	
+	public Tileset(String filename, int tilesizex, int tilesizey) {
 
+		BufferedImage img = FileIO.loadBufferedImage(filename);
+		this.tileset_rows = img.getHeight() / tilesizey;
+		this.tileset_colls = img.getWidth() / tilesizex;
+		this.tiles = new Image2d[tileset_rows][tileset_colls];
+
+		for (int row = 0; row < tileset_rows; row++) {
+			for (int coll = 0; coll < tileset_colls; coll++) {
+				BufferedImage subImage = img.getSubimage(coll * tilesizex, row * tilesizey, tilesizex, tilesizey);
+				tiles[row][coll] = new Image2d(subImage);
+			}
+		}
 	}
 
 	public Image2d get(int n) {

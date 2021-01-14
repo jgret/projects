@@ -28,8 +28,8 @@ public class Items {
 		this.items = new HashMap<>();
 	}
 	
-	public void register(String id, Item item) {
-		this.items.put(id, item);
+	public void register(Item item) {
+		this.items.put(item.getId(), item);
 	}
 	
 	public void loadJSON(String json) {

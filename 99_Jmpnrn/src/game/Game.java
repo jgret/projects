@@ -17,7 +17,9 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.URL;
+import java.util.HashMap;
 
+import game.entity.Player;
 import game.entity.item.Items;
 import game.gamestate.GameStateGameOver;
 import game.gamestate.GameStateHomeMenu;
@@ -32,7 +34,9 @@ import game.gamestate.GameStateType;
 import game.graphics.Camera;
 import game.graphics.Screen;
 import game.io.FileIO;
+import game.level.World;
 import game.questions.Questions;
+import game.shape.Rectangle;
 import game.shape.Vector2;
 import sound.SoundEngine;
 
@@ -42,7 +46,9 @@ public class Game extends Engine {
     private GameStateManager gsm;
     private Questions questions;
     private Items items;
+    private Player player;
     private boolean timings = false;
+    private HashMap<String, World> levels;
     
     public Game() { 
     	super(1280, 720, 64);
@@ -87,11 +93,13 @@ public class Game extends Engine {
 
 			this.questions = new Questions("questions.db");
     	}
+    	this.levels = new HashMap<>();
     	
     }
     
     @Override
     public void init() {
+    	
     	SoundEngine.getInstance().load("sound/tracklist.trl");
     	SoundEngine.getInstance().setGlobalVolume(-40.0f);
     	gsm.register(GameStateType.PLAY, new GameStatePlay(this));
@@ -151,6 +159,14 @@ public class Game extends Engine {
 	
 	public Vector2 getMouseLocationOnScreen() {
 		return input.getPoint().mul(1 / (double) (Screen.TILESIZE)).add(screen.getCam().getPosition());
+	}
+
+	public HashMap<String, World> getLevels() {
+		return levels;
+	}
+
+	public void setLevels(HashMap<String, World> levels) {
+		this.levels = levels;
 	}
 	
 }

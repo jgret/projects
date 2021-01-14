@@ -14,6 +14,7 @@ import java.awt.event.KeyEvent;
 
 import game.Time;
 import game.entity.item.Item;
+import game.entity.projectile.Projectile;
 import game.gamestate.GameStateType;
 import game.graphics.Camera;
 import game.graphics.Image2d;
@@ -21,6 +22,7 @@ import game.io.Input;
 import game.level.World;
 import game.shape.Rectangle;
 import game.shape.Vector2;
+import game.util.Direction;
 
 public class Player extends Entity {
 
@@ -29,11 +31,16 @@ public class Player extends Entity {
 	private int mainhand;
 	private double jumpStartTime = -0xABC;
 	private double maxJumpTime = 0.1;
+	private Direction facing;
+	private double maxVel = 20;
+	private boolean inInventory;
 	
 	public Player(World worldIn, Rectangle rect, Image2d image) {
 		super(worldIn, rect, image);
 		this.input = game.getInput();
 		this.hotbar = new Item[9];
+		this.facing = Direction.RIGHT;
+		this.inventory = new Inventory(this, 200);
 	}
 
 	@Override
@@ -43,31 +50,36 @@ public class Player extends Entity {
 		if (!isDead()) {
 
 			if (input.keyHeld(KeyEvent.VK_A)) {
-				this.accelerate(new Vector2(-5 * elapsedTime, 0));
+				this.facing = Direction.LEFT;
+				this.walkLeft(elapsedTime);
 			}
 
 			if (input.keyHeld(KeyEvent.VK_D)) {
-				this.accelerate(new Vector2(5 * elapsedTime, 0));
+				this.facing = Direction.RIGHT;
+				this.walkRight(elapsedTime);
 			}
 
-			if (input.keyPressed(KeyEvent.VK_SPACE) && isGrounded()) {
-				jumpStartTime = Time.getTime();
-			}
+			if (isGrounded()) {
+				if (input.keyPressed(KeyEvent.VK_SPACE)) {
+					jumpStartTime = Time.getTime();
+				}
+				
+				if (jumpStartTime > 0) {
+					if ((Time.getTime() - jumpStartTime) > maxJumpTime) {
+						jump(1);
+						jumpStartTime = -0xABC;
+					}
+				}
+				
+				if (input.keyReleased(KeyEvent.VK_SPACE)) {
+					double intensity = (Time.getTime() - jumpStartTime) / maxJumpTime;
 
-			if (jumpStartTime > 0) {
-				if ((Time.getTime() - jumpStartTime) > maxJumpTime && isGrounded()) {
-					jump(1);
+					if (intensity <= 1 && intensity >= 0) {
+						jump(intensity);
+					}
 					jumpStartTime = -0xABC;
 				}
-			}
-
-			if (input.keyReleased(KeyEvent.VK_SPACE) && isGrounded()) {
-				double intensity = (Time.getTime() - jumpStartTime) / maxJumpTime;
-
-				if (intensity <= 1 && intensity >= 0) {
-					jump(intensity);
-				}
-				jumpStartTime = -0xABC;
+				
 			}
 
 			if (input.keyPressed(KeyEvent.VK_SHIFT)) {
@@ -79,36 +91,87 @@ public class Player extends Entity {
 				this.setHeight(2.5);
 				this.addPosition(0, -1.5);
 			}
-
-			int mouseCycle = input.wheelRotations();
-			if (mouseCycle != 0) {
-
-				while (mouseCycle < 0) {
-					mouseCycle++;
-					hotbarCycleLeft();
+			
+			if (!inInventory) {
+				if (input.mousePressed(0)) {
+					Item item = hotbar[mainhand];
+					use(item);
 				}
+				
+				int mouseCycle = input.wheelRotations();
+				if (mouseCycle != 0) {
 
-				while (mouseCycle > 0) {
-					mouseCycle--;
-					hotbarCycleRight();
+					while (mouseCycle < 0) {
+						mouseCycle++;
+						this.hotbarCycleLeft();
+					}
+
+					while (mouseCycle > 0) {
+						mouseCycle--;
+						this.hotbarCycleRight();
+					}
+
 				}
-
 			}
 			
-			if (input.mousePressed(0)) {
+			if (input.keyPressed(KeyEvent.VK_G)) {
 				Item item = hotbar[mainhand];
 				if (item != null) {
-					if(item.onInteract(this, game.getMouseLocationOnScreen().sub(this.getCenter()))) {
-						if (item.isRemoveOnUse()) {
-							this.inventory.remove(item);
-							this.hotbar[mainhand] = null;
-							this.hotbarCycleRight();
-						}
+					drop(item);
+				}
+			}
+			
+		} else {
+			game.getGsm().changeGameState(GameStateType.GAMEOVER);
+		}
+	}
+	
+	public void drop(Item item) {
+		Vector2 pos = this.getCenter();
+		System.out.println("Dropping Item " + item.getName() + ":" + item.getUID());
+		if (facing == Direction.LEFT) {
+			pos = pos.addX(-this.getWidth() - item.getWidth());
+			item.setVelX(-5);
+		} else {
+			pos = pos.addX(this.getWidth() + item.getWidth());
+			item.setVelX(5);
+		}
+		
+		this.worldIn.spawnQueue(item, pos);
+		this.inventory.remove(item);
+		this.removeFromHotbar(item);
+	}
+	
+	public void drop(int i) {
+		Item item = inventory.getInventory()[i];
+		if (item != null) {
+			drop(item);
+		}
+	}
+	
+	public void removeFromHotbar(Item item) {
+		if (item != null) {
+			System.out.println(item.getClass().getSimpleName());
+			for (int i = 0; i < hotbar.length; i++) {
+				Item it = hotbar[i];
+				if (it != null) {
+					if (it.compare(item)) {
+						hotbar[i] = null;
+						return;
 					}
 				}
 			}
-		} else {
-			game.getGsm().changeGameState(GameStateType.GAMEOVER);
+		}
+	}
+	
+	public void use(Item item) {
+		if (item != null) {
+			if(item.onInteract(this, game.getMouseLocationOnScreen().sub(this.getCenter()))) {
+				if (item.isRemoveOnUse()) {
+					this.inventory.remove(item);
+					this.removeFromHotbar(item);
+				}
+			}
 		}
 	}
 
@@ -119,12 +182,13 @@ public class Player extends Entity {
 
 	@Override
 	public void onOutOfWorld(World world) {
-		this.setPosition(world.getSpawnPoint());
+		if (this.getWorldIn().equals(world)) {
+			this.setPosition(world.getSpawnPoint());
+		}
 	}
 
 	@Override
 	public void onItemAdd(Item item) {
-
 		if (!hotbarContains(item)) {
 			for (int i = 0; i < hotbar.length; i++) {
 				if (hotbar[i] == null) {
@@ -139,9 +203,11 @@ public class Player extends Entity {
 	public void onItemRemove(Item item) {
 		if (item != null) {
 			for (int i = 0; i < hotbar.length; i++) {
-				if (hotbar[i].compare(item)) {
-					hotbar[i] = null;
-					break;
+				if (hotbar[i] != null) {
+					if (hotbar[i].compare(item)) {
+						hotbar[i] = null;
+						break;
+					}
 				}
 			}
 		}
@@ -149,7 +215,7 @@ public class Player extends Entity {
 
 	@Override
 	public void onDead() {
-
+		dropItems();
 	}
 
 	@Override
@@ -159,7 +225,7 @@ public class Player extends Entity {
 
 	public void drawInfo(Graphics2D g2, Camera cam) {
 		g2.setColor(Color.BLUE);
-		g2.fillRoundRect(25, 25, 200, 160, 10, 10);
+		g2.fillRoundRect(25, 25, 200, 180, 10, 10);
 		g2.setColor(Color.WHITE);
 		g2.drawString("VEL:  " + this.getVel().toString(), 50, 50);
 		g2.drawString("POS:  " + this.getPosition().toString(), 50, 70);
@@ -168,6 +234,7 @@ public class Player extends Entity {
 		g2.drawString("FRC:  " + this.friction, 50, 130);
 		g2.drawString("GRV:  " + this.gravity, 50, 150);
 		g2.drawString("GND:  " + this.isGrounded(), 50, 170);
+		g2.drawString("DIR:  " + this.facing, 50, 190);
 
 	}
 
@@ -213,4 +280,21 @@ public class Player extends Entity {
 		this.hotbar = hotbar;
 	}
 
+	@Override
+	public void onHit(Projectile p) {
+		
+	}
+
+	public boolean isInInventory() {
+		return inInventory;
+	}
+
+	public void setInInventory(boolean inInventory) {
+		this.inInventory = inInventory;
+	}
+	
+	public void setHotbarAt(int i, Item item) {
+		this.hotbar[i] = item;
+	}
+	
 }

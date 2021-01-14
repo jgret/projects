@@ -37,9 +37,9 @@ public class Inventory {
 	public boolean remove(Item item) {
 		for (int i = 0; i < inventory.length; i++) {
 			if (inventory[i] != null) {
-				if (inventory[i].equals(item)) {
-					inventory[i] = null;
+				if (inventory[i].compare(item)) {
 					entity.onItemRemove(inventory[i]);
+					inventory[i] = null;
 					return true;
 				}
 			}
@@ -47,16 +47,10 @@ public class Inventory {
 		return false;
 	}
 
-	public Item remove(String id) {
-		for (int i = 0; i < inventory.length; i++) {
-			if (inventory[i].getId().equals(id)) {
-				Item ret = inventory[i];
-				inventory[i] = null;
-				entity.onItemRemove(inventory[i]);
-				return ret;
-			}
-		}
-		return null;
+	public void swap(int i, int j) {
+		Item item = inventory[i];
+		inventory[i] = inventory[j];
+		inventory[j] = item;
 	}
 
 	public Item[] getInventory() {

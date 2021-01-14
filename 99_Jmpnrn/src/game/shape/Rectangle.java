@@ -214,6 +214,30 @@ public class Rectangle extends Rectangle2D.Double implements Drawable {
     public void setHeight(double height) {
     	this.height = height;
     }
+    
+    public void setTop(double y) {
+    	this.y = y;
+    }
+    
+    public void setBot(double y) {
+    	this.y = y - height;
+    }
+    
+    public void setLeft(double x) {
+    	this.x = x;
+    }
+    
+    public void setRight(double x) {
+    	this.x = x - width;
+    }
+    
+    public void setCenterX(double x) {
+    	this.x = x - width / 2;
+    }
+    
+    public void setCenterY(double y) {
+    	this.y = y - height / 2;
+    }
 
 	public void translate(double deltaX, double deltaY) {
 		this.x += deltaX;

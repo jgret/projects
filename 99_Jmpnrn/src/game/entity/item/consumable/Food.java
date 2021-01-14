@@ -8,6 +8,7 @@
  *******************************************************/
 package game.entity.item.consumable;
 
+import java.awt.Graphics2D;
 import java.awt.Shape;
 
 import game.entity.Entity;
@@ -87,7 +88,7 @@ public class Food extends Item {
 
 	@Override
 	public boolean onInteract(Entity e, Vector2 dir) {
-		e.regenerateHealth(health * rotteness);
+		e.regenerateHealth(health * (1 - rotteness));
 		e.loseHealth(poison);
 		e.drinkAlcohol(alcohol);
 		return true;
@@ -111,6 +112,15 @@ public class Food extends Item {
 	@Override
 	public void onStaticCollision(Shape s) {
 		
+	}
+	
+	@Override
+	public void drawInfo(Graphics2D g2, int x, int y) {
+		super.drawInfo(g2, x, y);
+		g2.drawString("Health:    " + health, x + 10, y + 39);
+		g2.drawString("Poison:    " + poison, x + 10, y + 52);
+		g2.drawString("Alcohol:   " + alcohol, x + 10, y + 65);
+		g2.drawString("Rotteness: " + rotteness, x + 10, y + 78);
 	}
 	
 }

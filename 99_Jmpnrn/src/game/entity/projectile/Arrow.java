@@ -40,7 +40,6 @@ public class Arrow extends Projectile {
 			e.loseHealth(this.getDamage());
 			this.remove = true;
 		}
-		
 	}
 
 	@Override

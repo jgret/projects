@@ -9,8 +9,10 @@
 package game.entity;
 
 import java.awt.Shape;
+import java.util.List;
 
 import game.entity.item.Item;
+import game.entity.projectile.Projectile;
 import game.graphics.Image2d;
 import game.level.World;
 import game.shape.Rectangle;
@@ -19,12 +21,14 @@ import game.shape.Vector2;
 public abstract class Entity extends GameObject {
 	
 	protected Inventory inventory;
-	protected double maxJumpHeight = 9;
+	protected double maxJumpHeight = 10;
 	protected boolean sneaking;
 	
+	protected double maxVel; 
 	protected double health;
 	protected double maxHealth;
 	protected double alcohol;
+	
 	
 	public Entity(World worldIn, Rectangle rect, Image2d image) {
 		super(worldIn, rect, image);
@@ -32,6 +36,7 @@ public abstract class Entity extends GameObject {
 		this.sneaking = false;
 		this.health = 100;
 		this.maxHealth = 100;
+		this.maxVel = 20;
 	}
 	
 	@Override
@@ -65,17 +70,46 @@ public abstract class Entity extends GameObject {
 	public abstract void onItemAdd(Item item);
 	public abstract void onItemRemove(Item item);
 	public abstract void onDead();
+	public abstract void onHit(Projectile p);
 	
-	public void addItem(Item i) {
-		this.inventory.add(i);
+	public boolean addItem(Item i) {
+		return this.inventory.add(i);
 	}
 	
 	public void removeItem(Item i) {
 		this.inventory.remove(i);
 	}
 	
+	public void dropItems() {
+		for (Item i : inventory.getInventory()) {
+			if (i != null) {
+				worldIn.spawnQueue(i, this.getPosition());
+			}
+		}
+	}
+	
+	public void dropItem(Item item) {
+		if (item != null) {
+			worldIn.spawnQueue(item, this.getPosition());
+		}
+	}
+	
+	public void dropItems(List<Item> items) {
+		for (Item i : items) {
+			dropItem(i);
+		}
+	}
+	
 	public void jump(double intensity) {
 		this.accelerate(new Vector2(0, -maxJumpHeight * intensity));
+	}
+	
+	public void walkRight(double elapsedTime) {
+		this.accelerate(new Vector2((maxVel- Math.abs(this.getVelX())) * elapsedTime, 0));
+	}
+	
+	public void walkLeft(double elapsedTime) {
+		this.accelerate(new Vector2(-(maxVel- Math.abs(this.getVelX())) * elapsedTime, 0));
 	}
 	
 	public void sneak() {
@@ -130,6 +164,9 @@ public abstract class Entity extends GameObject {
 	
 	public void regenerateHealth(double health) {
 		this.health += health;
+		if (health > maxHealth) {
+			health = maxHealth;
+		}
 	}
 
 	public double getMaxHealth() {
@@ -141,6 +178,9 @@ public abstract class Entity extends GameObject {
 	}
 	
 	public boolean isDead() {
+		if (health > maxHealth) {
+			health = maxHealth;
+		}
 		return this.health <= 0;
 	}
 

@@ -22,7 +22,7 @@ import sound.SoundEngine;
 
 public class GameStateHomeMenu extends GameState {
 
-	private Image2d background = Images.RGB_BACARDI;
+	private Image2d background = Images.MENU_BACKGROUND;
 	private Image2d font = Images.TITLE_FONT;
 	private Image2d bacardi = Images.BACARDI;
 	private Image2d button = Images.MENU_BUTTON;
@@ -58,8 +58,7 @@ public class GameStateHomeMenu extends GameState {
 	
 	@Override
 	public void onStart() {
-		SoundEngine.getInstance().play("main_theme");
-		System.out.println("play main theme");
+//		SoundEngine.getInstance().play("main_theme");
 	}
 
 	@Override
@@ -102,15 +101,14 @@ public class GameStateHomeMenu extends GameState {
 
 	@Override
 	public void onEnd() {
-		SoundEngine.getInstance().stop("main_theme");
-		System.out.println("stop main theme");
+//		SoundEngine.getInstance().stop("main_theme");
 	}
 
 	@Override
 	public void draw(Graphics2D g2, Camera cam) {
 
 		background.draw(g2, 0, 0, cam.getWidth(), cam.getHeight());
-		bacardi.drawCenter(g2, cam.getWidth() / 2, cam.getHeight() / 2);
+//		bacardi.drawCenter(g2, cam.getWidth() / 2, cam.getHeight() / 2);
 
 		for (Button b : buttons) {
 			b.draw(g2, cam);
