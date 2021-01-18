@@ -21,14 +21,14 @@ public class SoundEngine {
 	
 	private static SoundEngine instance;
 
+	private HashMap<String, Track> tracks;
+
 	public static SoundEngine getInstance() {
 		if (SoundEngine.instance == null) {
 			SoundEngine.instance = new SoundEngine();
 		}
 		return instance;
 	}
-	
-	private HashMap<String, Track> tracks;
 	
 	public SoundEngine() {
 		this.tracks = new HashMap<>();
