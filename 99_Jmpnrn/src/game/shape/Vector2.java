@@ -286,8 +286,13 @@ public class Vector2 extends Point2D.Double {
 	 * @return this.x == a.x && this.y == a.y;
 	 */
 
-	public boolean equals(Vector2 v) {
-		return this.x == v.x && this.y == v.y;
+	@Override
+	public boolean equals(Object o) {
+		if (o instanceof Vector2) {
+			Vector2 v = (Vector2) o;
+			return this.x == v.x && this.y == v.y;
+		}
+		return false;
 	}
 	
 	public double scalar(Vector2 b) {
@@ -335,6 +340,16 @@ public class Vector2 extends Point2D.Double {
 
 	public Vector2 clone() {
 		return new Vector2(this);
+	}
+	
+	public void printExact() {
+		System.out.println(x + " | " + y);
+	}
+	
+	public void round(int digits) {
+		int d = (int) Math.pow(10, digits);
+		this.x = (double) ((int)(x * d)) / d;
+		this.y = (double) ((int)(y * d)) / d;
 	}
 
 }
