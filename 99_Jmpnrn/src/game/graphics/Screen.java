@@ -36,7 +36,7 @@ public class Screen extends Canvas implements WindowListener, ComponentListener 
 	public static final Font PIXEL_FONT_MEDIUM = createFont("font/pixel_font_2.ttf").deriveFont(20f);
 	public static final Font PIXEL_FONT_LARGE = createFont("font/pixel_font_2.ttf").deriveFont(40f);
 	
-	public static int TILESIZE = 64;
+	public static final int TILESIZE = 64;
 	private static final long serialVersionUID = 1L;
 	private Engine game;
 	private Camera cam;
