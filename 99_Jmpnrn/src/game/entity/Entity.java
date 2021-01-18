@@ -23,6 +23,7 @@ public abstract class Entity extends GameObject {
 	protected Inventory inventory;
 	protected double maxJumpHeight = 10;
 	protected boolean sneaking;
+	protected boolean jumping;
 	
 	protected double maxVel; 
 	protected double health;
@@ -37,6 +38,7 @@ public abstract class Entity extends GameObject {
 		this.health = 100;
 		this.maxHealth = 100;
 		this.maxVel = 20;
+		this.jumping = false;
 	}
 	
 	@Override
@@ -44,6 +46,10 @@ public abstract class Entity extends GameObject {
 		super.update(elapsedTime);
 		if (this.health < 0) {
 			onDead();
+		}
+		
+		if (isGrounded()) {
+			jumping = false;
 		}
 	}
 	
@@ -102,6 +108,7 @@ public abstract class Entity extends GameObject {
 	
 	public void jump(double intensity) {
 		this.accelerate(new Vector2(0, -maxJumpHeight * intensity));
+		jumping = true;
 	}
 	
 	public void walkRight(double elapsedTime) {
@@ -194,6 +201,14 @@ public abstract class Entity extends GameObject {
 	
 	public void drinkAlcohol(double alcohol) {
 		this.alcohol += alcohol;
+	}
+
+	public boolean isJumping() {
+		return jumping;
+	}
+
+	public void setJumping(boolean jumping) {
+		this.jumping = jumping;
 	}
 	
 }
