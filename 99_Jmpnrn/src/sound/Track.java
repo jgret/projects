@@ -18,6 +18,8 @@ import javax.sound.sampled.FloatControl;
 import javax.sound.sampled.LineUnavailableException;
 import javax.sound.sampled.UnsupportedAudioFileException;
 
+import game.io.FileIO;
+
 public class Track {
 	
 	private String filename;
@@ -36,7 +38,8 @@ public class Track {
 		
 		try {
 			clip = AudioSystem.getClip();
-			AudioInputStream in = AudioSystem.getAudioInputStream(Track.class.getClassLoader().getResource(filename));
+			System.out.println(filename);
+			AudioInputStream in = AudioSystem.getAudioInputStream(FileIO.getURL(filename));
 			clip.open(in);
 			
 			this.balance = (FloatControl) clip.getControl(FloatControl.Type.BALANCE);
