@@ -25,8 +25,7 @@ public class QuestionPotion extends Item {
 
 	@Override
 	public boolean onInteract(Entity e, Vector2 dir) {
-		e.dropItem(this);
-		this.setRemove(true);
+		e.removeItem(this);
 		game.getGsm().changeGameState(GameStateType.QUESTION);
 		return false;
 	}
