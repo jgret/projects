@@ -53,13 +53,6 @@ public class GameStateTest extends GameState {
 				screen.enterFullscreen();
 			}
 		}
-
-		if (input.keyHeld(KeyEvent.VK_SHIFT)) {
-			int scale = Screen.TILESIZE;
-			scale += input.wheelRotations() * -1;
-			Screen.TILESIZE = scale;
-		}
-
 	}
 
 	@Override
