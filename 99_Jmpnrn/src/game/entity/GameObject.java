@@ -23,6 +23,7 @@ public abstract class GameObject extends Rectangle {
 
 	public static final double GRAVITY = 12;
 	public static final double FRICTION = 10;
+	public static final double SLOPE_POINT_OFFSET = 0.01;
 	
 	protected Game game = Game.instance;
 	protected World worldIn;
@@ -36,6 +37,7 @@ public abstract class GameObject extends Rectangle {
 	protected boolean boxCollision;
 	protected boolean staticCollision;
 	protected boolean solid;
+	private boolean grounded;
 
 	public GameObject(World worldIn, Rectangle r, Image2d image) {
 		super(r);
@@ -88,7 +90,7 @@ public abstract class GameObject extends Rectangle {
 	}
 	
 	public boolean isGrounded() {
-		return worldIn.checkCollision(getGroundeCheckBox());
+		return grounded;
 	}
 	
 	public abstract boolean shouldCollide(GameObject g);
@@ -97,7 +99,11 @@ public abstract class GameObject extends Rectangle {
 	public abstract void onOutOfWorld(World world);
 	
 	public Vector2 getSlopePoint() {
-		return new Vector2(this.getX() + this.getWidth() / 2, this.getBot() - 0.01);
+		return new Vector2(this.getX() + this.getWidth() / 2, this.getBot() - SLOPE_POINT_OFFSET);
+	}
+	
+	public void setSlopePoint(Vector2 v) {
+		this.setPosition(v.getX() - this.getWidth() / 2, v.getY() + this.getBot() + SLOPE_POINT_OFFSET);
 	}
 	
 	public Rectangle getGroundeCheckBox() {
@@ -219,6 +225,10 @@ public abstract class GameObject extends Rectangle {
 
 	public void setImage(Image2d image) {
 		this.image = image;
+	}
+
+	public void setGrounded(boolean grounded) {
+		this.grounded = grounded;
 	}
 	
 }

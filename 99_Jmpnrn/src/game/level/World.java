@@ -44,7 +44,7 @@ public class World implements Drawable {
 	private Game game;
 	private Input input;
 	private ArrayList<Rectangle> collisionRectangles;
-	private ArrayList<Polygon2D> collisionPolygons; 
+	private ArrayList<Polygon2D> collisionPolygons;
 	private ArrayList<GameObject> actors;
 	private ArrayList<GameObject> newActorQueue;
 	private Image2d worldImageBuffer;
@@ -83,7 +83,7 @@ public class World implements Drawable {
 		layerList = new ArrayList<int[][]>();
 		this.background = FileIO.loadImage("img/waterfall.png");
 		this.monsterspawner = new Monsterspawner(this, "world/" + filename + ".mls");
-		
+
 		try {
 			// load world File into DOM
 			InputStream in = FileIO.getResourceAsStream("world/" + filename + ".tmx");
@@ -149,7 +149,7 @@ public class World implements Drawable {
 								String[] xy = points[k].split(",");
 								verts[k] = new Vector2(Double.parseDouble(xy[0]), Double.parseDouble(xy[1]));
 								verts[k] = verts[k].add(offset).mul(1.0 / (double) tilesize);
-							} 
+							}
 
 							Polygon2D poly = new Polygon2D(verts);
 							this.collisionPolygons.add(poly);
@@ -157,7 +157,8 @@ public class World implements Drawable {
 						} else if (obj.getElementsByTagName("point").getLength() > 0) {
 
 							String type = obj.getAttribute("type");
-							Vector2 p = new Vector2(Double.parseDouble(obj.getAttribute("x")), Double.parseDouble(obj.getAttribute("y"))).mul(1 / (double) tilesize);
+							Vector2 p = new Vector2(Double.parseDouble(obj.getAttribute("x")),
+									Double.parseDouble(obj.getAttribute("y"))).mul(1 / (double) tilesize);
 							switch (type) {
 								case ("spawnpoint"): {
 									spawnPoint = p;
@@ -173,7 +174,7 @@ public class World implements Drawable {
 								Element special = (Element) obj.getElementsByTagName("property").item(0);
 								String data = special.getAttribute("value");
 								System.out.println(data);
-								
+
 								double rx = Double.parseDouble(obj.getAttribute("x"));
 								double ry = Double.parseDouble(obj.getAttribute("y"));
 								double rwidth = Double.parseDouble(obj.getAttribute("width"));
@@ -188,7 +189,7 @@ public class World implements Drawable {
 								TileSet doors = new TileSet("img/world_doors_32x32.png", 64, 96);
 								Door door = new Door(this, rect, doors.get(0), data.split(":")[1]);
 								this.spawn(door, rect.getPosition());
-								
+
 							}
 						}
 
@@ -222,7 +223,7 @@ public class World implements Drawable {
 	public void init() {
 
 	}
-	
+
 	public void calcEnemies() {
 		enemies = 0;
 		for (GameObject g : actors) {
@@ -231,16 +232,16 @@ public class World implements Drawable {
 			}
 		}
 	}
-	
+
 	public void update(double elapsedTime) {
 		this.input();
 		monsterSpawnCooldown += elapsedTime;
-		
+
 		if (enemies < maxEnemies && monsterSpawnCooldown > monsterSpawnCooldownValue) {
 			monsterspawner.spawnMonsters(1);
 			monsterSpawnCooldown = 0;
 		}
-		
+
 		if (newActorQueue.size() > 0) {
 			for (GameObject actor : newActorQueue) {
 				this.actors.add(actor);
@@ -248,27 +249,29 @@ public class World implements Drawable {
 			calcEnemies();
 			newActorQueue.clear();
 		}
-		
-		//Update GameObjects
+
+		// Update GameObjects
 		for (GameObject actor : actors) {
 			actor.update(elapsedTime);
 			actor.applyFriction(elapsedTime);
 			actor.applyGravity(elapsedTime);
 			actor.move(elapsedTime);
 		}
-		
-		//Collision detection
+
+		// Collision detection
 		for (GameObject actor : actors) {
+			actor.setGrounded(false);
 			boolean slopeCollision = false;
 			for (GameObject actor2 : actors) {
 				if (actor != actor2 && !actor.isRemove() && !actor2.isRemove()) {
 					if (actor.intersects(actor2)) {
-						
+
 						if (actor.shouldCollide(actor2) && actor2.shouldCollide(actor)) {
 							int predictedPosition = actor.predictPositionOf(actor2);
 
 							if (predictedPosition == GameObject.POS_UP) {
 								actor2.setY(actor.getTop() - actor2.getHeight());
+								actor2.setGrounded(true);
 							} else if (predictedPosition == GameObject.POS_LEFT) {
 								actor2.setX(actor.getLeft() - actor2.getWidth());
 								actor2.setVelX(actor.getVelX());
@@ -279,12 +282,13 @@ public class World implements Drawable {
 								actor.setY(actor2.getTop() - actor.getHeight());
 								actor.setVelY(actor2.getVelY());
 								actor.addPosition(actor2.getVel().mul(elapsedTime));
+								actor.setGrounded(true);
 							}
 						}
-						
+
 						actor.onCollision(actor2);
 						actor2.onCollision(actor);
-						
+
 					}
 				}
 			}
@@ -307,24 +311,17 @@ public class World implements Drawable {
 
 							if (poly.getBounds().contains(slopePoint)) {
 								slopeCollision = true;
-
 								if (poly.contains(slopePoint)) {
-									actor.onStaticCollision(poly);								
+									actor.onStaticCollision(poly);
 									actor.setBoxCollision(false);
-
+									actor.setGrounded(true);
 									Line line = poly.getNearestSideToPoint(actor.getSlopePoint());
 									Vector2 contact = line.getNormalContactPoint(actor.getSlopePoint());
-
 									if (contact.isFinite()) {
-										actor.setY(contact.getY() - actor.getHeight());
+										actor.setY(contact.getY() - actor.getHeight() + GameObject.SLOPE_POINT_OFFSET);
 										actor.getVel().setY(0);
 									}
 								}
-							}
-
-							while (poly.contains(slopePoint)) {
-								actor.setY(actor.getY() - 1 / (double) Screen.TILESIZE);
-								slopePoint = actor.getSlopePoint();
 							}
 						}
 					}
@@ -338,6 +335,7 @@ public class World implements Drawable {
 							if (dir == GameObject.POS_DOWN) {
 								actor.setY(rect.getTop() - actor.getHeight());
 								actor.getVel().y = 0;
+								actor.setGrounded(true);
 							} else if (dir == GameObject.POS_UP) {
 								actor.setY(rect.getBot());
 								actor.getVel().y = 0;
@@ -377,7 +375,7 @@ public class World implements Drawable {
 			System.out.println("Spawn Monsters");
 		}
 	}
-	
+
 	public boolean checkCollision(Rectangle rectangle) {
 		for (Rectangle rect : collisionRectangles) {
 			if (rect.intersects(rectangle)) {
@@ -396,7 +394,7 @@ public class World implements Drawable {
 		}
 		return false;
 	}
-	
+
 	public boolean checkCollision(Vector2 point) {
 		for (Rectangle rect : collisionRectangles) {
 			if (rect.contains(point)) {
@@ -461,8 +459,8 @@ public class World implements Drawable {
 		}
 
 		if (drawWorld) {
-			worldImageBuffer.draw(g2, cam.getPixelOffsetX(), cam.getPixelOffsetY(), cam.getWidth(), cam.getHeight(),
-					0, 0, cam.getWidth(), cam.getHeight());
+			worldImageBuffer.draw(g2, cam.getPixelOffsetX(), cam.getPixelOffsetY(), cam.getWidth(), cam.getHeight(), 0,
+					0, cam.getWidth(), cam.getHeight());
 		}
 
 		g2.setColor(Color.RED.darker());
@@ -510,17 +508,17 @@ public class World implements Drawable {
 		if (g instanceof Player) {
 			this.player = (Player) g;
 		}
-		
+
 		for (GameObject actor : actors) {
 			if (actor.equals(g)) {
 				return;
 			}
 		}
-		
+
 		this.actors.add(g);
 		this.calcEnemies();
 	}
-	
+
 	public void spawnQueue(GameObject g, Vector2 pos) {
 		g.setWorldIn(this);
 		g.setPosition(pos);
@@ -576,7 +574,8 @@ public class World implements Drawable {
 		Graphics2D g2 = this.worldImageBuffer.createGraphics();
 		System.out.println("Drawing world");
 
-		int i = 0; for (int[][] layer : layerList) {
+		int i = 0;
+		for (int[][] layer : layerList) {
 			i++;
 			System.out.println("Layer " + i + "/" + layerList.size());
 			for (int row = 0; row < height; row++) {
@@ -584,7 +583,8 @@ public class World implements Drawable {
 					int n = layer[row][coll];
 					if (n > 0) {
 						n--;
-						g2.drawImage(tilesets.get(n).getImage(), coll * tilesize, row * tilesize, tilesize, tilesize, null);
+						g2.drawImage(tilesets.get(n).getImage(), coll * tilesize, row * tilesize, tilesize, tilesize,
+								null);
 					}
 				}
 			}
@@ -640,5 +640,5 @@ public class World implements Drawable {
 	public void setGame(Game game) {
 		this.game = game;
 	}
-	
+
 }
