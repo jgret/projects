@@ -38,8 +38,6 @@ public class Polygon2D implements Shape {
 	}
 
 	public Polygon2D(double xpoints[], double ypoints[], int npoints) {
-		// Fix 4489009: should throw IndexOutofBoundsException instead
-		// of OutofMemoryException if npoints is huge and > {x,y}points.length
 		if (npoints > xpoints.length || npoints > ypoints.length) {
 			throw new IndexOutOfBoundsException("npoints > xpoints.length || npoints > ypoints.length");
 		}

@@ -5,8 +5,8 @@
 			"name": "Apple",
 			"img": "img/game_apple.png",
 			"bounds": {
-				"width": 1,
-				"height": 1
+				"width": 10,
+				"height": 10
 			},
 			"value": 100,
 			"health": 17,

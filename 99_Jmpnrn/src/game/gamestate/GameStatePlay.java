@@ -11,6 +11,7 @@ package game.gamestate;
 import java.awt.Color;
 import java.awt.Graphics2D;
 import java.awt.event.KeyEvent;
+import java.util.ArrayList;
 
 import game.Game;
 import game.entity.GameObject;
@@ -88,7 +89,7 @@ public class GameStatePlay extends GameState {
 		//    	Platform platform = new Platform(world, new Rectangle(0, 0, 5, 1), Color.RED);
 		//    	world.spawn(platform, new Vector2(76, 42));
 
-		screen.getCam().setTarget(player);
+		screen.getCam().setTarget(skelly);
 	}
 	
 	@Override
@@ -196,6 +197,16 @@ public class GameStatePlay extends GameState {
 		
 		if (input.keyPressed(KeyEvent.VK_F4)) {
 			this.showPlayerInfo = !showPlayerInfo;
+		}
+		
+		if (input.mousePressed(2)) {
+			Vector2 pos = game.getMouseLocationOnScreen();
+			ArrayList<GameObject> actors = player.getWorldIn().getActors();
+			for (GameObject actor : actors) {
+				if (actor.contains(pos)) {
+					screen.getCam().setTarget(actor);
+				}
+			}
 		}
 		
 	}
@@ -384,11 +395,11 @@ public class GameStatePlay extends GameState {
 	
 	@Override
 	public void onStart() {
-		SoundEngine.getInstance().loop("bacardi_feeling", -1);
+//		SoundEngine.getInstance().loop("bacardi_feeling", -1);
 	}
 
 	@Override
 	public void onEnd() {
-		SoundEngine.getInstance().stop("bacardi_feeling");
+//		SoundEngine.getInstance().stop("bacardi_feeling");
 	}
 }

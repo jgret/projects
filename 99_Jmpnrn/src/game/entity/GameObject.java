@@ -23,7 +23,7 @@ public abstract class GameObject extends Rectangle {
 
 	public static final double GRAVITY = 12;
 	public static final double FRICTION = 10;
-	public static final double SLOPE_POINT_OFFSET = 0.01;
+	public static final double SLOPE_POINT_OFFSET = 1 / (double) Screen.TILESIZE;
 	
 	protected Game game = Game.instance;
 	protected World worldIn;
