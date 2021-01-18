@@ -46,7 +46,7 @@ public class Player extends Entity {
 	@Override
 	public void update(double elapsedTime) {
 		super.update(elapsedTime);
-		
+
 		if (!isDead()) {
 
 			if (input.keyHeld(KeyEvent.VK_A)) {
@@ -123,6 +123,16 @@ public class Player extends Entity {
 			
 		} else {
 			game.getGsm().changeGameState(GameStateType.GAMEOVER);
+		}
+	}
+	
+	@Override
+	public void removeItem(Item i) {
+		if (i != null) {
+			super.removeItem(i);
+			if (hotbarContains(i)) {
+				removeFromHotbar(i);
+			}
 		}
 	}
 	
