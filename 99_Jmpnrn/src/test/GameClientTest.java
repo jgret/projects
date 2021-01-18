@@ -21,7 +21,7 @@ import net.packet.impl.WelcomePacket;
 public class GameClientTest {
 
 	public static void main(String[] args) {
-
+		
 		Scanner in = new Scanner(System.in);
 		System.out.println("Enter your Name");
 		String sender = in.nextLine();

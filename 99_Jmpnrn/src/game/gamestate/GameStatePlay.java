@@ -40,6 +40,15 @@ public class GameStatePlay extends GameState {
 	private Input input;
 	private boolean showActors;
 	private boolean showPlayerInfo;
+	private int selectedIndex;
+	private int hoverSelectedIndex;
+	private int size = 48;
+	private int space = 5;
+	private int rx = 25;
+	private int ry = 100;
+	private int scrollOffset = 0;
+	private int itemsPerLine = 10;
+	private int totalLines = 10;
 
 	public GameStatePlay(Game game) {
 		super(game);
@@ -82,15 +91,10 @@ public class GameStatePlay extends GameState {
 		screen.getCam().setTarget(player);
 	}
 	
-	private int selectedIndex;
-	private int hoverSelectedIndex;
-	
 	@Override
 	public void update(double elapsedTime) {
 		globalHotKeys();
 		if (player.isInInventory()) {
-			
-			
 			hoverSelectedIndex = getInventoryItemIndex(input.getPoint());
 			if (hoverSelectedIndex != -1) {
 				Item item = player.getInventory().getInventory()[hoverSelectedIndex];
@@ -323,15 +327,6 @@ public class GameStatePlay extends GameState {
 		}
 		
 	}
-	
-	private int size = 48;
-	private int space = 5;
-	private int rx = 25;
-	private int ry = 100;
-	private int scrollOffset = 0;
-	private int itemsPerLine = 10;
-	private int totalLines = 10;
-	private Image2d invBuffer;
 	
 	public void drawInventory(Graphics2D  g2, Camera cam) {
 		
