@@ -44,7 +44,7 @@ public class Monsterspawner {
 	
 	public void spawnMonsters(int n) {
 		if (this.locations.size() < 1) {
-			System.err.println("The list of locations is less than 1. Make sure to add some points...");
+			System.err.println("No Monster spawn points found. No Monsters will be spawned");
 		} else {
 			ArrayList<Vector2> prev = new ArrayList<>();
 			for (int i = 0; i < n; i++) {

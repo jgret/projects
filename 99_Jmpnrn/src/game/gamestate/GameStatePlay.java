@@ -89,7 +89,7 @@ public class GameStatePlay extends GameState {
 		//    	Platform platform = new Platform(world, new Rectangle(0, 0, 5, 1), Color.RED);
 		//    	world.spawn(platform, new Vector2(76, 42));
 
-		screen.getCam().setTarget(skelly);
+		screen.getCam().setTarget(player);
 	}
 	
 	@Override
@@ -395,11 +395,11 @@ public class GameStatePlay extends GameState {
 	
 	@Override
 	public void onStart() {
-//		SoundEngine.getInstance().loop("bacardi_feeling", -1);
+		SoundEngine.getInstance().loop("bacardi_feeling", -1);
 	}
 
 	@Override
 	public void onEnd() {
-//		SoundEngine.getInstance().stop("bacardi_feeling");
+		SoundEngine.getInstance().stop("bacardi_feeling");
 	}
 }
