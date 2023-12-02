@@ -51,6 +51,10 @@ public class GameStateManager implements Drawable {
 		this.gameStates.get(this.state).onStart();
 	}
 	
+	public GameStatePlay getPlayState() {
+		return (GameStatePlay) this.gameStates.get(GameStateType.PLAY);
+	}
+	
 	public void update(double elapsedTime) {
 		gameStates.get(state).update(elapsedTime);
 	}

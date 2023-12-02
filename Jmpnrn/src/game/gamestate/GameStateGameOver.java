@@ -9,8 +9,10 @@
 package game.gamestate;
 
 import java.awt.Graphics2D;
+import java.awt.event.KeyEvent;
 
 import game.Game;
+import game.entity.Player;
 import game.graphics.Camera;
 import game.graphics.Image2d;
 import game.io.FileIO;
@@ -36,7 +38,12 @@ public class GameStateGameOver extends GameState {
 
 	@Override
 	public void update(double elapsedTime) {
-		
+		if (input.keyPressed(KeyEvent.VK_R)) {
+			gsm.changeGameState(GameStateType.PLAY);
+			
+			Player player = gsm.getPlayState().getPlayer();
+			player.setHealth(player.getMaxHealth());
+		}
 	}
 
 	@Override

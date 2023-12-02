@@ -402,4 +402,8 @@ public class GameStatePlay extends GameState {
 	public void onEnd() {
 		SoundEngine.getInstance().stop("bacardi_feeling");
 	}
+	
+	public Player getPlayer() {
+		return this.player;
+	}
 }
